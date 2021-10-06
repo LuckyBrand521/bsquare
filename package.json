@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/art": "^1.2.0",
+    "@react-native-firebase/app": "^12.9.0",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
@@ -19,6 +20,7 @@
     "react": "17.0.2",
     "react-crypto-chart": "0.0.2",
     "react-native": "0.65.1",
+    "react-native-animated-numbers": "^0.2.0",
     "react-native-chart-kit": "^6.11.0",
     "react-native-dash": "0.0.11",
     "react-native-drop-shadow": "0.0.2",
@@ -29,6 +31,7 @@
     "react-native-paper": "^4.9.2",
     "react-native-pie": "^1.1.2",
     "react-native-raw-bottom-sheet": "^2.2.0",
+    "react-native-reanimated": "^2.2.2",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.7.1",

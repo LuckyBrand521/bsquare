@@ -94,8 +94,14 @@ export default StyleSheet.create({
     marginTop: 10,
   },
   documentPinStyle: {
-    width: 100,
-    height: 60,
-    backgroundColor: '#aaa',
+    width: 142,
+    height: 82,
+    marginHorizontal: 4,
+    borderRadius: 10,
+    backgroundColor: '#F6F8FA',
+    paddingLeft: 16,
+    paddingBottom: 16,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
   },
 });

@@ -56,7 +56,7 @@ function InvestmentHomeScreen({navigation}) {
               quantity={5030}
               backgroundColor="rgba(103, 196, 49, 0.15)"
               onPress={() => {
-                goStock('StockDetailScreen');
+                goStock('IdeaHomeScreen');
               }}
               radius={80}
               position={{x: 45, y: 40}}
@@ -86,7 +86,7 @@ function InvestmentHomeScreen({navigation}) {
               quantity={1140}
               backgroundColor="rgba(235, 102, 59, 0.15)"
               onPress={() => {
-                goStock('StockDetailScreen');
+                goStock('StockHomeScreen');
               }}
               radius={46}
               position={{x: 120, y: 200}}
@@ -106,6 +106,7 @@ function InvestmentHomeScreen({navigation}) {
             </View>
             <ScrollView
               horizontal={true}
+              showsHorizontalScrollIndicator={false}
               style={{paddingBottom: 10, marginBottom: 10}}>
               {newsList.map((item, index) => {
                 return (
@@ -130,7 +131,10 @@ function InvestmentHomeScreen({navigation}) {
                 <Text style={investmentStyles.greenLabel}>See all</Text>
               </TouchableOpacity>
             </View>
-            <ScrollView horizontal={true} style={{paddingBottom: 20}}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{paddingBottom: 20}}>
               {earningList.map((item, index) => {
                 return (
                   <EarningCard

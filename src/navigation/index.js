@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {View, Image, StatusBar} from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -7,13 +8,15 @@ import HomeScreen from '../screens/home';
 import SettingsScreen from '../screens/setting';
 import SplashScreen from '../screens/splash';
 import InvestmentHomeScreen from '../screens/investment/home';
-import StockInvestmentScreen from '../screens/investment/stock';
+import StockHomeScreen from '../screens/investment/stock';
 import StockDetailScreen from '../screens/investment/stock-detail';
 import CryptoHomeScreen from '../screens/crypto';
 import CryptoDetailScreen from '../screens/crypto/crypto-detail';
 import RealEstateHomeScreen from '../screens/realestate';
 import RealEstatePropertyScreen from '../screens/realestate/property';
 import RealEstateDetailScreen from '../screens/realestate/realestate-detail';
+import IdeaHomeScreen from '../screens/ideas';
+import IdeaDetailScreen from '../screens/ideas/idea-detail';
 
 //custom styles
 import navigationStyles from './style.js';
@@ -65,10 +68,11 @@ export const Navigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
+                  {/* <Image
                     source={require('../assets/icons/home_icon_active.png')}
                     style={{width: 24, height: 24}}
-                  />
+                  /> */}
+                  <Icon name="home" size={24} />
                 </View>
               );
             } else {
@@ -77,10 +81,11 @@ export const Navigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
+                  {/* <Image
                     source={require('../assets/icons/home_icon.png')}
                     style={{width: 24, height: 24}}
-                  />
+                  /> */}
+                  <Icon name="home" size={22} color="#A5A7A8" />
                 </View>
               );
             }
@@ -304,10 +309,7 @@ function InvestmentStack() {
         name="InvestmentHomeScreen"
         component={InvestmentHomeScreen}
       />
-      <Stack1.Screen
-        name="StockInvestmentScreen"
-        component={StockInvestmentScreen}
-      />
+      <Stack1.Screen name="StockHomeScreen" component={StockHomeScreen} />
       <Stack1.Screen name="StockDetailScreen" component={StockDetailScreen} />
       <Stack1.Screen name="CryptoHomeScreen" component={CryptoHomeScreen} />
       <Stack1.Screen name="CryptoDetailScreen" component={CryptoDetailScreen} />
@@ -323,6 +325,8 @@ function InvestmentStack() {
         name="RealEstateDetailScreen"
         component={RealEstateDetailScreen}
       />
+      <Stack1.Screen name="IdeaHomeScreen" component={IdeaHomeScreen} />
+      <Stack1.Screen name="IdeaDetailScreen" component={IdeaDetailScreen} />
     </Stack1.Navigator>
   );
 }

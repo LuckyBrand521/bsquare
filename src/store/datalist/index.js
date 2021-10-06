@@ -215,6 +215,58 @@ export const cryptoHistoryList = [
     date: '9/1/21',
   },
 ];
+export const stockPortfolioList = [
+  {
+    id: 1,
+    coinImage: require('../../assets/images/apple_stock.png'),
+    name: 'AAPL',
+    quantity: 1,
+    bought: 500,
+    price: 600,
+    pl: 7,
+  },
+  {
+    id: 2,
+    coinImage: require('../../assets/images/oracle_stock.png'),
+    name: 'ORCL',
+    quantity: 3,
+    bought: 800,
+    price: 700,
+    pl: 5,
+  },
+  {
+    id: 3,
+    coinImage: require('../../assets/images/amazon_stock.png'),
+    name: 'AMZN',
+    quantity: 3,
+    bought: 800,
+    price: 700,
+    pl: 3,
+  },
+  {
+    id: 4,
+    coinImage: require('../../assets/images/tesla_stock.png'),
+    name: 'TSLA',
+    quantity: 2,
+    bought: 800,
+    price: 700,
+    pl: 5,
+  },
+];
+
+export const stockHistoryList = [
+  {
+    id: 1,
+    coinImage: require('../../assets/images/disney_stock.png'),
+    name: 'DSNY',
+    bought: 700,
+    sold: 400,
+    price: 700,
+    pl: 7,
+    date: '9/1/21',
+  },
+];
+
 const genChartData = count => {
   const data = [];
   for (let i = 0; i < count; i++) {
@@ -404,5 +456,100 @@ export const realestateHighlightList = [
     id: 1,
     name: 'Store',
     image: require('../../assets/icons/store_icon.png'),
+  },
+];
+
+export const realestateDocumentList = [
+  {id: 1, name: 'PPM'},
+  {id: 2, name: 'Financial'},
+  {id: 3, name: 'Privacy policy'},
+];
+
+export const ideaPortfolioList = [
+  {
+    id: 1,
+    coinImage: require('../../assets/images/bcg_icon.png'),
+    name: 'BCG',
+    quantity: 1,
+    bought: 500,
+    price: 600,
+    pl: 7,
+  },
+  {
+    id: 2,
+    coinImage: require('../../assets/images/oracle_stock.png'),
+    name: 'ORCL',
+    quantity: 3,
+    bought: 800,
+    price: 700,
+    pl: 5,
+  },
+  {
+    id: 3,
+    coinImage: require('../../assets/images/fnstk_icon.png'),
+    name: 'FNSTK',
+    quantity: 3,
+    bought: 800,
+    price: 700,
+    pl: 3,
+  },
+  {
+    id: 4,
+    coinImage: require('../../assets/images/aibc_icon.png'),
+    name: 'AIBC',
+    quantity: 2,
+    bought: 800,
+    price: 700,
+    pl: 5,
+  },
+];
+export const ideaHistoryList = [
+  {
+    id: 1,
+    coinImage: require('../../assets/images/bcg_icon.png'),
+    name: 'BCG',
+    bought: 500,
+    sold: 700,
+    price: 700,
+    pl: 5,
+    date: '9/1/21',
+  },
+];
+
+export const ideaList = [
+  {
+    id: 1,
+    image: 'https://picsum.photos/700',
+    title: 'BCG',
+    name: 'BCG',
+    val: 10,
+  },
+  {
+    id: 2,
+    image: 'https://picsum.photos/500',
+    title: 'Baidu',
+    name: 'BAI',
+    val: 12,
+  },
+  {
+    id: 3,
+    image: 'https://picsum.photos/300',
+    title: 'Oracle',
+    name: 'ORCL',
+    val: -0.23,
+  },
+  {
+    id: 4,
+    image: 'https://picsum.photos/700',
+    title: 'Microsoft',
+    name: 'MSFT',
+    val: -0.23,
+  },
+  {
+    id: 5,
+    image: 'https://picsum.photos/500',
+    title: 'Tesla',
+    name: 'TSLA',
+    val: -0.23,
   },
 ];

@@ -2,13 +2,8 @@ import React from 'react';
 import {Text, View, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 //custom styles
-import {investmentStyles, cryptoStyles} from '../../styles/investment';
 import {globalStyles} from '../../styles/global';
 import {colors} from '../../styles/colors';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 
 export const BubbleButton = props => {
   return (
@@ -60,13 +55,13 @@ export const BlackRoundButton = props => {
           height: 20,
           backgroundColor: 'transparent',
           borderRadius: 4,
+          marginRight: 16,
         }}
       />
       <Text
         style={{
           fontFamily: 'SF UI Display',
           color: '#fff',
-          marginLeft: 5,
           fontSize: 16,
         }}>
         {props.title}

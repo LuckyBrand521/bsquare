@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   Text,
   View,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import styled from 'styled-components';
@@ -18,6 +19,7 @@ import {
   CryptoPortfolioPanel,
   CryptoHistoryPanel,
 } from '../../components/Gadgets';
+import {AnalysisTag} from '../../components/AnalysisTag';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
@@ -44,9 +46,15 @@ const GrayLabel = styled.Text`
 `;
 
 function CryptoHomeScreen({navigation}) {
+  const [analData, setAnalData] = useState([
+    {label: '24H Change', red: true, value: '-1.2%'},
+    {label: 'Total Value', red: false, value: '$5,000'},
+    {label: 'P/L', red: false, value: '+12%'},
+  ]);
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
+
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
@@ -60,31 +68,13 @@ function CryptoHomeScreen({navigation}) {
         <View>
           <Text style={{alignSelf: 'center'}} />
           <LottieView
-            source={require('../../assets/animations/24693-coin-falling-animation.json')}
+            source={require('../../assets/animations/crypto/increase 3 coin full.json')}
             autoPlay
-            loop
+            // loop={true}
             style={{height: 200, alignSelf: 'center'}}
+            speed={0.5}
           />
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">24H Change</GrayLabel>
-              <BrandColorLabel bold height={25} red value="-1.2%" />
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">Total Value</GrayLabel>
-              <BrandColorLabel
-                bold
-                height={25}
-                red={false}
-                green
-                value="$5,000"
-              />
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">P/L</GrayLabel>
-              <BrandColorLabel bold height={25} green value="+12%" />
-            </View>
-          </View>
+          <AnalysisTag items={analData} />
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
@@ -116,6 +106,7 @@ function CryptoHomeScreen({navigation}) {
           </View>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginBottom: 10}}>
             {newsList.map((item, index) => {
               return (
@@ -142,6 +133,7 @@ function CryptoHomeScreen({navigation}) {
           </View>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginBottom: 10}}>
             <CryptoSimilarCard
               coinImage={require('../../assets/images/btc_icon.png')}
@@ -178,27 +170,14 @@ function CryptoHomeScreen({navigation}) {
         <View>
           <PanelTitle title="Upcoming Earnings" />
           <Text />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 16,
-              borderTopWidth: 1,
-              borderColor: '#EBEFF1',
-              paddingVertical: 12,
-            }}>
+          <View style={styles.upcomingEarning}>
             <Text style={{color: '#83899D'}}>ADA Hard Fork</Text>
             <Text>7 Days</Text>
           </View>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: 16,
-              borderTopWidth: 1,
+              ...styles.upcomingEarning,
               borderBottomWidth: 1,
-              borderColor: '#EBEFF1',
-              paddingVertical: 12,
             }}>
             <Text style={{color: '#83899D'}}>ETH New Updates</Text>
             <Text>10 Days</Text>
@@ -209,3 +188,14 @@ function CryptoHomeScreen({navigation}) {
   );
 }
 export default CryptoHomeScreen;
+
+const styles = StyleSheet.create({
+  upcomingEarning: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 16,
+    borderTopWidth: 1,
+    borderColor: '#EBEFF1',
+    paddingVertical: 12,
+  },
+});

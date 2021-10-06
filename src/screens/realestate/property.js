@@ -8,28 +8,14 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import MapView, {Marker, Geojson} from 'react-native-maps';
 import styled from 'styled-components';
 //custom components
-import {BlackRoundButton} from '../../components/BubbleButton';
+import {GreenMap} from '../../components/Map';
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
-import {
-  NewsCard,
-  CryptoSimilarCard,
-  RealEstatePropertyCard,
-} from '../../components/Card';
+import {RealEstatePropertyCard} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
-import {
-  EstatePropertyPanel,
-  EstateHistoryPanel,
-  EstateNewArrivalPanel,
-} from '../../components/Card/cardpanels';
-import {
-  BrandColorLabel,
-  CryptoPortfolioPanel,
-  CryptoHistoryPanel,
-  InvestmentStatusOveriew,
-} from '../../components/Gadgets';
+
+import {AnalysisTag} from '../../components/AnalysisTag';
 
 //custom styles
 import {investmentStyles} from '../../styles/investment';
@@ -52,12 +38,24 @@ const GrayLabel = styled.Text`
   margin-top: 4px;
   padding: 4px;
 `;
+
+const initialRegion = {
+  latitude: 25.276987,
+  longitude: 55.296249,
+  latitudeDelta: 100,
+  longitudeDelta: 50,
+};
 const markers = [
   {latitude: 51.063202, longitude: -1.308},
   {latitude: 25.234381, longitude: 55.26157},
   {latitude: 46.003677, longitude: 8.951052},
 ];
 function RealEstatePropertyScreen({navigation}) {
+  const [analData, setAnalData] = useState([
+    {label: 'Number of Investments', red: false, value: '3'},
+    {label: 'Total Value', red: false, value: '$5,000'},
+    {label: 'P/L', red: false, value: '+12%'},
+  ]);
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
@@ -69,42 +67,14 @@ function RealEstatePropertyScreen({navigation}) {
           navigation.navigate('RealEstateHomeScreen');
         }}
       />
-
       <ScrollView>
         <SectionTitle title="Real Estate" fontSize={30} />
-        <View>
-          <MapView
-            // style={{height: 240, width: '100%'}}
-            style={styles.map}
-            mapType="satellite"
-            initialRegion={{
-              latitude: 25.276987,
-              longitude: 55.296249,
-              latitudeDelta: 100,
-              longitudeDelta: 50,
-            }}>
-            {markers.map((marker, index) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: marker.latitude,
-                  longitude: marker.longitude,
-                }}
-              />
-            ))}
-          </MapView>
-        </View>
+        <GreenMap initialRegion={initialRegion} markers={markers} />
+
         <View style={{backgroundColor: 'white'}}>
           <Text style={{alignSelf: 'center'}} />
 
-          <InvestmentStatusOveriew
-            label1="Number of Investments"
-            value1={3}
-            label2="Total Value"
-            value2={5000}
-            label3="P/L"
-            value3={12}
-          />
+          <AnalysisTag items={analData} />
         </View>
 
         <View style={{marginTop: 32}}>
@@ -137,18 +107,3 @@ function RealEstatePropertyScreen({navigation}) {
   );
 }
 export default RealEstatePropertyScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-  },
-  map: {
-    height: 250,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    marginBottom: -30,
-  },
-});

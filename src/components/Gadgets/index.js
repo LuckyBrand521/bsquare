@@ -51,11 +51,7 @@ export const BrandColorLabel = props => {
       style={{
         width: 46,
         height: props.height ? props.height : 20,
-        backgroundColor: props.red
-          ? '#E45A28'
-          : props.green
-          ? '#5AC53A'
-          : '#fff',
+        backgroundColor: props.red ? '#E45A28' : '#5AC53A',
         alignItems: 'center',
         borderRadius: 6,
         justifyContent: 'center',
@@ -291,6 +287,86 @@ export const CryptoPerformanceRow = props => {
       </View>
     </View>
   );
+};
+
+export const StockPortfolioPanel = props => {
+  const itemLength = props.items.length;
+  return props.items.map((item, index) => {
+    return (
+      <View
+        key={index}
+        style={{
+          flexDirection: 'row',
+          marginHorizontal: 16,
+          paddingBottom: 16,
+          borderBottomColor:
+            itemLength === index + 1 ? 'transparent' : '#EBEFF1',
+          borderBottomWidth: itemLength === index + 1 ? 0 : 1,
+        }}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              marginTop: 16,
+              marginBottom: 6,
+              borderRadius: 100,
+              borderWidth: 0,
+              borderColor: '#111',
+              // elevation: 20,
+              shadowColor: '#000',
+              shadowOffset: {width: 0, height: 2},
+              shadowOpacity: 0.8,
+              shadowRadius: 2,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                props.onPress('StockDetailScreen');
+              }}>
+              <Image
+                source={item.coinImage}
+                style={{
+                  width: 45,
+                  height: 45,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={{fontSize: 12, fontWeight: '400', color: '#83899D'}}>
+            {item.name}
+          </Text>
+        </View>
+        <View style={{flex: 5, flexDirection: 'row'}}>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <GrayLabel textColor="#83899D">Quantity</GrayLabel>
+            <Text>{item.quantity}</Text>
+          </View>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <GrayLabel textColor="#83899D">Bought for</GrayLabel>
+            <BrandColorLabel red value={`$${item.bought}`} />
+          </View>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <GrayLabel textColor="#83899D">Current Price</GrayLabel>
+            <BrandColorLabel
+              green={item.price > item.bought ? true : false}
+              red={item.price < item.bought ? true : false}
+              value={`$${item.price}`}
+            />
+          </View>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <GrayLabel textColor="#83899D">P/L</GrayLabel>
+            <BrandColorLabel
+              green={item.pl > 0 ? true : false}
+              red={item.pl < 0 ? true : false}
+              value={`${item.pl}%`}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  });
 };
 
 export const CheckMarker = props => {

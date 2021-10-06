@@ -34,6 +34,9 @@ import {
   BrandColorLabel,
   CryptoPerformanceRow,
 } from '../../components/Gadgets';
+import {AnalystRatings} from '../../components/Chart';
+import {AnalysisTag} from '../../components/AnalysisTag';
+import {RollingNumber} from '../../components/Inputs';
 //custom styles
 import {investmentStyles, cryptoStyles} from '../../styles/investment';
 
@@ -66,10 +69,15 @@ const CryptoDetailScreen = ({navigation}) => {
   const [cryptoName, setCryptoName] = useState('BTC');
   const [chartData, setChartData] = useState(genChartData(48));
   const [chartSlotIndex, setChartSlotIndex] = useState(1);
-  // const [cryptoPrice, setCryptoPrice] = useState(chartData[chartData.length - 1]);
+
   const [cryptoPrice, setCryptoPrice] = useState(
     chartData[chartData.length - 1],
   );
+  const [analData, setAnalData] = useState([
+    {label: '24H Change', red: true, value: '-1.2%'},
+    {label: 'Total Value', red: false, value: '$5,000'},
+    {label: 'P/L', red: false, value: '+12%'},
+  ]);
   const touch = useRef(new Animated.ValueXY({x: -2, y: 0})).current;
   const handleChartScope = index => {
     setChartSlotIndex(index);
@@ -129,7 +137,7 @@ const CryptoDetailScreen = ({navigation}) => {
             }}>
             $
           </Text>
-          <TextInput
+          {/* <TextInput
             style={{
               fontFamily: 'HelveticaNeueCyr',
               fontSize: 30,
@@ -146,7 +154,8 @@ const CryptoDetailScreen = ({navigation}) => {
                 ? priceEl.current.text
                 : ''
             }
-          />
+          /> */}
+          <RollingNumber val={cryptoPrice} />
         </View>
         <ProfitLabel
           customStyle={{marginLeft: 16, marginTop: 10}}
@@ -164,10 +173,11 @@ const CryptoDetailScreen = ({navigation}) => {
                 // y: event.nativeEvent.locationY,
                 y: chartData[xIndex],
               });
-              if (priceEl.current) {
-                priceEl.current.text = chartData[xIndex];
-                priceEl.current.setNativeProps({text: chartData[xIndex]});
-              }
+              // if (priceEl.current) {
+              //   priceEl.current.text = chartData[xIndex];
+              //   priceEl.current.setNativeProps({text: chartData[xIndex]});
+              // }
+              setCryptoPrice(chartData[xIndex]);
             }}
             onResponderRelease={event => {
               touch.setValue({
@@ -348,29 +358,7 @@ const CryptoDetailScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={{justifyContent: 'center'}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">24H Change</GrayLabel>
-              <BrandColorLabel bold height={25} red value="-1.2%" />
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">Total Value</GrayLabel>
-              <BrandColorLabel
-                bold
-                height={25}
-                red={false}
-                green
-                value="$5,000"
-              />
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <GrayLabel textColor="#2A2E3B">P/L</GrayLabel>
-              <BrandColorLabel bold height={25} green value="+12%" />
-            </View>
-          </View>
-        </View>
+        <AnalysisTag items={analData} />
         <View style={{marginTop: 16}}>
           <PanelTitle title="Performance" />
           {cryptoPerformanceList.map((item, index) => {
@@ -396,6 +384,7 @@ const CryptoDetailScreen = ({navigation}) => {
           </View>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginBottom: 10}}>
             {newsList.map((item, index) => {
               return (
@@ -413,67 +402,11 @@ const CryptoDetailScreen = ({navigation}) => {
             })}
           </ScrollView>
         </View>
-        <View style={{marginTop: 16}}>
-          <PanelTitle title="Analyst Rating" />
-          <View>
-            <View style={cryptoStyles.analystContainer}>
-              <View style={{width: '20%', justifyContent: 'center'}}>
-                <Pie
-                  radius={36}
-                  innerRadius={32}
-                  sections={[
-                    {
-                      percentage: 60,
-                      color: '#5AC53A',
-                    },
-                  ]}
-                  backgroundColor="#ddd"
-                />
-                <View style={cryptoStyles.percentLabel}>
-                  <Text style={{color: '#5AC53A', fontSize: 24}}>
-                    60<Text style={{color: '#5AC53A', fontSize: 13}}>%</Text>
-                  </Text>
-                  <Text style={{color: '#5AC53A', fontSize: 13}}>BUY</Text>
-                </View>
-              </View>
-              <View style={{width: '75%'}}>
-                <CustomProgressBar
-                  val={0.6}
-                  color="#5AC53A"
-                  text="60% Buy"
-                  width={180}
-                />
-                <CustomProgressBar
-                  val={0.12}
-                  color="#2A2E3B"
-                  text="12% Hold"
-                  width={180}
-                />
-                <CustomProgressBar
-                  val={0.28}
-                  color="#E45A28"
-                  text="28% Sell"
-                  width={180}
-                />
-              </View>
-            </View>
-            <ScrollView
-              horizontal={true}
-              style={{paddingBottom: 10, marginBottom: 10}}>
-              {analList.map((item, index) => {
-                return (
-                  <AnalCard
-                    title={item.title}
-                    content={item.content}
-                    key={item.id}
-                    width={270}
-                    onPress={() => refRBSheet1.current.open()}
-                  />
-                );
-              })}
-            </ScrollView>
-          </View>
-        </View>
+        <AnalystRatings
+          title="Analyst Ratings"
+          values={{buy: 60, hold: 12, sell: 28}}
+          analList={analList}
+        />
         <View>
           <PanelTitle title="About BTC" />
           <Paragraph style={cryptoStyles.paragraphStyle}>
@@ -541,8 +474,24 @@ const CryptoDetailScreen = ({navigation}) => {
         buyRef={refRBSheet3}
         sellRef={refRBSheet1}
       />
-      <TradingCheckoutOrder parentRef={refRBSheet3} reviewRef={refRBSheet4} />
-      <TradingReceipt parentRef={refRBSheet4} completeRef={refRBSheet5} />
+      <TradingCheckoutOrder
+        parentRef={refRBSheet3}
+        item={{
+          name: 'Bitcoin',
+          label: 'BTC',
+          image: require('../../assets/images/btc_icon.png'),
+        }}
+        reviewRef={refRBSheet4}
+      />
+      <TradingReceipt
+        parentRef={refRBSheet4}
+        item={{
+          name: 'Bitcoin',
+          label: 'BTC',
+          image: require('../../assets/images/btc_icon.png'),
+        }}
+        completeRef={refRBSheet5}
+      />
       <PurchaseComplete
         parentRef={refRBSheet5}
         bottomCaption="Back to Crypto"

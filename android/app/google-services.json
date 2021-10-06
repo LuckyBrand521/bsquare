@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "17593016944",
+    "project_id": "bsquare-327014",
+    "storage_bucket": "bsquare-327014.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17593016944:android:da3ff5a05ef6ad51be0ab5",
+        "android_client_info": {
+          "package_name": "com.bsquare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17593016944-8lmd9413qhprlh3h835e2ti41089b928.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJHBxCxT2AktDJCHZ-LDY4WHDhU11PJm4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17593016944-8lmd9413qhprlh3h835e2ti41089b928.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

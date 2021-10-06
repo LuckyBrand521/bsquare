@@ -354,9 +354,8 @@ export const RealEstateNewCard = props => {
 export const RealEstateDocumentCard = props => {
   return (
     <TouchableOpacity style={styles.documentPinStyle}>
-      <Text>
-        <Icon name="paperclip" size={20} />
-        {props.name}
+      <Text style={{color: colors.tn, fontWeight: 'bold'}}>
+        <Icon name="paperclip" size={14} color={colors.tn} /> {props.name}
       </Text>
     </TouchableOpacity>
   );

@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
@@ -12,32 +11,19 @@ import styled from 'styled-components';
 //custom components
 import {BlackRoundButton} from '../../components/BubbleButton';
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
-import {NewsCard, CryptoSimilarCard} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
 import {
   EstatePropertyPanel,
   EstateHistoryPanel,
   EstateNewArrivalPanel,
 } from '../../components/Card/cardpanels';
-import {
-  BrandColorLabel,
-  CryptoPortfolioPanel,
-  CryptoHistoryPanel,
-  InvestmentStatusOveriew,
-} from '../../components/Gadgets';
+import {InvestmentStatusOveriew} from '../../components/Gadgets';
+import {AnalysisTag} from '../../components/AnalysisTag';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
 //test data
 import {
-  newsList,
-  cryptoPortfolioList,
-  cryptoHistoryList,
   realestatePropertyList,
   realestateHistoryList,
   realestateArrivalList,
@@ -54,6 +40,11 @@ const GrayLabel = styled.Text`
 `;
 
 function RealEstateHomeScreen({navigation}) {
+  const [analData, setAnalData] = useState([
+    {label: 'Number of Investments', red: false, value: '3'},
+    {label: 'Total Value', red: false, value: '$5,000'},
+    {label: 'P/L', red: false, value: '+12%'},
+  ]);
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
@@ -79,14 +70,7 @@ function RealEstateHomeScreen({navigation}) {
             loop
             style={{height: 200, alignSelf: 'center'}}
           />
-          <InvestmentStatusOveriew
-            label1="Number of Investments"
-            value1={3}
-            label2="Total Value"
-            value2={5000}
-            label3="P/L"
-            value3={12}
-          />
+          <AnalysisTag items={analData} />
         </View>
         <BlackRoundButton
           iconUrl={require('../../assets/icons/swipe.png')}
@@ -103,7 +87,12 @@ function RealEstateHomeScreen({navigation}) {
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
           </View>
-          <EstatePropertyPanel properties={realestatePropertyList} />
+          <EstatePropertyPanel
+            properties={realestatePropertyList}
+            onPress={() => {
+              navigation.navigate('RealEstateDetailScreen');
+            }}
+          />
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>

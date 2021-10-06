@@ -169,10 +169,10 @@ export const TradingCheckoutOrder = props => {
           globalStyles.alc,
         ]}>
         <ProductHorizon
-          coinImage={require('../../assets/images/btc_icon.png')}
-          imageWidth={45}
-          coinName="Bitcoin"
-          coinLabel="BTC"
+          coinImage={props.item.image}
+          imageWidth={props.imageWidth ? props.imageWidth : 45}
+          coinName={props.item.name}
+          coinLabel={props.item.label}
         />
         <Text style={globalStyles.labelB}>$3000</Text>
       </View>
@@ -232,11 +232,11 @@ export const TradingReceipt = props => {
       <Text style={[globalStyles.labelM, {alignSelf: 'center'}]}>Receipt</Text>
 
       <ProductVertical
-        coinImage={require('../../assets/images/btc_icon.png')}
-        imageWidth={64}
+        coinImage={props.item.image}
+        imageWidth={props.imageWidth ? props.imageWidth : 64}
         marginTop={72}
-        coinName="Bitcoin"
-        coinLabel="BTC"
+        coinName={props.item.name}
+        coinLabel={props.item.label}
       />
       <Text
         style={[

@@ -8,6 +8,7 @@ export const colors = {
   tn: '#2A2E3B',
   tr: '#5E9FDA',
   sheetBackColor: 'rgba(0,0,0,0.6)',
+  greenBackColor: 'rgba(90, 197, 58, 0.12)',
 };
 
 export const measures = {

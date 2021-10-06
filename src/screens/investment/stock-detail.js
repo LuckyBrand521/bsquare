@@ -26,6 +26,16 @@ import {SmallLine} from '../../components/SectionTitle';
 import {StockNewsCard, AnalCard, StockCard} from '../../components/Card';
 import {NavigationHeader, TrendViewHeader} from '../../components/Headers';
 import {CustomProgressBar} from '../../components/Gadgets';
+import {SmallBubbleChart, AnalystRatings} from '../../components/Chart';
+import {AboutPanel} from '../../components/TagPanel';
+import {RollingNumber} from '../../components/Inputs';
+import {
+  RatingStoryPopup,
+  TradingCheckoutFirst,
+  TradingCheckoutOrder,
+  TradingReceipt,
+  PurchaseComplete,
+} from '../../components/InvestCheckout';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
@@ -46,6 +56,11 @@ const genChartData = count => {
 
 const StockDetailScreen = ({navigation}) => {
   const priceEl = useRef();
+  const refRBSheet1 = useRef();
+  const refRBSheet2 = useRef();
+  const refRBSheet3 = useRef();
+  const refRBSheet4 = useRef();
+  const refRBSheet5 = useRef();
   const [stockName, setStockName] = useState('AAPL');
   const [chartData, setChartData] = useState(genChartData(48));
   const [chartSlotIndex, setChartSlotIndex] = useState(1);
@@ -76,16 +91,16 @@ const StockDetailScreen = ({navigation}) => {
     setStockPrice(chartData[chartData.length - 1]);
   };
 
-  const touch = useRef(new Animated.ValueXY({x: -2, y: 0})).current;
+  const touch = useRef(new Animated.ValueXY({x: -60, y: 0})).current;
   // const price = useRef(
   //   new Text.setValue({value: chartData[chartData.length - 1]}),
   // ).current;
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
-        title="Apple Stock"
+        title=""
         onPress={() => {
-          navigation.navigate('InvestmentHomeScreen');
+          navigation.navigate('StockHomeScreen');
         }}
       />
       <ScrollView>
@@ -115,24 +130,7 @@ const StockDetailScreen = ({navigation}) => {
             }}>
             $
           </Text>
-          <TextInput
-            style={{
-              fontFamily: 'HelveticaNeueCyr',
-              fontSize: 30,
-              fontWeight: '500',
-              paddingVertical: 0,
-              color: '#2A2E3B',
-            }}
-            editable={false}
-            ref={priceEl}
-            value={
-              stockPrice
-                ? stockPrice
-                : priceEl?.current?.text
-                ? priceEl.current.text
-                : ''
-            }
-          />
+          <RollingNumber val={stockPrice} />
         </View>
         <ProfitLabel
           customStyle={{marginLeft: 16, marginTop: 10}}
@@ -155,7 +153,7 @@ const StockDetailScreen = ({navigation}) => {
             onResponderMove={event => {
               const xIndex = parseInt(event.nativeEvent.locationX / 7);
               touch.setValue({
-                x: event.nativeEvent.locationX,
+                x: event.nativeEvent.locationX - 30,
                 // y: event.nativeEvent.locationY,
                 y: chartData[xIndex],
               });
@@ -163,14 +161,15 @@ const StockDetailScreen = ({navigation}) => {
               // priceEl.current.children[0] = chartData[xIndex];
               // price.setValue({value: chartData[xIndex]});
               // console.log(price);
-              if (priceEl.current) {
-                priceEl.current.text = chartData[xIndex];
-                priceEl.current.setNativeProps({text: chartData[xIndex]});
-              }
+              setStockPrice(chartData[xIndex]);
+              // if (priceEl.current) {
+              //   priceEl.current.text = chartData[xIndex];
+              //   priceEl.current.setNativeProps({text: chartData[xIndex]});
+              // }
             }}
             onResponderRelease={event => {
               touch.setValue({
-                x: -2,
+                x: -60,
                 y: 0,
               });
             }}>
@@ -218,10 +217,11 @@ const StockDetailScreen = ({navigation}) => {
             <Animated.View
               style={{
                 height: 220,
-                width: 1,
                 position: 'absolute',
+                top: -12,
                 left: touch.x,
                 justifyContent: 'center',
+                alignItems: 'center',
               }}>
               <Dash
                 dashThickness={1}
@@ -376,8 +376,8 @@ const StockDetailScreen = ({navigation}) => {
             iconUrl={require('../../assets/icons/watch_icon.png')}
           />
         </View>
-        <PanelTitle title="Stats" />
         <View style={styles.statsView}>
+          <PanelTitle title="Stats" />
           <View style={styles.flexRow}>
             <SmallLine
               title="Open"
@@ -449,194 +449,38 @@ const StockDetailScreen = ({navigation}) => {
             />
           </View>
         </View>
-
-        <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-          <PanelTitle title="News" />
-          <TouchableOpacity>
-            <Text style={investmentStyles.greenLabel}>Show more</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{marginVertical: 20}}>
-          {newsList.map((item, index) => {
-            return (
-              <StockNewsCard
-                title={item.title}
-                content={item.content}
-                uri={item.image}
-                key={item.id}
-                newsHour={item.hour}
-                lightHave={item.light}
-              />
-            );
-          })}
-        </View>
-
-        <PanelTitle title="43 Analyst Ratings" />
         <View>
-          <View style={styles.analystContainer}>
-            <View style={{width: '20%', justifyContent: 'center'}}>
-              <Pie
-                radius={36}
-                innerRadius={32}
-                sections={[
-                  {
-                    percentage: 74,
-                    color: '#5AC53A',
-                  },
-                ]}
-                backgroundColor="#ddd"
-              />
-              <View style={styles.percentLabel}>
-                <Text style={{color: '#5AC53A', fontSize: 24}}>
-                  74<Text style={{color: '#5AC53A', fontSize: 13}}>%</Text>
-                </Text>
-                <Text style={{color: '#5AC53A', fontSize: 13}}>BUY</Text>
-              </View>
-            </View>
-            <View style={{width: '75%'}}>
-              <CustomProgressBar
-                val={0.74}
-                color="#5AC53A"
-                text="74% Buy"
-                width={180}
-              />
-              <CustomProgressBar
-                val={0.21}
-                color="#2A2E3B"
-                text="21% Hold"
-                width={180}
-              />
-              <CustomProgressBar
-                val={0.05}
-                color="#E45A28"
-                text="5% Sell"
-                width={180}
-              />
-            </View>
+          <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
+            <PanelTitle title="News" />
+            <TouchableOpacity>
+              <Text style={investmentStyles.greenLabel}>Show more</Text>
+            </TouchableOpacity>
           </View>
-          <ScrollView
-            horizontal={true}
-            style={{paddingBottom: 10, marginBottom: 10}}>
-            {analList.map((item, index) => {
+          <View style={{marginVertical: 20}}>
+            {newsList.map((item, index) => {
               return (
-                <AnalCard
+                <StockNewsCard
                   title={item.title}
                   content={item.content}
+                  uri={item.image}
                   key={item.id}
-                  width={270}
+                  newsHour={item.hour}
+                  lightHave={item.light}
                 />
               );
             })}
-          </ScrollView>
-        </View>
-        <PanelTitle title="Earnings" />
-        <View style={styles.earningChart}>
-          <View style={{flex: 1}}>
-            <Text style={styles.earningChartYaxis}>1.78</Text>
-            <Text style={styles.earningChartYaxis}>1.39</Text>
-            <Text style={styles.earningChartYaxis}>0.99</Text>
-            <Text style={styles.earningChartYaxis}>0.60</Text>
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{height: 180}}>
-              <Text style={{...styles.actualEPSStyle, top: 150}} />
-              <Text
-                style={{
-                  ...styles.actualEPSStyle,
-                  top: 140,
-                  backgroundColor: 'rgba( 90,197,58, 0.4 )',
-                }}
-              />
-            </View>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
-              Q4
-            </Text>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
-              FY20
-            </Text>
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{height: 180}}>
-              <Text style={{...styles.actualEPSStyle, top: 40}} />
-              <Text
-                style={{
-                  ...styles.actualEPSStyle,
-                  top: 60,
-                  backgroundColor: 'rgba( 90,197,58, 0.4 )',
-                }}
-              />
-            </View>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
-              Q1
-            </Text>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
-              FY21
-            </Text>
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{height: 180}}>
-              <Text style={{...styles.actualEPSStyle, top: 60}} />
-              <Text
-                style={{
-                  ...styles.actualEPSStyle,
-                  top: 90,
-                  backgroundColor: 'rgba( 90,197,58, 0.4 )',
-                }}
-              />
-            </View>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
-              Q2
-            </Text>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
-              FY21
-            </Text>
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{height: 180}}>
-              <Text style={{...styles.actualEPSStyle, top: 70}} />
-              <Text
-                style={{
-                  ...styles.actualEPSStyle,
-                  top: 80,
-                  backgroundColor: 'rgba( 90,197,58, 0.4 )',
-                }}
-              />
-            </View>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
-              Q3
-            </Text>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
-              FY21
-            </Text>
-          </View>
-          <View style={{flex: 1}}>
-            <View style={{height: 180}} />
-            <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
-              Q4
-            </Text>
-            <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
-              FY21
-            </Text>
           </View>
         </View>
-        <View
-          style={{flexDirection: 'row', marginTop: 30, marginHorizontal: 16}}>
-          <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
-            <Text>Expected EPS </Text>
-            <Text style={styles.greenBubble} />
-          </View>
-          <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontWeight: 'bold', color: 'rgba( 90,197,58, 1 )'}}>
-              Actual EPS{' '}
-            </Text>
-            <Text
-              style={{
-                ...styles.greenBubble,
-                backgroundColor: 'rgba( 90,197,58, 0.4)',
-              }}
-            />
-          </View>
+        <AnalystRatings
+          title="43 Analyst Ratings"
+          values={{buy: 74, hold: 21, sell: 5}}
+          analList={analList}
+        />
+        <View>
+          <PanelTitle title="Earnings" />
+          <SmallBubbleChart yAxis={[0.6, 0.99, 1.39, 1.78]} />
         </View>
+
         <View
           style={{flexDirection: 'row', marginTop: 30, marginHorizontal: 16}}>
           <View style={{flex: 3, textAlign: 'left'}}>
@@ -647,13 +491,13 @@ const StockDetailScreen = ({navigation}) => {
             <Text style={{fontSize: 16}}>After-Hours</Text>
           </View>
         </View>
-        <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-          <PanelTitle title="People Also Bought" />
-          <TouchableOpacity>
-            <Text style={investmentStyles.greenLabel}>See all</Text>
-          </TouchableOpacity>
-        </View>
         <View>
+          <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
+            <PanelTitle title="People Also Bought" />
+            <TouchableOpacity>
+              <Text style={investmentStyles.greenLabel}>See all</Text>
+            </TouchableOpacity>
+          </View>
           <Paragraph style={styles.paragraphStyle}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
             pharetra porta commodo, maecenas quam. Pretium gravida mattis
@@ -661,6 +505,7 @@ const StockDetailScreen = ({navigation}) => {
           </Paragraph>
           <ScrollView
             horizontal={true}
+            showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginVertical: 20}}>
             {stockList.map((item, index) => {
               return (
@@ -678,57 +523,8 @@ const StockDetailScreen = ({navigation}) => {
             })}
           </ScrollView>
         </View>
-        <PanelTitle title="About The Company" />
         <View>
-          <Paragraph style={styles.paragraphStyle}>
-            Apple Inc. is an American multinational technology company that
-            specializes in consumer electronics, computer software, and online
-            services. Apple is the world's largest technology company by revenue
-            and, since January 2021, the world's most valuable company.
-          </Paragraph>
-          <TouchableOpacity>
-            <Text style={styles.readMore}>Read more</Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              marginHorizontal: 16,
-              marginVertical: 12,
-              borderTopWidth: 1,
-              borderColor: '#EBEFF1',
-            }}>
-            <SmallLine
-              title="CEO"
-              value="Timothy Donald Cook"
-              titleSize={13}
-              valueSize={13}
-              bottomBorder
-            />
-            <SmallLine
-              title="Headquarters"
-              value="Cupertino, California"
-              titleSize={13}
-              valueSize={13}
-              bottomBorder
-            />
-            <View style={styles.flexRow}>
-              <SmallLine
-                title="Founded"
-                value="1976"
-                titleSize={13}
-                valueSize={13}
-                width="45%"
-                bottomBorder
-              />
-              <SmallLine
-                title="Employees"
-                value="147 000"
-                titleSize={13}
-                valueSize={13}
-                width="45%"
-                bottomBorder
-              />
-            </View>
-          </View>
+          <AboutPanel title="About The Company" />
         </View>
         <View style={{height: 100}} />
       </ScrollView>
@@ -739,12 +535,41 @@ const StockDetailScreen = ({navigation}) => {
           </Text>
           <Text style={{fontSize: 13, fontWeight: '400'}}>54,381,175</Text>
         </View>
-        <TouchableOpacity style={styles.tradeBtn}>
+        <TouchableOpacity
+          style={styles.tradeBtn}
+          onPress={() => {
+            refRBSheet2.current.open();
+          }}>
           <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>
             Trade
           </Text>
         </TouchableOpacity>
       </View>
+      <RatingStoryPopup parentRef={refRBSheet1} />
+      <TradingCheckoutFirst
+        parentRef={refRBSheet2}
+        buyRef={refRBSheet3}
+        sellRef={refRBSheet1}
+      />
+      <TradingCheckoutOrder
+        parentRef={refRBSheet3}
+        item={{
+          name: 'Apple Stock',
+          label: 'AAPL',
+          image: require('../../assets/images/apple_stock.png'),
+        }}
+        reviewRef={refRBSheet4}
+      />
+      <TradingReceipt
+        parentRef={refRBSheet4}
+        item={{
+          name: 'Apple Stock',
+          label: 'AAPL',
+          image: require('../../assets/images/apple_stock.png'),
+        }}
+        completeRef={refRBSheet5}
+      />
+      <PurchaseComplete parentRef={refRBSheet5} bottomCaption="Back to Stock" />
     </SafeAreaView>
   );
 };
@@ -776,30 +601,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  analystContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 16,
-    width: wp(100) - 32,
-    marginVertical: 20,
-    alignItems: 'center',
-  },
-  percentLabel: {
-    position: 'absolute',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   paragraphStyle: {
     fontSize: 13,
     lineHeight: 20,
     paddingHorizontal: 16,
-  },
-  readMore: {
-    fontSize: 13,
-    color: '#5E9FDA',
-    marginLeft: 16,
-    marginTop: 10,
   },
   fixedBottomBtn: {
     position: 'absolute',

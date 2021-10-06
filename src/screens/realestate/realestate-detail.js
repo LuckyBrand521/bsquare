@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import {
   Text,
   View,
@@ -11,6 +11,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
+import {ProgressBar} from 'react-native-paper';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import MapView, {Marker, Geojson} from 'react-native-maps';
 import styled from 'styled-components';
@@ -23,7 +24,10 @@ import {
   RealEstatePropertyCard,
 } from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
-import {HighlightPanel} from '../../components/Card/cardpanels';
+import {
+  HighlightPanel,
+  EstateDocumentPanel,
+} from '../../components/Card/cardpanels';
 import {
   RealEstateDetailCard,
   ReadMorePanel,
@@ -32,11 +36,19 @@ import {
 } from '../../components/Card/detailcard';
 import {
   BrandColorLabel,
+  CustomProgressBar,
   CryptoPortfolioPanel,
   CryptoHistoryPanel,
   InvestmentStatusOveriew,
 } from '../../components/Gadgets';
 import {ImageGallery} from '../../components/ImageGallery';
+import {
+  RatingStoryPopup,
+  TradingCheckoutFirst,
+  TradingCheckoutOrder,
+  TradingReceipt,
+  PurchaseComplete,
+} from '../../components/InvestCheckout';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 import {globalStyles} from '../../styles/global';
@@ -55,6 +67,7 @@ import {
   realestatePropertyList,
   realestateHistoryList,
   realestateHighlightList,
+  realestateDocumentList,
   realestateArrivalList,
 } from '../../store/datalist';
 
@@ -73,6 +86,11 @@ const markers = [
   {latitude: 46.003677, longitude: 8.951052},
 ];
 function RealEstateDetailScreen({navigation}) {
+  const refRBSheet1 = useRef();
+  const refRBSheet2 = useRef();
+  const refRBSheet3 = useRef();
+  const refRBSheet4 = useRef();
+  const refRBSheet5 = useRef();
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
@@ -154,8 +172,64 @@ function RealEstateDetailScreen({navigation}) {
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity> */}
           </View>
+          <EstateDocumentPanel items={realestateDocumentList} />
         </View>
       </ScrollView>
+      <View style={investmentStyles.fixedBottomBtn}>
+        <View>
+          <Text style={{fontSize: 13, fontWeight: 'bold', marginBottom: 6}}>
+            85% Funded
+          </Text>
+          <ProgressBar
+            progress={0.85}
+            color={colors.tn}
+            style={{
+              backgroundColor: '#EBEFF1',
+              height: 4,
+              width: 140,
+            }}
+          />
+        </View>
+        <TouchableOpacity
+          style={{...investmentStyles.tradeBtn, backgroundColor: '#5AC53A'}}
+          onPress={() => {
+            refRBSheet2.current.open();
+          }}>
+          <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>
+            Invest
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <RatingStoryPopup parentRef={refRBSheet1} />
+      <TradingCheckoutFirst
+        parentRef={refRBSheet2}
+        buyRef={refRBSheet3}
+        sellRef={refRBSheet1}
+      />
+      <TradingCheckoutOrder
+        parentRef={refRBSheet3}
+        item={{
+          name: 'London Apartment',
+          label: 'LNDN AP',
+          image: require('../../assets/icons/building_icon.png'),
+        }}
+        imageWidth={24}
+        reviewRef={refRBSheet4}
+      />
+      <TradingReceipt
+        parentRef={refRBSheet4}
+        item={{
+          name: 'London Apartment',
+          label: 'LNDN AP',
+          image: require('../../assets/icons/building_icon.png'),
+        }}
+        imageWidth={45}
+        completeRef={refRBSheet5}
+      />
+      <PurchaseComplete
+        parentRef={refRBSheet5}
+        bottomCaption="Back to Real Estate"
+      />
     </SafeAreaView>
   );
 }

@@ -23,11 +23,15 @@ import {
   RealEstatePropertyCard,
   RealEstateHistoryCard,
   RealEstateNewCard,
+  RealEstateDocumentCard,
 } from './index';
 
 export const EstatePropertyPanel = props => {
   return (
-    <ScrollView horizontal={true} style={{paddingBottom: 10, marginBottom: 10}}>
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={{paddingBottom: 10, marginBottom: 10}}>
       {props.properties.map((item, index) => {
         return (
           <RealEstatePropertyCard
@@ -43,6 +47,7 @@ export const EstatePropertyPanel = props => {
             boughtDate={item.boughtDate}
             plValue={`${item.plValue}%`}
             rioValue={`${item.rioValue}%`}
+            onPress={props.onPress}
           />
         );
       })}
@@ -52,7 +57,10 @@ export const EstatePropertyPanel = props => {
 
 export const EstateHistoryPanel = props => {
   return (
-    <ScrollView horizontal={true} style={{paddingBottom: 10, marginBottom: 10}}>
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={{paddingBottom: 10, marginBottom: 10}}>
       {props.histories.map((item, index) => {
         return (
           <RealEstateHistoryCard
@@ -75,7 +83,10 @@ export const EstateHistoryPanel = props => {
 
 export const EstateNewArrivalPanel = props => {
   return (
-    <ScrollView horizontal={true} style={{paddingBottom: 10, marginBottom: 10}}>
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={{paddingBottom: 10, marginBottom: 10}}>
       {props.arrivals.map((item, index) => {
         return (
           <RealEstateNewCard
@@ -95,19 +106,12 @@ export const EstateNewArrivalPanel = props => {
 
 export const EstateDocumentPanel = props => {
   return (
-    <ScrollView horizontal={true} style={{paddingBottom: 10, marginBottom: 10}}>
-      {props.arrivals.map((item, index) => {
-        return (
-          <RealEstateNewCard
-            uri={item.image}
-            key={index}
-            width={246}
-            imageWidth={226}
-            imageHeight={142}
-            title={item.title}
-            value={`$${item.value}`}
-          />
-        );
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={{paddingBottom: 10, marginBottom: 10}}>
+      {props.items.map((item, index) => {
+        return <RealEstateDocumentCard name={item.name} key={index} />;
       })}
     </ScrollView>
   );
