@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Text, View, Image} from 'react-native';
 import {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {Text, View, Image} from 'react-native';
 
 function SplashScreen({navigation}) {
   useEffect(() => {

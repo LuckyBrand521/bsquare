@@ -211,7 +211,7 @@ export const cryptoHistoryList = [
     bought: 700,
     sold: 400,
     price: 700,
-    pl: 7,
+    pl: 0.6,
     date: '9/1/21',
   },
 ];

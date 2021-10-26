@@ -106,7 +106,7 @@ export const investmentStyles = StyleSheet.create({
   },
   greenChartSlot: {
     color: '#67C431',
-    width: 46,
+    width: 50,
     marginHorizontal: 2,
     fontSize: 10,
     textAlign: 'center',
@@ -114,7 +114,7 @@ export const investmentStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   slotActive: {
-    width: 46,
+    width: 50,
     marginHorizontal: 2,
     fontSize: 10,
     backgroundColor: '#67C431',
@@ -167,6 +167,30 @@ export const investmentStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#fff',
+  },
+  boldLabel: {
+    fontFamily: 'Helvetica Neue',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  contentBetweenCenter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  contentBottom: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  roundImage: {
+    marginTop: 16,
+    marginBottom: 6,
+    borderRadius: 100,
+    borderWidth: 0,
+    borderColor: '#111',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

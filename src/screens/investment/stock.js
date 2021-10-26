@@ -1,4 +1,5 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import styled from 'styled-components';
+import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
 import {
@@ -32,13 +34,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 const {width, height} = Dimensions.get('window');
-//test data
 import {
-  newsList,
-  stockPortfolioList,
-  stockHistoryList,
-  stockList,
-} from '../../store/datalist';
+  calcCryptosDayChange,
+  updateCryptoNewsOnDB,
+  getStockNewsFromDB,
+  calcStockDayChange,
+} from '../../utils/utils';
+//test data
+import {stockHistoryList, stockList} from '../../store/datalist';
 
 const GrayLabel = styled.Text`
   color: ${props => props.textColor};
@@ -51,9 +54,42 @@ const GrayLabel = styled.Text`
 `;
 
 function StockHomeScreen({navigation}) {
+  const [loading, setLoading] = useState(true);
+  const [newsList, setNewsList] = useState([]);
+  const [stockPortfolioList, setStockPortfolioList] = useState([]);
+  const portfolio = useSelector(state => state.portfolios.stockPortfolio);
+  const userInfo = useSelector(state => state.portfolios.userInfo);
+  useEffect(() => {
+    let unmounted = false;
+    calcStockDayChange(userInfo.user_id, portfolio).then(data => {
+      setStockPortfolioList(data.current_portfolio);
+      getStockNewsFromDB('AAPL').then(res => {
+        setNewsList(res);
+        setLoading(false);
+      });
+      // getCryptoNewsFromDB('cryptocurrency').then(res => {
+      //   setNewsList(res);
+      //   if (!unmounted) {
+      //     setLoading(false);
+      //   }
+      // });
+    });
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={investmentStyles.container}>
+        <Spinner visible={loading} textContent={'Loading...'} />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
@@ -94,20 +130,20 @@ function StockHomeScreen({navigation}) {
         <View>
           <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
             <PanelTitle title="Related News" />
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>Show more</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={{marginVertical: 20}}>
             {newsList.map((item, index) => {
               return (
                 <StockNewsCard
-                  title={item.title}
-                  content={item.content}
-                  uri={item.image}
-                  key={item.id}
-                  newsHour={item.hour}
-                  lightHave={item.light}
+                  title={item.data().article.title}
+                  content={item.data().article.summary}
+                  uri={item.data().article.media}
+                  key={index}
+                  newsHour={Math.floor(Math.random() * 24) + 1}
+                  source={item.data().article.link}
                 />
               );
             })}

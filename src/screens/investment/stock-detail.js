@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Animated,
   Text,
@@ -18,6 +18,8 @@ import Pie from 'react-native-pie';
 import {Paragraph} from 'react-native-paper';
 import {LineChart} from 'react-native-chart-kit';
 import Dash from 'react-native-dash';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 //custom components
 import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
 import {BlackRoundButton} from '../../components/BubbleButton';
@@ -28,7 +30,7 @@ import {NavigationHeader, TrendViewHeader} from '../../components/Headers';
 import {CustomProgressBar} from '../../components/Gadgets';
 import {SmallBubbleChart, AnalystRatings} from '../../components/Chart';
 import {AboutPanel} from '../../components/TagPanel';
-import {RollingNumber} from '../../components/Inputs';
+import SVGLineChart from '../../components/LineChart';
 import {
   RatingStoryPopup,
   TradingCheckoutFirst,
@@ -44,6 +46,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {newsList, analList, stockList} from '../../store/datalist';
+import {getStockChartsFromRPD} from '../../utils/thirdapi';
 const {width, height} = Dimensions.get('window');
 
 const genChartData = count => {
@@ -56,6 +59,8 @@ const genChartData = count => {
 
 const StockDetailScreen = ({navigation}) => {
   const priceEl = useRef();
+  const [loading, setLoading] = useState(true);
+  const [graphData, setGraphData] = useState([]);
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
@@ -90,11 +95,29 @@ const StockDetailScreen = ({navigation}) => {
     }
     setStockPrice(chartData[chartData.length - 1]);
   };
+  useEffect(() => {
+    getStockChartsFromRPD('AAPL').then(res => {
+      setGraphData(res);
+      setLoading(false);
+      // getStockNewsFromDB('AAPL').then(res => {
+      //   setNewsList(res);
+      //   if (!unmounted) {
+      //     setLoading(false);
+      //   }
+    });
+  }, []);
 
   const touch = useRef(new Animated.ValueXY({x: -60, y: 0})).current;
   // const price = useRef(
   //   new Text.setValue({value: chartData[chartData.length - 1]}),
   // ).current;
+  if (loading) {
+    return (
+      <SafeAreaView style={investmentStyles.container}>
+        <Spinner visible={loading} textContent={'Loading...'} />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
@@ -104,253 +127,15 @@ const StockDetailScreen = ({navigation}) => {
         }}
       />
       <ScrollView>
-        <Text
-          style={{
-            marginLeft: 16,
-            fontSize: 16,
-            fontFamily: 'HelveticaNeueCyr',
-            marginVertical: 10,
-          }}>
-          {stockName}
-        </Text>
-        <TrendViewHeader
-          title="Apple"
-          source={require('../../assets/icons/candle.png')}
+        <SVGLineChart
+          graphData={graphData}
+          data={chartData}
+          width={wp('100%')}
+          height={220}
+          coinName="AAPL"
+          coinSlug="Apple"
+          type="stock"
         />
-        {/* <MoneyTitle title={stockPrice} /> */}
-        <View style={{flexDirection: 'row'}}>
-          <Text
-            style={{
-              marginLeft: 16,
-              fontFamily: 'HelveticaNeueCyr',
-              fontSize: 30,
-              fontWeight: '500',
-              paddingVertical: 0,
-              color: '#2A2E3B',
-            }}>
-            $
-          </Text>
-          <RollingNumber val={stockPrice} />
-        </View>
-        <ProfitLabel
-          customStyle={{marginLeft: 16, marginTop: 10}}
-          greenLabel="▲ $2.45 (1.2%)"
-          blackLabel="Today"
-        />
-        <View style={{justifyContent: 'center'}}>
-          <View
-            // onTouchStart={e => {
-            //   console.log('touchMove', e.nativeEvent);
-            // }}
-            // onTouchMove={e => {
-            //   const xIndex = parseInt(e.nativeEvent.locationX / 7);
-            //   setFingerLocation(parseInt(e.nativeEvent.locationX));
-            //   // console.log(chartData[xIndex]);
-            //   setStockPrice(chartData[xIndex]);
-            // }}
-            style={{marginVertical: 16}}
-            onStartShouldSetResponder={() => true}
-            onResponderMove={event => {
-              const xIndex = parseInt(event.nativeEvent.locationX / 7);
-              touch.setValue({
-                x: event.nativeEvent.locationX - 30,
-                // y: event.nativeEvent.locationY,
-                y: chartData[xIndex],
-              });
-              // priceEl.current.setValue({title: chartData[xIndex]});
-              // priceEl.current.children[0] = chartData[xIndex];
-              // price.setValue({value: chartData[xIndex]});
-              // console.log(price);
-              setStockPrice(chartData[xIndex]);
-              // if (priceEl.current) {
-              //   priceEl.current.text = chartData[xIndex];
-              //   priceEl.current.setNativeProps({text: chartData[xIndex]});
-              // }
-            }}
-            onResponderRelease={event => {
-              touch.setValue({
-                x: -60,
-                y: 0,
-              });
-            }}>
-            <LineChart
-              data={{
-                labels: [],
-                datasets: [
-                  {
-                    data: chartData,
-                  },
-                ],
-              }}
-              width={Dimensions.get('window').width} // from react-native
-              height={220}
-              chartConfig={{
-                backgroundColor: '#fff',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                decimalPlaces: 3, // optional, defaults to 2dp
-                color: (opacity = 1) => 'rgba(103, 196, 49, 1)',
-                // style: {
-                //   borderRadius: 0,
-                //   color: '#0f0',
-                // },
-                labelColor: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`,
-                propsForDots: {
-                  r: '1',
-                },
-                // propsForBackgroundLines: {strokeWidth: 0},
-                propsForVerticalLabels: false,
-                propsForBackgroundLines: {
-                  stroke: '#ffffff',
-                },
-                strokeWidth: 2,
-              }}
-              withHorizontalLabels={false}
-              // bezier
-              style={{
-                marginVertical: 8,
-                marginTop: 15,
-                borderRadius: 0,
-                paddingRight: 0,
-              }}
-            />
-            <Animated.View
-              style={{
-                height: 220,
-                position: 'absolute',
-                top: -12,
-                left: touch.x,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Dash
-                dashThickness={1}
-                dashColor="#999"
-                dashLength={2}
-                dashGap={0}
-                style={{
-                  width: 1,
-                  height: 180,
-                  flexDirection: 'column',
-                }}
-              />
-            </Animated.View>
-          </View>
-          <View
-            style={{
-              height: 1,
-              position: 'absolute',
-              top: '45%',
-              left: 0,
-            }}>
-            <Dash
-              dashThickness={1.5}
-              dashColor="#222"
-              dashLength={1.5}
-              dashGap={6}
-              style={{
-                height: 1,
-                flexDirection: 'row',
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginVertical: 16,
-              alignItems: 'center',
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(1);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 1
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  1D
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(2);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 2
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  1W
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(3);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 3
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  1M
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(4);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 4
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  3M
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(5);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 5
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  1Y
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(6);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 6
-                      ? styles.slotActive
-                      : styles.greenChartSlot
-                  }>
-                  All
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity>
-              <Icon
-                name="maximize-2"
-                style={{color: '#67C431', fontWeight: 'bold'}}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
         <PanelTitle title="In Portfolio" />
         <View style={investmentStyles.portfolioInfoContainer}>
           <SmallLine

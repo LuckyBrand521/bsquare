@@ -39,8 +39,8 @@ export default StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '400',
     marginLeft: 0,
-    lineHeight: 13,
     marginTop: 40,
+    lineHeight: 13,
     paddingLeft: 9,
   },
   earningCard: {

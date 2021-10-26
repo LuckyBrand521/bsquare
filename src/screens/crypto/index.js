@@ -1,4 +1,5 @@
 import React, {useState, useCallback, useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import styled from 'styled-components';
+import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
 import {NewsCard, CryptoSimilarCard} from '../../components/Card';
@@ -29,32 +31,61 @@ import {
 } from 'react-native-responsive-screen';
 const {width, height} = Dimensions.get('window');
 //test data
+import {cryptoHistoryList} from '../../store/datalist';
 import {
-  newsList,
-  cryptoPortfolioList,
-  cryptoHistoryList,
-} from '../../store/datalist';
-
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
+  calcCryptosDayChange,
+  updateCryptoNewsOnDB,
+  getCryptoNewsFromDB,
+} from '../../utils/utils';
+import {getCryptoNews} from '../../utils/thirdapi';
+import {getSimilarCryptosFromDB} from '../../utils/firestoreapi';
 
 function CryptoHomeScreen({navigation}) {
-  const [analData, setAnalData] = useState([
-    {label: '24H Change', red: true, value: '-1.2%'},
-    {label: 'Total Value', red: false, value: '$5,000'},
-    {label: 'P/L', red: false, value: '+12%'},
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [analData, setAnalData] = useState([]);
+  const [newsList, setNewsList] = useState([]);
+  const [cryptoPortfolioList, setCryptoPortfolioList] = useState([]);
+  const [similarCryptos, setSimilarCryptos] = useState([]);
+  const portfolio = useSelector(state => state.portfolios.cryptoPortfolio);
+  const userInfo = useSelector(state => state.portfolios.userInfo);
+  useEffect(() => {
+    let unmounted = false;
+    calcCryptosDayChange(userInfo.user_id, portfolio).then(data => {
+      setAnalData([
+        {
+          label: '24H Change',
+          red: data.daily_change > 0 ? false : true,
+          value: data.daily_change + '%',
+        },
+        {label: 'Total Value', red: false, value: '$' + data.total_value},
+        {label: 'P/L', red: false, value: data.profit + '%'},
+      ]);
+      setCryptoPortfolioList(data.current_portfolio);
+      getCryptoNewsFromDB('cryptocurrency').then(res => {
+        setNewsList(res);
+        if (!unmounted) {
+          setLoading(false);
+        }
+      });
+    });
+    getSimilarCryptosFromDB(portfolio).then(res => {
+      setSimilarCryptos(res);
+    });
+    return () => {
+      unmounted = true;
+    };
+  }, []);
   const goDetail = useCallback(screenName => {
     navigation.navigate(screenName);
   }, []);
 
+  if (loading) {
+    return (
+      <SafeAreaView style={investmentStyles.container}>
+        <Spinner visible={loading} textContent={'Loading...'} />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
@@ -68,9 +99,9 @@ function CryptoHomeScreen({navigation}) {
         <View>
           <Text style={{alignSelf: 'center'}} />
           <LottieView
-            source={require('../../assets/animations/crypto/increase 3 coin full.json')}
+            source={require('../../assets/animations/crypto/8-12coin.json')}
             autoPlay
-            // loop={true}
+            loop={false}
             style={{height: 200, alignSelf: 'center'}}
             speed={0.5}
           />
@@ -111,14 +142,15 @@ function CryptoHomeScreen({navigation}) {
             {newsList.map((item, index) => {
               return (
                 <NewsCard
-                  title={item.title}
-                  content={item.content}
-                  date={item.date}
-                  uri={item.image}
+                  title={item.data().article.title}
+                  content={item.data().article.summary}
+                  date={item.data().article.published_date}
+                  uri={item.data().article.media}
                   key={index}
                   width={246}
                   imageWidth={226}
                   imageHeight={158}
+                  source={item.data().article.link}
                 />
               );
             })}
@@ -135,36 +167,17 @@ function CryptoHomeScreen({navigation}) {
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginBottom: 10}}>
-            <CryptoSimilarCard
-              coinImage={require('../../assets/images/btc_icon.png')}
-              title="Bitcoin"
-              increment={40}
-              time={24}
-            />
-            <CryptoSimilarCard
-              coinImage={require('../../assets/images/hist-e.png')}
-              title="Bitcoin"
-              increment={40}
-              time={24}
-            />
-            <CryptoSimilarCard
-              coinImage={require('../../assets/images/eth_icon.png')}
-              title="Etherium"
-              increment={40}
-              time={24}
-            />
-            <CryptoSimilarCard
-              coinImage={require('../../assets/images/ada_icon.png')}
-              title="Ada"
-              increment={40}
-              time={24}
-            />
-            <CryptoSimilarCard
-              coinImage={require('../../assets/images/btc_icon.png')}
-              title="Bitcoin"
-              increment={40}
-              time={24}
-            />
+            {similarCryptos.map((item, index) => {
+              return (
+                <CryptoSimilarCard
+                  key={index}
+                  coinImage={`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`}
+                  title={item.name}
+                  increment={item.quote.USD.percent_change_24h.toFixed(2)}
+                  time={24}
+                />
+              );
+            })}
           </ScrollView>
         </View>
         <View>

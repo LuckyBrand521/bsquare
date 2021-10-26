@@ -1,4 +1,5 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
@@ -6,54 +7,53 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  LinearGradient,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import styled from 'styled-components';
+import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
-import {
-  StockNewsCard,
-  NewsCard,
-  CryptoSimilarCard,
-  StockCard,
-} from '../../components/Card';
+import {StockNewsCard, StockCard} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
-import {
-  BrandColorLabel,
-  CryptoPortfolioPanel,
-  CryptoHistoryPanel,
-  StockPortfolioPanel,
-} from '../../components/Gadgets';
+import {IdeaPortfolioPanel, CryptoHistoryPanel} from '../../components/Gadgets';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
-
+//apis for DB and thirdapi
+import {getIdeaPortfolioWithDetail} from '../../utils/utils';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
-//test data
-import {
-  newsList,
-  ideaPortfolioList,
-  ideaHistoryList,
-  ideaList,
-} from '../../store/datalist';
-
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
-
+  getCryptoNewsForIdeas,
+  getCryptoIdeaChartData,
+} from '../../utils/thirdapi';
+import {ideaHistoryList, ideaList} from '../../store/datalist';
 function IdeaHomeScreen({navigation}) {
-  const goDetail = useCallback(screenName => {
-    navigation.navigate('IdeaDetailScreen');
+  const [loading, setLoading] = useState(true);
+  const [ideaPortfolioList, setIdeaPortfolioList] = useState([]);
+  const [newsList, setNewsList] = useState([]);
+  const portfolio = useSelector(state => state.portfolios.ideaPortfolio);
+  const userInfo = useSelector(state => state.portfolios.userInfo);
+  const goDetail = useCallback(item => {
+    navigation.navigate('IdeaDetailScreen', {item: item});
   }, []);
+
+  useEffect(() => {
+    getIdeaPortfolioWithDetail(userInfo.user_id, portfolio).then(res => {
+      setIdeaPortfolioList(res);
+      // getCryptoIdeaChartData(res[0].ideaDetails.items).then(data => {
+      //   console.log('chartssssssssssssssssssssss', data);
+      // });
+      getCryptoNewsForIdeas(res).then(resList => {
+        setNewsList(resList);
+        setLoading(false);
+      });
+    });
+  }, []);
+  if (loading) {
+    return (
+      <SafeAreaView style={investmentStyles.container}>
+        <Spinner visible={loading} textContent={'Loading...'} />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
@@ -69,7 +69,7 @@ function IdeaHomeScreen({navigation}) {
           <LottieView
             source={require('../../assets/animations/idea.json')}
             autoPlay
-            loop
+            loop={false}
             style={{height: 240, alignSelf: 'center'}}
           />
         </View>
@@ -80,7 +80,10 @@ function IdeaHomeScreen({navigation}) {
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
           </View>
-          <StockPortfolioPanel onPress={goDetail} items={ideaPortfolioList} />
+          <IdeaPortfolioPanel
+            navigation={navigation}
+            items={ideaPortfolioList}
+          />
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
@@ -104,10 +107,11 @@ function IdeaHomeScreen({navigation}) {
                 <StockNewsCard
                   title={item.title}
                   content={item.content}
+                  source={item.source}
                   uri={item.image}
-                  key={item.id}
+                  key={index}
                   newsHour={item.hour}
-                  lightHave={item.light}
+                  lightHave={true}
                 />
               );
             })}

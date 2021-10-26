@@ -1,21 +1,21 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {
-  Animated,
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
-  TextInput,
 } from 'react-native';
+import {useSharedValue} from 'react-native-reanimated';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import styled from 'styled-components';
-import Icon from 'react-native-vector-icons/Feather';
-import Pie from 'react-native-pie';
 import {Paragraph} from 'react-native-paper';
-import {LineChart} from 'react-native-chart-kit';
-import Dash from 'react-native-dash';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 //custom components
 import {PanelTitle} from '../../components/SectionTitle';
 import {
@@ -25,30 +25,23 @@ import {
   TradingReceipt,
   PurchaseComplete,
 } from '../../components/InvestCheckout';
-import {ProfitLabel} from '../../components/ProfitLabel';
 import {SmallLine} from '../../components/SectionTitle';
-import {AnalCard, NewsCard} from '../../components/Card';
-import {NavigationHeader, TrendViewHeader} from '../../components/Headers';
-import {
-  CustomProgressBar,
-  BrandColorLabel,
-  CryptoPerformanceRow,
-} from '../../components/Gadgets';
+import {NewsCard} from '../../components/Card';
+import {NavigationHeader} from '../../components/Headers';
 import {AnalystRatings} from '../../components/Chart';
 import {AnalysisTag} from '../../components/AnalysisTag';
-import {RollingNumber} from '../../components/Inputs';
+import SVGLineChart from '../../components/LineChart';
+import CoinPerformanceView from '../../components/CoinPerformanceView';
 //custom styles
 import {investmentStyles, cryptoStyles} from '../../styles/investment';
 
-import {newsList, analList, cryptoPerformanceList} from '../../store/datalist';
-
-const genChartData = count => {
-  const data = [];
-  for (let i = 0; i < count; i++) {
-    data.push(((Math.random() * 0.1 + 0.8) * 15000).toFixed(0));
-  }
-  return data;
-};
+import {analList, cryptoPerformanceList} from '../../store/datalist';
+import {getCryptoNews, getChartsFromCMC} from '../../utils/thirdapi';
+import {
+  calcCryptosDayChange,
+  updateCryptoNewsOnDB,
+  getCryptoNewsFromDB,
+} from '../../utils/utils';
 
 const GrayLabel = styled.Text`
   color: ${props => props.textColor};
@@ -60,6 +53,10 @@ const GrayLabel = styled.Text`
   padding: 4px;
 `;
 const CryptoDetailScreen = ({navigation}) => {
+  const x = useSharedValue(0);
+  const [loading, setLoading] = useState(true);
+  const [newsList, setNewsList] = useState([]);
+  const [analData, setAnalData] = useState([]);
   const priceEl = useRef();
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
@@ -67,313 +64,70 @@ const CryptoDetailScreen = ({navigation}) => {
   const refRBSheet4 = useRef();
   const refRBSheet5 = useRef();
   const [cryptoName, setCryptoName] = useState('BTC');
-  const [chartData, setChartData] = useState(genChartData(48));
+  const [chartData, setChartData] = useState({});
   const [chartSlotIndex, setChartSlotIndex] = useState(1);
+  const [graphData, setGraphData] = useState([]);
+  const portfolio = useSelector(state => state.portfolios.cryptoPortfolio);
+  const userInfo = useSelector(state => state.portfolios.userInfo);
 
-  const [cryptoPrice, setCryptoPrice] = useState(
-    chartData[chartData.length - 1],
-  );
-  const [analData, setAnalData] = useState([
-    {label: '24H Change', red: true, value: '-1.2%'},
-    {label: 'Total Value', red: false, value: '$5,000'},
-    {label: 'P/L', red: false, value: '+12%'},
-  ]);
-  const touch = useRef(new Animated.ValueXY({x: -2, y: 0})).current;
-  const handleChartScope = index => {
-    setChartSlotIndex(index);
-    switch (index) {
-      case 1:
-        setChartData(genChartData(60));
-        break;
-      case 2:
-        setChartData(genChartData(60));
-        break;
-      case 3:
-        setChartData(genChartData(60));
-        break;
-      case 4:
-        setChartData(genChartData(60));
-        break;
-      case 5:
-        setChartData(genChartData(60));
-        break;
-      case 6:
-        setChartData(genChartData(60));
-        break;
-    }
-    setCryptoPrice(chartData[chartData.length - 1]);
-  };
+  // const touch = useRef(new Animated.ValueXY({x: -2, y: 0})).current;
+
+  useEffect(() => {
+    let unmounted = false;
+    calcCryptosDayChange(userInfo.user_id, portfolio).then(data => {
+      setAnalData([
+        {
+          label: '24H Change',
+          red: data.daily_change <= 0 ? false : true,
+          value: data.daily_change + '%',
+        },
+        {label: 'Total Value', red: false, value: '$' + data.total_value},
+        {label: 'P/L', red: false, value: data.profit + '%'},
+      ]);
+      getChartsFromCMC(1).then(res => {
+        setGraphData(res);
+        getCryptoNewsFromDB('cryptocurrency').then(res => {
+          setNewsList(res);
+          if (!unmounted) {
+            setLoading(false);
+          }
+        });
+      });
+    });
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={investmentStyles.container}>
+        <Spinner visible={loading} textContent={'Loading...'} />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={investmentStyles.container}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('CryptoHomeScreen');
+          // navigation.navigate('CryptoHomeScreen');
+          navigation.goBack();
         }}
       />
       <ScrollView>
-        <Text
-          style={{
-            marginLeft: 16,
-            fontSize: 16,
-            fontFamily: 'HelveticaNeueCyr',
-            marginVertical: 10,
-          }}>
-          {cryptoName}
-        </Text>
-        <TrendViewHeader
-          title="Bitcoin"
-          source={require('../../assets/icons/candle.png')}
+        <SVGLineChart
+          graphData={graphData}
+          data={chartData}
+          width={wp('100%')}
+          height={220}
+          coinName="BTC"
+          coinSlug="Bitcoin"
         />
-        <View style={{flexDirection: 'row'}}>
-          <Text
-            style={{
-              marginLeft: 16,
-              fontFamily: 'HelveticaNeueCyr',
-              fontSize: 30,
-              fontWeight: '500',
-              paddingVertical: 0,
-              color: '#2A2E3B',
-            }}>
-            $
-          </Text>
-          {/* <TextInput
-            style={{
-              fontFamily: 'HelveticaNeueCyr',
-              fontSize: 30,
-              fontWeight: '500',
-              paddingVertical: 0,
-              color: '#2A2E3B',
-            }}
-            editable={false}
-            ref={priceEl}
-            value={
-              cryptoPrice
-                ? cryptoPrice
-                : priceEl?.current?.text
-                ? priceEl.current.text
-                : ''
-            }
-          /> */}
-          <RollingNumber val={cryptoPrice} />
-        </View>
-        <ProfitLabel
-          customStyle={{marginLeft: 16, marginTop: 10}}
-          greenLabel="▲ $2.45 (0.12%)"
-          blackLabel="Today"
-        />
-        <View style={{justifyContent: 'center'}}>
-          <View
-            style={{marginVertical: 16}}
-            onStartShouldSetResponder={() => true}
-            onResponderMove={event => {
-              const xIndex = parseInt(event.nativeEvent.locationX / 7);
-              touch.setValue({
-                x: event.nativeEvent.locationX,
-                // y: event.nativeEvent.locationY,
-                y: chartData[xIndex],
-              });
-              // if (priceEl.current) {
-              //   priceEl.current.text = chartData[xIndex];
-              //   priceEl.current.setNativeProps({text: chartData[xIndex]});
-              // }
-              setCryptoPrice(chartData[xIndex]);
-            }}
-            onResponderRelease={event => {
-              touch.setValue({
-                x: -2,
-                y: 0,
-              });
-            }}>
-            <LineChart
-              data={{
-                labels: [],
-                datasets: [
-                  {
-                    data: chartData,
-                  },
-                ],
-              }}
-              width={Dimensions.get('window').width} // from react-native
-              height={220}
-              chartConfig={{
-                backgroundColor: '#fff',
-                backgroundGradientFrom: '#fff',
-                backgroundGradientTo: '#fff',
-                decimalPlaces: 3, // optional, defaults to 2dp
-                color: (opacity = 1) => 'rgba(103, 196, 49, 1)',
-                labelColor: (opacity = 1) => `rgba(0, 255, 255, ${opacity})`,
-                propsForDots: {
-                  r: '1',
-                },
-                // propsForBackgroundLines: {strokeWidth: 0},
-                propsForVerticalLabels: false,
-                propsForBackgroundLines: {
-                  stroke: '#ffffff',
-                },
-                strokeWidth: 2,
-              }}
-              withHorizontalLabels={false}
-              // bezier
-              style={{
-                marginVertical: 8,
-                marginTop: 15,
-                borderRadius: 0,
-                paddingRight: 0,
-              }}
-            />
-            <Animated.View
-              style={{
-                height: 220,
-                width: 1,
-                position: 'absolute',
-                left: touch.x,
-                justifyContent: 'center',
-              }}>
-              <Dash
-                dashThickness={1}
-                dashColor="#999"
-                dashLength={2}
-                dashGap={0}
-                style={{
-                  width: 1,
-                  height: 180,
-                  flexDirection: 'column',
-                }}
-              />
-            </Animated.View>
-          </View>
-          <View
-            style={{
-              height: 1,
-              position: 'absolute',
-              top: '45%',
-              left: 0,
-            }}>
-            <Dash
-              dashThickness={1.5}
-              dashColor="#222"
-              dashLength={1.5}
-              dashGap={6}
-              style={{
-                height: 1,
-                flexDirection: 'row',
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginVertical: 16,
-              alignItems: 'center',
-            }}>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(1);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 1
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  1D
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(2);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 2
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  1W
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(3);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 3
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  1M
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(4);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 4
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  3M
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(5);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 5
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  1Y
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleChartScope(6);
-                }}>
-                <Text
-                  style={
-                    chartSlotIndex == 6
-                      ? investmentStyles.slotActive
-                      : investmentStyles.greenChartSlot
-                  }>
-                  All
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity>
-              <Icon
-                name="maximize-2"
-                style={{color: '#67C431', fontWeight: 'bold'}}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* <Cursor /> */}
         <AnalysisTag items={analData} />
-        <View style={{marginTop: 16}}>
-          <PanelTitle title="Performance" />
-          {cryptoPerformanceList.map((item, index) => {
-            return (
-              <CryptoPerformanceRow
-                red={item.value > 0 ? false : true}
-                green={item.value < 0 ? false : true}
-                time={item.time}
-                value={item.value + '%'}
-                chartData={item.chartData}
-                key={index}
-              />
-            );
-          })}
-        </View>
+        <CoinPerformanceView graphData={graphData} />
+
         <Text />
         <View>
           <View style={investmentStyles.panelHeader}>
@@ -389,14 +143,15 @@ const CryptoDetailScreen = ({navigation}) => {
             {newsList.map((item, index) => {
               return (
                 <NewsCard
-                  title={item.title}
-                  content={item.content}
-                  date={item.date}
-                  uri={item.image}
+                  title={item.data().article.title}
+                  content={item.data().article.summary}
+                  date={item.data().article.published_date}
+                  uri={item.data().article.media}
                   key={index}
                   width={246}
                   imageWidth={226}
                   imageHeight={158}
+                  source={item.data().article.link}
                 />
               );
             })}

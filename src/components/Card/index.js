@@ -11,6 +11,13 @@ import styles from './styles.js';
 import {BrandColorLabel} from '../Gadgets';
 import {SmallLine} from '../SectionTitle';
 import {colors, measures} from '../../styles/colors.js';
+const trimText = (text, length) => {
+  if (text.length <= length) {
+    return text;
+  } else {
+    return text.substring(0, length - 3) + '...';
+  }
+};
 export const NewsCard = props => {
   return (
     <DropShadow style={styles.dropShadowStyle}>
@@ -25,12 +32,17 @@ export const NewsCard = props => {
           }}
         />
         <Card.Content style={{paddingLeft: 7}}>
-          <Title style={styles.title}>{props.title}</Title>
-          <Paragraph style={styles.content}>{props.content}</Paragraph>
+          <Title style={styles.title}>{trimText(props.title, 40)}</Title>
+          <Paragraph style={styles.content}>
+            {trimText(props.content, 120)}
+          </Paragraph>
         </Card.Content>
 
         <Card.Actions>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(props.source);
+            }}>
             <Text style={{...styles.content, color: '#5E9FDA'}}>Read more</Text>
           </TouchableOpacity>
         </Card.Actions>
@@ -69,9 +81,9 @@ export const EarningCard = props => (
 export const StockNewsCard = props => (
   <View style={styles.stockNews}>
     <View style={styles.stockNewsHeader}>
-      <Text style={styles.stockNewsTitle}>{props.title}</Text>
+      <Text style={styles.stockNewsTitle}>{trimText(props.title, 20)}</Text>
       <Text style={{fontSize: 10}}>{props.newsHour}h </Text>
-      {props.lightHave && (
+      {props.newsHour < 10 && (
         <Image
           source={require('../../assets/icons/light_icon.png')}
           style={{width: 9, height: 12}}
@@ -88,14 +100,15 @@ export const StockNewsCard = props => (
           paddingRight: 40,
           width: '80%',
         }}>
-        {props.content}
+        {trimText(props.content, 120)}
       </Paragraph>
       <Image
         source={{uri: props.uri}}
         style={{
           borderRadius: 10,
           marginTop: 5,
-          width: '15%',
+          width: 80,
+          height: 80,
         }}
       />
     </Card.Content>
@@ -103,9 +116,7 @@ export const StockNewsCard = props => (
     <Card.Actions style={{paddingLeft: 0}}>
       <TouchableOpacity
         onPress={() => {
-          Linking.openURL(
-            'https://finance.yahoo.com/video/morgan-stanley-lists-lucid-motors-141208138.html',
-          );
+          Linking.openURL(props.source);
         }}>
         <Text style={{...styles.content, color: '#5E9FDA'}}>Read more</Text>
       </TouchableOpacity>
@@ -173,7 +184,7 @@ export const CryptoSimilarCard = props => (
       paddingBottom: 0,
     }}>
     <Image
-      source={props.coinImage}
+      source={{uri: props.coinImage}}
       style={{
         width: props.imageWidth ? props.imageWidth : 45,
         height: props.imageHeight ? props.imageHeight : 45,
