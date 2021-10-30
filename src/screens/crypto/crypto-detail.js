@@ -43,29 +43,17 @@ import {
   getCryptoNewsFromDB,
 } from '../../utils/utils';
 
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
 const CryptoDetailScreen = ({navigation}) => {
   const x = useSharedValue(0);
   const [loading, setLoading] = useState(true);
   const [newsList, setNewsList] = useState([]);
   const [analData, setAnalData] = useState([]);
-  const priceEl = useRef();
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
   const refRBSheet4 = useRef();
   const refRBSheet5 = useRef();
-  const [cryptoName, setCryptoName] = useState('BTC');
   const [chartData, setChartData] = useState({});
-  const [chartSlotIndex, setChartSlotIndex] = useState(1);
   const [graphData, setGraphData] = useState([]);
   const portfolio = useSelector(state => state.portfolios.cryptoPortfolio);
   const userInfo = useSelector(state => state.portfolios.userInfo);
@@ -123,6 +111,7 @@ const CryptoDetailScreen = ({navigation}) => {
           height={220}
           coinName="BTC"
           coinSlug="Bitcoin"
+          type="crypto"
         />
         {/* <Cursor /> */}
         <AnalysisTag items={analData} />

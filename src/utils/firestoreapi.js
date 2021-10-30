@@ -2,6 +2,22 @@ import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
 import {getCryptoQuoteFromCMC} from './thirdapi';
 
+export function getUserInfo(userId) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection('Users')
+      .doc(userId)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          resolve(documentSnapshot.data());
+        }
+      })
+      .catch(err => {
+        return reject(err);
+      });
+  });
+}
 export async function getSimilarCryptosFromDB(items) {
   let similarIds = [];
   let ids = [];

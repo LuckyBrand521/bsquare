@@ -396,6 +396,9 @@ export const IdeaPortfolioPanel = props => {
   };
 
   return props.items.map((item, index) => {
+    if (index == 1) {
+      console.log(item.analysis.current_portfolio);
+    }
     return (
       <View
         key={index}
@@ -510,8 +513,8 @@ export const InvestmentStatusOveriew = props => {
 export const IdeaItemPanel = props => {
   const itemLength = props.items.length;
   return props.items.map((item, index) => {
-    const pl_str = item.pl.toFixed(1);
-    const bought_str = item.bought.toFixed(1);
+    const change_str = item.change.toFixed(1);
+    const percentage_str = item.percentage;
     const price_str = item.current_price.toFixed(1);
     return (
       <View
@@ -542,13 +545,12 @@ export const IdeaItemPanel = props => {
               shadowOpacity: 0.8,
               shadowRadius: 2,
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                props.onPress('CryptoDetailScreen');
-              }}>
+            <TouchableOpacity>
               <Image
                 source={{
-                  uri: `https://cryptologos.cc/logos/${item.coin_name}-${item.coin_symbol}-logo.png`,
+                  uri: `https://cryptologos.cc/logos/${
+                    item.coin_slug
+                  }-${item.coin_symbol.toLowerCase()}-logo.png`,
                 }}
                 style={{
                   width: 45,
@@ -563,27 +565,23 @@ export const IdeaItemPanel = props => {
         </View>
         <View style={{flex: 5, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Quantity</GrayLabel>
-            <Text>{item.quantity}</Text>
+            <GrayLabel textColor="#83899D">Qty</GrayLabel>
+            <Text>{item.quantity.toFixed(5)}</Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Bought for</GrayLabel>
-            <BrandColorLabel green value={`$${bought_str}`} />
+            <GrayLabel textColor="#83899D">%</GrayLabel>
+            <BrandColorLabel green value={`$${percentage_str}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Current Price</GrayLabel>
+            <GrayLabel textColor="#83899D">Price</GrayLabel>
+            <BrandColorLabel green value={`$${price_str}`} />
+          </View>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <GrayLabel textColor="#83899D">24H</GrayLabel>
             <BrandColorLabel
-              green={item.current_price > item.bought ? true : false}
-              red={item.current_price < item.bought ? true : false}
-              value={`$${price_str}`}
-            />
-          </View>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">P/L</GrayLabel>
-            <BrandColorLabel
-              green={item.pl > 0 ? true : false}
-              red={item.pl < 0 ? true : false}
-              value={`${pl_str}%`}
+              green={item.change > 0 ? true : false}
+              red={item.change < 0 ? true : false}
+              value={`${change_str}%`}
             />
           </View>
         </View>

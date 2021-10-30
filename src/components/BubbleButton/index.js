@@ -88,6 +88,19 @@ export const ContinueBottomBtn = props => {
   );
 };
 
+export const BorderedButton = props => {
+  return (
+    <TouchableOpacity
+      style={{...globalStyles.closeButton, borderColor: props.borderColor}}
+      onPress={props.onPress}>
+      <Text
+        style={{color: props.captionColor, fontSize: 16, fontWeight: 'bold'}}>
+        {props.caption}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 const calcRadius = varList => {
   const minRadius = 40;
   return varList;

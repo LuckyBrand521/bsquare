@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {View, Image, StatusBar} from 'react-native';
+import {withTheme} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -17,6 +18,7 @@ import RealEstatePropertyScreen from '../screens/realestate/property';
 import RealEstateDetailScreen from '../screens/realestate/realestate-detail';
 import IdeaHomeScreen from '../screens/ideas';
 import IdeaDetailScreen from '../screens/ideas/idea-detail';
+import SpendingStack from './spending-navigation';
 
 //custom styles
 import navigationStyles from './style.js';
@@ -25,7 +27,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 const Stack1 = createNativeStackNavigator();
 
-export const StackNavigation = () => {
+export const StackNavigation = props => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -52,7 +54,7 @@ export const Navigation = () => {
         tabBarStyle: {
           paddingVertical: Platform.OS === 'ios' ? 20 : 20,
           height: 60,
-          backgroundColor: '#fff',
+          backgroundColor: '#000',
           borderTopWidth: 0,
         },
       }}>
@@ -72,7 +74,7 @@ export const Navigation = () => {
                     source={require('../assets/icons/home_icon_active.png')}
                     style={{width: 24, height: 24}}
                   /> */}
-                  <Icon name="home" size={24} />
+                  <Icon name="home" size={24} color={'white'} />
                 </View>
               );
             } else {
@@ -138,7 +140,7 @@ export const Navigation = () => {
       />
       <Tab.Screen
         options={{
-          tabBarLabel: 'Wallet',
+          tabBarLabel: 'Spending',
 
           unmountOnBlur: true,
           tabBarIcon: ({focused, tintColor, color}) => {
@@ -169,8 +171,8 @@ export const Navigation = () => {
             }
           },
         }}
-        name="Wallet"
-        component={InvestmentStack}
+        name="Spending"
+        component={SpendingStack}
         listeners={({navigation}) => ({
           blur: () => navigation.setParams({screen: undefined}),
         })}
@@ -240,7 +242,7 @@ export const Navigation = () => {
                   }}>
                   <Image
                     source={require('../assets/icons/thread.png')}
-                    style={{width: 24, height: 24}}
+                    style={{width: 24, height: 24, backgroundColor: '#FFF'}}
                   />
                 </View>
               );
@@ -330,3 +332,5 @@ function InvestmentStack() {
     </Stack1.Navigator>
   );
 }
+
+export default withTheme(StackNavigation);

@@ -5,8 +5,14 @@ import {
   getCryptoQuoteFromCMC,
   getCryptoNews,
   getStockQuoteFromRPD,
+  getStockQuoteFromYahoo,
 } from './thirdapi';
-import {getTodayDateString, cvtObjecttoArray} from './common';
+import {
+  getTodayDateString,
+  cvtObjecttoArray,
+  interpolateArray,
+  calcQuoteFromYahooData,
+} from './common';
 import {getIdeaItems} from './firestoreapi';
 //crypto related functions
 
@@ -19,7 +25,7 @@ const getBuyHistory = (userId, category) => {
         // .orderBy('time', 'desc')
         .get()
         .then(querySnapshot => {
-          return resolve(querySnapshot);
+          resolve(querySnapshot);
         });
     } else if (category == 'stock') {
       firestore()
@@ -28,7 +34,7 @@ const getBuyHistory = (userId, category) => {
         // .orderBy('time', 'desc')
         .get()
         .then(querySnapshot => {
-          return resolve(querySnapshot);
+          resolve(querySnapshot);
         });
     }
   });
@@ -328,12 +334,57 @@ export async function calcIdeasDayChange(userId, items, category) {
     } else {
       return Promise.reject();
     }
+  } else if (category == 'stock') {
+    let total_last = 0,
+      total_current = 0,
+      daily_change = 0;
+    let current_portfolio = [];
+    for (let i = 0; i < items.length; i++) {
+      const stock_id = items[i].id;
+      const amount = items[i].amount;
+      const quoteFromYahoo = await getStockQuoteFromYahoo(stock_id, '1D');
+      const prices = await calcQuoteFromYahooData(quoteFromYahoo.data);
+      let price = prices.current_price;
+      let change = prices.daily_change;
+      total_last += (price * amount * (100 - change)) / 100;
+      total_current += price * amount;
+      current_portfolio.push({
+        id: stock_id,
+        quantity: amount,
+        current_price: price,
+        name: prices.name,
+        symbol: prices.symbol,
+        slug: prices.slug,
+        change: change,
+        percentage: 0,
+      });
+    }
+    if (total_current == 0) {
+      return Promise.resolve({daily_change: 0, total_value: 0, current_pl: 0});
+    }
+    daily_change = ((total_current - total_last) / total_last) * 100;
+    current_portfolio.map((item, index) => {
+      item.percentage = (
+        ((item.quantity * item.current_price) / total_current) *
+        100
+      ).toFixed(1);
+    });
+    if (total_last) {
+      return Promise.resolve({
+        daily_change: daily_change.toFixed(1),
+        total_value: total_current.toFixed(2),
+        total_last: total_last.toFixed(2),
+        current_portfolio: current_portfolio,
+      });
+    } else {
+      return Promise.reject();
+    }
   }
 }
 
 export async function getIdeaPortfolioWithDetail(userId, items) {
   let resList = [];
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < items.length; i++) {
     let temp = {};
     temp.amount = items[i].amount;
     temp.symbol = items[i].idea_id;

@@ -13,7 +13,7 @@ const LevelBar = props => {
   ];
 
   return (
-    <View style={styles.barWrapper}>
+    <View style={{...styles.barWrapper, marginTop: props.background ? 10 : 0}}>
       {data.map((item, index) => {
         return (
           <View key={index} style={{justifyContent: 'flex-end'}}>

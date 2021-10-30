@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
+import {useTheme} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {store} from '../../redux/store';
 import firestore from '@react-native-firebase/firestore';
@@ -32,7 +33,7 @@ import {investmentStyles} from '../../styles/investment';
 import {globalStyles} from '../../styles/global';
 import Spinner from 'react-native-loading-spinner-overlay';
 const {width, height} = Dimensions.get('window');
-//test data
+//api
 import {newsList, earningList, stockList} from '../../store/datalist';
 import {
   insertBuyHistory,
@@ -40,25 +41,29 @@ import {
   updateStockNewsOnDB,
 } from '../../utils/utils';
 import {exchangeCurrency} from '../../utils/common';
-import {getCoinListFromCMC} from '../../utils/thirdapi';
+import {getCoinListFromCMC, getStockQuoteFromYahoo} from '../../utils/thirdapi';
+import {getUserInfo} from '../../utils/firestoreapi';
 
 function HomeScreen({navigation}) {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const colors = useTheme();
   useEffect(() => {
     // getCoinListFromCMC();
     auth()
       .signInWithEmailAndPassword('luckybrand521@gmail.com', 'CrazyJason1010')
       .then(e => {
-        const userId = e.user.uid;
-        dispatch(setUserInfo({user_id: userId}));
-        fetchPortfolio(userId, 'crypto').then(res => {
-          dispatch(setCryptoPortfolio(res.items));
-          fetchPortfolio(userId, 'stock').then(data => {
-            dispatch(setStockPortfolio(data.items));
-            fetchPortfolio(userId, 'idea').then(data => {
-              dispatch(setIdeaPortfolio(data.items));
-              setLoading(false);
+        getUserInfo(e.user.uid).then(d => {
+          const userId = e.user.uid;
+          dispatch(setUserInfo(d));
+          fetchPortfolio(userId, 'crypto').then(res => {
+            dispatch(setCryptoPortfolio(res.items));
+            fetchPortfolio(userId, 'stock').then(data => {
+              dispatch(setStockPortfolio(data.items));
+              fetchPortfolio(userId, 'idea').then(data => {
+                dispatch(setIdeaPortfolio(data.items));
+                setLoading(false);
+              });
             });
           });
         });
@@ -76,8 +81,16 @@ function HomeScreen({navigation}) {
 
   if (loading) {
     return (
-      <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+      <SafeAreaView
+        style={{
+          ...investmentStyles.container,
+          backgroundColor: colors.background,
+        }}>
+        <Spinner
+          visible={loading}
+          textContent={'Loading...'}
+          textStyle={{color: '#FFF'}}
+        />
       </SafeAreaView>
     );
   }

@@ -14,8 +14,9 @@ import {
   RAPID_STOCK_YAHOO_HOST,
   CURRENCY_EXCHANGE_URL,
   RAPIDAPI_CURRENCY_EXCHANGE_HOST,
+  YAHOO_STOCK_CHART_URL,
 } from './constants';
-import {cvtObjecttoArray} from './common';
+import {cvtObjecttoArray, cvtYahooCharttoArray} from './common';
 import IdeaHomeScreen from '../screens/ideas';
 
 export const getChartFromCMC = (coinId, range) => {
@@ -194,6 +195,8 @@ export const getCryptoNewsForIdeas = items => {
     });
 };
 
+export const getStockNewsForIdeas = items => {};
+
 export const getCurrencyExchangeRates = query => {
   return axios
     .get(`${CURRENCY_EXCHANGE_URL}${query}`, {
@@ -239,6 +242,57 @@ export async function getCryptoIdeaChartData(items) {
     }
   }
   return Promise.resolve(ideaChartData);
+}
+
+export async function getStockIdeaChartData(items) {
+  let ideaChartData = await getChartsFromYahoo(items[0].id);
+  for (var i = 0; i < ideaChartData.length; i++) {
+    //for 1D, 1W, etc
+    for (var j = 0; j < ideaChartData[i].chartValues.length; j++) {
+      ideaChartData[i].chartValues[j] =
+        ideaChartData[i].chartValues[j] * items[0].amount;
+    }
+  }
+  for (var i = 1; i < items.length; i++) {
+    //for each coin
+    const eachCoinChart = await getChartsFromYahoo(items[i].id);
+    for (var j = 0; j < ideaChartData.length; j++) {
+      //for 1D 1W, etc
+      for (var k = 0; k < ideaChartData[j].chartValues.length; k++) {
+        //1D chart data
+        if (eachCoinChart[j]) {
+          if (eachCoinChart[j].chartValues[k]) {
+            ideaChartData[j].chartValues[k] +=
+              items[i].amount * eachCoinChart[j].chartValues[k];
+          }
+        }
+      }
+    }
+  }
+  return Promise.resolve(ideaChartData);
+}
+
+export async function getChartsFromYahoo(id) {
+  ranges = ['1D', '5D', '1Mo'];
+  resList = [];
+  const exchangeRates = await getCurrencyExchangeRates('USD');
+  for (let i = 0; i < ranges.length; i++) {
+    temp = await getStockQuoteFromYahoo(id, ranges[i]);
+    resList.push(cvtYahooCharttoArray(temp, exchangeRates));
+  }
+  return Promise.resolve(resList);
+}
+
+export async function getStockQuoteFromYahoo(stockId, range) {
+  return axios
+    .get(`${YAHOO_STOCK_CHART_URL}?stockId=${stockId}&range=${range}`)
+    .then(res => {
+      return Promise.resolve(res);
+    })
+    .catch(err => {
+      console.log(err);
+      return Promise.reject(err);
+    });
 }
 
 //simple utils

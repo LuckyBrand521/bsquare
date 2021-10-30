@@ -56,6 +56,8 @@ export default SVGLineChart = props => {
         coinName={props.coinName}
         coinSlug={props.coinSlug}
         active={active}
+        type={props.type}
+        detail={props.productData ? props.productData : ''}
       />
       <View>
         <Svg height={props.height} width={props.width}>

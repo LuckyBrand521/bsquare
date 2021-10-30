@@ -11,7 +11,7 @@ export const SectionTitle = props => {
         fontSize: props.fontSize ? props.fontSize : 34,
         fontWeight: 'bold',
         paddingVertical: 2,
-        color: '#2A2E3B',
+        color: props.color ? props.color : '#2A2E3B',
       }}>
       {props.title}
     </Text>
@@ -43,7 +43,7 @@ export const PanelTitle = props => {
         fontSize: props.fontSize ? props.fontSize : 22,
         fontWeight: 'bold',
         paddingVertical: 0,
-        color: '#2A2E3B',
+        color: props.color ? props.color : '#2A2E3B',
       }}>
       {props.title}
     </Text>

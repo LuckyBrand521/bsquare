@@ -7,8 +7,9 @@ import Animated, {
 import {ReText} from 'react-native-redash';
 import {TrendViewHeader} from '../../components/Headers';
 import {StockStateLabel} from '../../components/ProfitLabel';
+import LevelBar from '../LevelBar';
 import {getCryptoQuoteFromCMC} from '../../utils/thirdapi';
-
+const levels = ['Very Low', 'Low', 'Mid', 'High', 'Very High'];
 export default ChartHeader = ({
   chartData,
   width,
@@ -16,21 +17,49 @@ export default ChartHeader = ({
   coinName,
   coinSlug,
   active,
+  type,
+  detail,
 }) => {
   const coinId = 1; ///change after testing
   const [currentInfo, setCurrentInfo] = useState({});
 
   useEffect(() => {
-    if (Object.keys(currentInfo).length === 0) {
-      getCryptoQuoteFromCMC(coinId).then(res => {
-        setCurrentInfo(res);
+    if (type == 'crypto') {
+      if (Object.keys(currentInfo).length === 0) {
+        getCryptoQuoteFromCMC(coinId).then(res => {
+          setCurrentInfo(res);
+        });
+      }
+      setInterval(function () {
+        getCryptoQuoteFromCMC(coinId).then(res => {
+          setCurrentInfo(res);
+        });
+      }, 15000000);
+    } else if (type == 'stock') {
+      setCurrentInfo({
+        quote: {
+          USD: {
+            price: parseFloat(
+              chartData.chartValues[chartData.chartValues.length - 1],
+            ),
+            percent_change_24h:
+              ((chartData.chartValues[chartData.chartValues.length - 1] -
+                chartData.chartValues[0]) /
+                chartData.chartValues[0]) *
+              100,
+          },
+        },
+      });
+    } else {
+      setCurrentInfo({
+        quote: {
+          USD: {
+            price: parseFloat(detail.analysis.total_value),
+            percent_change_24h: parseFloat(detail.analysis.daily_change),
+          },
+        },
       });
     }
-    setInterval(function () {
-      getCryptoQuoteFromCMC(coinId).then(res => {
-        setCurrentInfo(res);
-      });
-    }, 15000000);
   }, []);
 
   const price = useDerivedValue(() => {
@@ -101,6 +130,21 @@ export default ChartHeader = ({
           />
         )}
       </Animated.View>
+      {type == 'idea' && (
+        <View style={styles.levelLabel}>
+          <Text>
+            Volatility:{' '}
+            <Text style={{color: '#E45A28'}}>
+              {levels[detail.ideaDetails.volatility - 1]}
+            </Text>
+          </Text>
+          <LevelBar
+            level={detail.ideaDetails.volatility}
+            background
+            scale={1}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -139,5 +183,8 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     paddingLeft: 16,
     marginVertical: 0,
+  },
+  levelLabel: {
+    marginLeft: 16,
   },
 });

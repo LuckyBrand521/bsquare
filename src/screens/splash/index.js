@@ -10,12 +10,18 @@ function SplashScreen({navigation}) {
     }, 2000);
   }, []);
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000',
+      }}>
       <Image
         source={require('../../assets/images/logo.png')}
         style={{width: 144, height: 230}}
       />
-      <Text style={{fontSize: 22, marginTop: 48}}>
+      <Text style={{fontSize: 22, marginTop: 48, color: '#FFF'}}>
         By The World, For The World
       </Text>
     </View>

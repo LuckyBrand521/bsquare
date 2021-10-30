@@ -17,7 +17,8 @@ import Dash from 'react-native-dash';
 import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
 import {NavigationHeader} from '../../components/Headers';
 import {AnalysisTag} from '../../components/AnalysisTag';
-import {CryptoPortfolioPanel} from '../../components/Gadgets';
+import {IdeaItemPanel} from '../../components/Gadgets';
+import {StockNewsCard, StockCard} from '../../components/Card';
 import {
   RatingStoryPopup,
   TradingCheckoutFirst,
@@ -46,7 +47,9 @@ import SVGLineChart from '../../components/LineChart';
 //apis for DB and thirdapi
 import {
   getCryptoNewsForIdeas,
+  getStockNewsForIdeas,
   getCryptoIdeaChartData,
+  getStockIdeaChartData,
 } from '../../utils/thirdapi';
 
 const IdeaDetailScreen = ({route, navigation}) => {
@@ -74,13 +77,31 @@ const IdeaDetailScreen = ({route, navigation}) => {
       {label: 'Price', red: false, value: '$' + product.analysis.total_value},
       {label: 'P/L', red: false, value: product.analysis.daily_change + '%'},
     ]);
-    getCryptoIdeaChartData(product.ideaDetails.items).then(data => {
-      setGraphData(data);
-      getCryptoNewsForIdeas([product]).then(resList => {
-        setNewsList(resList);
-        setLoading(false);
+    if (product.ideaDetails.type == 'crypto') {
+      //crypto product
+      getCryptoIdeaChartData(product.ideaDetails.items).then(data => {
+        setGraphData(data);
+        getCryptoNewsForIdeas([product]).then(resList => {
+          setNewsList(resList);
+          setLoading(false);
+        });
       });
-    });
+    } else {
+      //stock product
+      getStockIdeaChartData(product.ideaDetails.items)
+        .then(data => {
+          setGraphData(data);
+          setLoading(false);
+          // getStockNewsForIdeas([product]).then(resList => {
+          //   setNewsList(resList);
+          //   setLoading(false);
+          // });
+        })
+        .catch(err => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
   }, []);
   if (loading) {
     return (
@@ -104,15 +125,17 @@ const IdeaDetailScreen = ({route, navigation}) => {
           height={220}
           coinName={product.symbol}
           coinSlug={product.ideaDetails.name}
+          type="idea"
+          productData={product}
         />
 
         <AnalysisTag items={analData} />
         <View style={{marginTop: 16}}>
           <PanelTitle title="Coins and Tokens" />
-          {/* <CryptoPortfolioPanel
+          <IdeaItemPanel
             onPress={() => {}}
-            items={cryptoPortfolioList}
-          /> */}
+            items={product.analysis.current_portfolio}
+          />
         </View>
 
         <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
@@ -121,27 +144,25 @@ const IdeaDetailScreen = ({route, navigation}) => {
             <Text style={investmentStyles.greenLabel}>Show more</Text>
           </TouchableOpacity>
         </View>
-        {/* <View style={{marginVertical: 20}}>
+        <View style={{marginVertical: 20}}>
           {newsList.map((item, index) => {
             return (
               <StockNewsCard
                 title={item.title}
                 content={item.content}
+                source={item.source}
                 uri={item.image}
-                key={item.id}
+                key={index}
                 newsHour={item.hour}
-                lightHave={item.light}
+                lightHave={true}
               />
             );
           })}
-        </View> */}
+        </View>
         <View>
           <PanelTitle title="About" />
           <Paragraph style={styles.paragraphStyle}>
-            Apple Inc. is an American multinational technology company that
-            specializes in consumer electronics, computer software, and online
-            services. Apple is the world's largest technology company by revenue
-            and, since January 2021, the world's most valuable company.
+            {product.ideaDetails.overview}
           </Paragraph>
         </View>
         <View style={{height: 100}} />

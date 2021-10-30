@@ -22,6 +22,7 @@ import {
   CryptoHistoryPanel,
 } from '../../components/Gadgets';
 import {AnalysisTag} from '../../components/AnalysisTag';
+import Toast from 'react-native-simple-toast';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
@@ -50,24 +51,34 @@ function CryptoHomeScreen({navigation}) {
   const userInfo = useSelector(state => state.portfolios.userInfo);
   useEffect(() => {
     let unmounted = false;
-    calcCryptosDayChange(userInfo.user_id, portfolio).then(data => {
-      setAnalData([
-        {
-          label: '24H Change',
-          red: data.daily_change > 0 ? false : true,
-          value: data.daily_change + '%',
-        },
-        {label: 'Total Value', red: false, value: '$' + data.total_value},
-        {label: 'P/L', red: false, value: data.profit + '%'},
-      ]);
-      setCryptoPortfolioList(data.current_portfolio);
-      getCryptoNewsFromDB('cryptocurrency').then(res => {
-        setNewsList(res);
-        if (!unmounted) {
-          setLoading(false);
-        }
+    calcCryptosDayChange(userInfo.user_id, portfolio)
+      .then(data => {
+        setAnalData([
+          {
+            label: '24H Change',
+            red: data.daily_change > 0 ? false : true,
+            value: data.daily_change + '%',
+          },
+          {label: 'Total Value', red: false, value: '$' + data.total_value},
+          {label: 'P/L', red: false, value: data.profit + '%'},
+        ]);
+        setCryptoPortfolioList(data.current_portfolio);
+        getCryptoNewsFromDB('cryptocurrency')
+          .then(res => {
+            setNewsList(res);
+            if (!unmounted) {
+              setLoading(false);
+            }
+          })
+          .catch(err => {
+            Toast.show('Network error!', Toast.LONG);
+            setLoading(false);
+          });
+      })
+      .catch(err => {
+        Toast.show('Network error!', Toast.LONG);
+        setLoading(false);
       });
-    });
     getSimilarCryptosFromDB(portfolio).then(res => {
       setSimilarCryptos(res);
     });
@@ -82,7 +93,11 @@ function CryptoHomeScreen({navigation}) {
   if (loading) {
     return (
       <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+        <Spinner
+          visible={loading}
+          textContent={'Loading...'}
+          textStyle={{color: '#FFF'}}
+        />
       </SafeAreaView>
     );
   }

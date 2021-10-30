@@ -4,11 +4,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {ligthTheme, darkTheme} from '../utils/constants';
 
+// export const investmentStyles = (theme = darkTheme) =>
 export const investmentStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingHorizontal: 0,
     paddingBottom: 3,

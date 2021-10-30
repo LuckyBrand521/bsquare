@@ -2,27 +2,15 @@ import React, {useState, useCallback, useRef} from 'react';
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
-  FlatList,
   StyleSheet,
 } from 'react-native';
-import LottieView from 'lottie-react-native';
 import {ProgressBar} from 'react-native-paper';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import MapView, {Marker, Geojson} from 'react-native-maps';
-import styled from 'styled-components';
+import MapView, {Marker} from 'react-native-maps';
 //custom components
-import {BlackRoundButton} from '../../components/BubbleButton';
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
-import {
-  NewsCard,
-  CryptoSimilarCard,
-  RealEstatePropertyCard,
-} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
 import {
   HighlightPanel,
@@ -34,13 +22,6 @@ import {
   RealEstateInfoCard,
   PropertyDetailCard,
 } from '../../components/Card/detailcard';
-import {
-  BrandColorLabel,
-  CustomProgressBar,
-  CryptoPortfolioPanel,
-  CryptoHistoryPanel,
-  InvestmentStatusOveriew,
-} from '../../components/Gadgets';
 import {ImageGallery} from '../../components/ImageGallery';
 import {
   RatingStoryPopup,
@@ -54,32 +35,13 @@ import {investmentStyles} from '../../styles/investment';
 import {globalStyles} from '../../styles/global';
 import {colors, measures} from '../../styles/colors.js';
 
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
 //test data
 import {
-  newsList,
-  cryptoPortfolioList,
-  cryptoHistoryList,
-  realestatePropertyList,
   realestateHistoryList,
   realestateHighlightList,
   realestateDocumentList,
-  realestateArrivalList,
 } from '../../store/datalist';
 
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
 const markers = [
   {latitude: 25.234381, longitude: 55.26157},
   {latitude: 51.513561, longitude: -0.137706},

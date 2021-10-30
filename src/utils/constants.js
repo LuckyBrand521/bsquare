@@ -26,6 +26,47 @@ export const RAPID_STOCK_QUOTE_URL =
   'https://stock-data-yahoo-finance-alternative.p.rapidapi.com/v11/finance/quoteSummary/';
 export const RAPID_STOCK_YAHOO_HOST =
   'stock-data-yahoo-finance-alternative.p.rapidapi.com';
+// export const YAHOO_STOCK_CHART_URL = 'https://query1.finance.yahoo.com/v8/finance/chart/'.$_REQUEST['stockId'].'?range='.$_REQUEST['range'];
+export const YAHOO_STOCK_CHART_URL =
+  'http://66.94.121.53:8080/yahoo_stock_chart.php';
 
 // Utility variables for temporay usage
 export const UPLOADED_IMAGES = 'http://66.94.121.53:8080/images/';
+
+//theme variables
+export const darkTheme = {
+  colors: {
+    teal: '#4FA1B8',
+    blue: '#417CB8',
+    green: '#5EB330',
+    red: '#C55739',
+    background_primary: '#0A0715',
+    background_secondary: '#2A2E3B',
+    background_third: '#83899D',
+    background_tertiary: 'rgba(46, 61, 66, 0.5)',
+    secondary: 'rgba(97, 133, 153, 0.15)',
+    text_primary: '#F5F7F8',
+    text_secondary: '#959FA4',
+    text_link: '#5E9FDA',
+    text_positive: '#52AC76',
+    status_negative: '#9B2A56',
+  },
+};
+export const lightTheme = {
+  colors: {
+    teal: '#6CE4FE',
+    blue: '#58AFFF',
+    green: '#5AC53A',
+    red: '#E45A28',
+    background_primary: '#FFF',
+    background_secondary: '#F5F7F8',
+    background_third: '#EBEFF1',
+    background_tertiary: 'rgba(46, 61, 66, 0.5)',
+    secondary: 'rgba(97, 133, 153, 0.15)',
+    text_primary: '#2A2E3B',
+    text_secondary: '#83899D',
+    text_link: '#5E9FDA',
+    text_positive: '#52AC76',
+    status_negative: '#DA3973',
+  },
+};

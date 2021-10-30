@@ -41,10 +41,15 @@ function IdeaHomeScreen({navigation}) {
       // getCryptoIdeaChartData(res[0].ideaDetails.items).then(data => {
       //   console.log('chartssssssssssssssssssssss', data);
       // });
-      getCryptoNewsForIdeas(res).then(resList => {
-        setNewsList(resList);
-        setLoading(false);
-      });
+      getCryptoNewsForIdeas(res)
+        .then(resList => {
+          setNewsList(resList);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.log(err);
+          setLoading(false);
+        });
     });
   }, []);
   if (loading) {
@@ -101,7 +106,7 @@ function IdeaHomeScreen({navigation}) {
               <Text style={investmentStyles.greenLabel}>Show more</Text>
             </TouchableOpacity>
           </View>
-          <View style={{marginVertical: 20}}>
+          {/* <View style={{marginVertical: 20}}>
             {newsList.map((item, index) => {
               return (
                 <StockNewsCard
@@ -115,7 +120,7 @@ function IdeaHomeScreen({navigation}) {
                 />
               );
             })}
-          </View>
+          </View> */}
         </View>
         <View>
           <View style={investmentStyles.panelHeader}>
