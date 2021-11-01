@@ -32,9 +32,12 @@ export const CustomProgressBar = props => {
         progress={props.val}
         color={props.color}
         style={{
-          backgroundColor: '#EBEFF1',
+          backgroundColor: props.backgroundColor
+            ? props.backgroundColor
+            : '#EBEFF1',
           height: props.barHeight ? props.barHeight : 4,
           width: props.width ? props.width : '100%',
+          borderRadius: 2,
         }}
       />
       <Text

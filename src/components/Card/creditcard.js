@@ -12,7 +12,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import DropShadow from 'react-native-drop-shadow';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import {CircularProgressWithChild} from 'react-native-circular-progress-indicator';
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import {SmallLine} from '../SectionTitle';
 import {CustomProgressBar} from '../../components/Gadgets';
 import {colors, measures} from '../../styles/colors';
@@ -89,16 +92,18 @@ export const GoalListItemCard = props => {
               paddingVertical={12}
               title={props.title}
               titleSize={measures.side}
-              valueColor={'black'}
+              titleColor={theme.colors.text_primary}
+              valueColor={theme.colors.text_primary}
               value={props.value}
             />
             <CustomProgressBar
-              val={props.percent}
-              color="#5AC53A"
-              textColor={colors.tn}
-              text={`${props.percent * 100}%`}
-              barHeight={8}
-              width={wp('100%') - 125}
+              backgroundColor={theme.colors.background_third}
+              val={props.percent / 100}
+              color={theme.colors.green}
+              textColor={theme.colors.text_secondary}
+              text={`${props.percent}%`}
+              barHeight={6}
+              width={260}
             />
             <Text style={styles(theme).graylabel}>{props.dates} Days Left</Text>
           </View>
@@ -180,6 +185,7 @@ const styles = theme =>
       padding: 10,
       borderRadius: 10,
       marginBottom: 10,
+      backgroundColor: theme.colors.background_secondary,
     },
     graylabel: {
       fontSize: 13,

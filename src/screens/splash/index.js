@@ -6,7 +6,7 @@ import {Text, View, Image} from 'react-native';
 function SplashScreen({navigation}) {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Navigation');
+      navigation.navigate('CreateNewCardScreen');
     }, 2000);
   }, []);
   return (

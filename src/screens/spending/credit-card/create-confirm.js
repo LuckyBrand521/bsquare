@@ -28,18 +28,14 @@ import {investmentStyles} from '../../../styles/investment';
 
 const {width, height} = Dimensions.get('window');
 
-const CreateNewCardScreen = props => {
+const CreateNewCardConfirmScreen = props => {
   // const theme = useContext(ThemeContext).theme;
-  // const params = route.params ? route.params : {};
-  useEffect(() => {
-    console.log('sdf');
-  }, []);
   return (
-    // <SafeAreaView
-    //   style={{
-    //     ...investmentStyles.container,
-    //     backgroundColor: theme.colors.background_primary,
-    //   }}>
+    // // <SafeAreaView
+    // //   style={{
+    // //     ...investmentStyles.container,
+    // //     backgroundColor: theme.colors.background_primary,
+    // //   }}>
     //   {/* <NavigationHeader
     //     title="Issue a new card"
     //     onPress={() => {
@@ -48,12 +44,15 @@ const CreateNewCardScreen = props => {
     //   /> */}
     <View>
       <Button
-        onPress={() => props.navigation.navigate('CreateNewCardConfirmScreen')}
-        title="Click"
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+        title="Go Back"
       />
+      <Text>GOOOOOOOOOOOOOOOOOOO!</Text>
     </View>
-    // </SafeAreaView>
+    // {/* </SafeAreaView> */}
   );
 };
 
-export default CreateNewCardScreen;
+export default CreateNewCardConfirmScreen;

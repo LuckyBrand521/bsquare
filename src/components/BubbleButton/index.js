@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, Image} from 'react-native';
+import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 //custom styles
 import {globalStyles} from '../../styles/global';
@@ -101,7 +101,42 @@ export const BorderedButton = props => {
   );
 };
 
+export const FunctionalButton = props => {
+  return (
+    <TouchableOpacity
+      style={{
+        ...styles.buttonContainer,
+        backgroundColor: props.backgroundColor
+          ? props.backgroundColor
+          : 'transparent',
+        borderColor: props.borderColor ? props.borderColor : 'transparent',
+      }}
+      onPress={props.onPress}>
+      <Text
+        style={{
+          color: props.textColor ? props.textColor : 'white',
+          fontSize: 16,
+          fontWeight: 'bold',
+        }}>
+        {props.caption}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 const calcRadius = varList => {
   const minRadius = 40;
   return varList;
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    borderRadius: 100,
+    textAlign: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 20,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+});

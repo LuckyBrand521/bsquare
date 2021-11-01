@@ -16,7 +16,11 @@ export const NavigationHeader = props => {
         <TouchableOpacity
           style={styles(theme.theme).back}
           onPress={props.onPress}>
-          <Icon name="angle-left" size={30} style={{color: '#000'}} />
+          <Icon
+            name="angle-left"
+            size={30}
+            style={{color: theme.theme.colors.text_primary}}
+          />
         </TouchableOpacity>
       </View>
       <Text style={styles(theme.theme).time}>
@@ -70,6 +74,7 @@ const styles = theme =>
     time: {
       fontSize: 18,
       fontWeight: '500',
+      color: theme.colors.text_primary,
     },
     back: {
       alignItems: 'center',

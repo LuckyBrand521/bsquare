@@ -86,6 +86,69 @@ export const ImageGallery = props => {
   );
 };
 
+export const CardTemplateGallery = props => {
+  const [indexSelected, setIndexSelected] = useState(1);
+  const carouselRef = useRef();
+  const colors = ['#5EB330', '#83899D', '#C55739'];
+  const onSelect = indexSelected => {
+    setIndexSelected(indexSelected);
+  };
+  const onTouchThumbnail = touched => {
+    if (touched === indexSelected) {
+      return;
+    }
+    carouselRef?.current?.snapToItem(touched);
+  };
+  return (
+    <View style={styles.viewContainer}>
+      <Carousel
+        ref={carouselRef}
+        layout="default"
+        data={props.items}
+        sliderWidth={wp('60%')}
+        itemWidth={wp('60%') - 32}
+        onSnapToItem={index => onSelect(index)}
+        renderItem={({item, index}) => (
+          <cardItem key={index} backgroundColor={colors[index]} />
+        )}
+      />
+      <FlatList
+        horizontal={true}
+        data={props.items}
+        style={styles.bulletList}
+        // style={{position: 'absolute', bottom: 80}}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: measures.side,
+        }}
+        keyExtractor={item => item.id}
+        renderItem={({item, index}) => (
+          <TouchableOpacity
+            onPress={() => {
+              onTouchThumbnail(index);
+            }}
+            activeOpacity={0.9}
+            style={[
+              styles.bullet,
+              index === indexSelected
+                ? styles.activeBullet
+                : styles.normalBullet,
+            ]}
+          />
+        )}
+      />
+    </View>
+  );
+};
+
+const cardItem = props => {
+  return (
+    <View
+      style={{...styles.cardImagePart, backgroundColor: props.backgroundColor}}>
+      <Text style={styles.visaSign}>Visa</Text>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   viewContainer: {
     // alignItems: 'center',
@@ -93,5 +156,43 @@ const styles = StyleSheet.create({
   },
   thumbList: {
     marginTop: 8,
+  },
+  bulletList: {
+    marginTop: 8,
+    alignSelf: 'center',
+  },
+  bullet: {
+    width: 12,
+    height: 12,
+    marginHorizontal: 6,
+    borderRadius: 20,
+  },
+  activeBullet: {
+    backgroundColor: '#5EB330',
+  },
+  normalBullet: {
+    backgroundColor: '#83899D',
+  },
+  cardContainer: {},
+  cardImagePart: {
+    width: 280,
+    height: 170,
+    borderRadius: 10,
+  },
+  cardInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    width: '100%',
+    paddingHorizontal: 16,
+    bottom: 18,
+  },
+  visaSign: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+    fontStyle: 'italic',
+    marginLeft: 17,
+    marginTop: 16,
   },
 });

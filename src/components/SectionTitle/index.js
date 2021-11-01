@@ -57,15 +57,14 @@ export const SmallLine = props => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingVertical: props.paddingVertical ? props.paddingVertical : 14,
-        borderColor: '#EBEFF1',
+        borderColor: props.borderColor ? props.borderColor : '#EBEFF1',
         borderBottomWidth: props.bottomBorder ? 1 : 0,
         borderTopWidth: props.topBorder ? 1 : 0,
         width: props.width ? props.width : '100%',
       }}>
       <Text
         style={{
-          fontFamily: 'HelveticaNeueCyr',
-          fontSize: props.titleSize,
+          fontSize: props.titleSize ? props.titleSize : 13,
           fontWeight: props.bold ? 'bold' : '500',
           color: props.titleColor ? props.titleColor : colors.tn,
         }}>
@@ -73,7 +72,6 @@ export const SmallLine = props => {
       </Text>
       <Text
         style={{
-          fontFamily: 'HelveticaNeueCyr',
           fontSize: props.valueSize ? props.valueSize : 13,
           fontWeight: props.normal ? '500' : 'bold',
           color: props.valueColor ? props.valueColor : '#000',
