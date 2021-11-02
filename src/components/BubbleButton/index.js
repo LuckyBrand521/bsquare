@@ -91,7 +91,12 @@ export const ContinueBottomBtn = props => {
 export const BorderedButton = props => {
   return (
     <TouchableOpacity
-      style={{...globalStyles.closeButton, borderColor: props.borderColor}}
+      style={{
+        ...globalStyles.borderedBtn,
+        borderColor: props.borderColor,
+        borderWidth: props.borderColor ? 1 : 0,
+        marginTop: props.marginTop ? props.marginTop : 0,
+      }}
       onPress={props.onPress}>
       <Text
         style={{color: props.captionColor, fontSize: 16, fontWeight: 'bold'}}>

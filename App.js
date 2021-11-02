@@ -13,6 +13,7 @@ import {Provider} from 'react-redux';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ThemeProvider} from 'react-native-elements';
 import {DefaultTheme, DarkTheme} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {store} from './src/redux/store';
 import {LogBox} from 'react-native';
 import {lightTheme, darkTheme} from './src/utils/constants';
@@ -21,13 +22,15 @@ LogBox.ignoreAllLogs(); //Ignore all log notifications
 const theme = darkTheme;
 const App = () => {
   return (
-    <Provider store={store}>
-      <PaperProvider>
-        <ThemeProvider theme={darkTheme}>
-          <StackNavigation />
-        </ThemeProvider>
-      </PaperProvider>
-    </Provider>
+    <NavigationContainer>
+      <Provider store={store}>
+        <PaperProvider>
+          <ThemeProvider theme={darkTheme}>
+            <StackNavigation />
+          </ThemeProvider>
+        </PaperProvider>
+      </Provider>
+    </NavigationContainer>
   );
 };
 

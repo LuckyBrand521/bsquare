@@ -14,10 +14,8 @@ import {
 } from 'react-native';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/Feather';
-import Pie from 'react-native-pie';
 import {Paragraph} from 'react-native-paper';
 import {LineChart} from 'react-native-chart-kit';
-import Dash from 'react-native-dash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 //custom components

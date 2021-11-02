@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {ThemeContext} from 'react-native-elements';
@@ -10,7 +10,7 @@ export const ListItemWithArrow = props => {
   const theme = useContext(ThemeContext).theme;
   return (
     <View style={styles(theme).item}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={props.onPress}>
         <Text style={styles(theme).normalText}>{props.content}</Text>
       </TouchableOpacity>
       <Icon
@@ -53,15 +53,19 @@ export const ListItemWithPrice = props => {
 
 export const ListItemWithSwitch = props => {
   const theme = useContext(ThemeContext).theme;
+  const [isOn, setIsOn] = useState(props.isOn);
   return (
-    <View style={styles(theme).item}>
+    <View
+      style={{...styles(theme).item, marginHorizontal: 0, paddingVertical: 16}}>
       <Text style={styles(theme).normalText}>{props.content}</Text>
       <ToggleSwitch
-        isOn={false}
+        isOn={isOn}
         onColor="#5AC53A"
-        offColor="white"
+        offColor={theme.colors.text_secondary}
         size="large"
-        // onToggle={isOn => console.log('changed to : ', isOn)}
+        onToggle={isOn => {
+          setIsOn(isOn);
+        }}
       />
     </View>
   );
@@ -69,13 +73,24 @@ export const ListItemWithSwitch = props => {
 
 export const ListItemWithImage = props => {
   const theme = useContext(ThemeContext).theme;
-  <View style={styles(theme).item}>
-    <View style={styles(theme).flexRow}>
-      <SingleFeature iconName={props.iconName} />
-      <Text style={styles(theme).normalText}>{props.content}</Text>
-    </View>
-    <Icon name="chevron-right" size={12} color="#5AC53A" />
-  </View>;
+  return (
+    <TouchableOpacity
+      style={{...styles(theme).item, paddingVertical: 0, marginHorizontal: 0}}>
+      <View style={styles(theme).flexRow}>
+        <SingleFeature
+          faIcon={props.faIcon}
+          iconName={props.iconName}
+          onPress={() => {}}
+          backgroundColor="transparent"
+          border={false}
+        />
+        <Text style={{...styles(theme).normalText, fontWeight: '700'}}>
+          {props.content}
+        </Text>
+      </View>
+      <Icon name="chevron-right" size={24} color="#5AC53A" />
+    </TouchableOpacity>
+  );
 };
 
 export const ListItemThree = props => {
@@ -113,7 +128,7 @@ const styles = theme =>
       marginHorizontal: 16,
     },
     normalText: {
-      fontWeight: '800',
+      fontWeight: '700',
       fontSize: 13,
       color: theme.colors.text_primary,
     },

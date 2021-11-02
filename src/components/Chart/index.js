@@ -17,7 +17,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import Pie from 'react-native-pie';
 import {Paragraph} from 'react-native-paper';
 import {LineChart} from 'react-native-chart-kit';
-import Dash from 'react-native-dash';
 //custom components
 import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
 import {BlackRoundButton} from '../../components/BubbleButton';

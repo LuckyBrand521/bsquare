@@ -42,7 +42,12 @@ export const CreditCard = props => {
   return (
     <View style={styles(theme).cardContainer}>
       <View
-        style={styles(theme).cardImagePart}
+        style={{
+          ...styles(theme).cardImagePart,
+          backgroundColor: props.backgroundColor
+            ? props.backgroundColor
+            : theme.colors.background_secondary,
+        }}
         resizeMode={'stretch'}
         source={cardImage}>
         <Text style={styles(theme).visaSign}>Visa</Text>
@@ -139,7 +144,6 @@ const styles = theme =>
       width: 280,
       height: 170,
       borderRadius: 10,
-      backgroundColor: theme.colors.background_secondary,
     },
     cardInfo: {
       flexDirection: 'row',

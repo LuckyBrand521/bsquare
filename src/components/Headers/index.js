@@ -26,7 +26,11 @@ export const NavigationHeader = props => {
       <Text style={styles(theme.theme).time}>
         {props.title ? props.title : ''}
       </Text>
-      <Icon name="bookmark-o" size={20} style={{color: '#67C431'}} />
+      <Icon
+        name="bookmark-o"
+        size={20}
+        style={{color: '#67C431', marginLeft: 24}}
+      />
     </View>
   );
 };

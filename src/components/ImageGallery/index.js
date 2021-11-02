@@ -6,8 +6,10 @@ import {
   Dimensions,
   FlatList,
   StyleSheet,
+  Text,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/Feather';
 
 //custom styles
 import {colors, measures} from '../../styles/colors.js';
@@ -87,11 +89,12 @@ export const ImageGallery = props => {
 };
 
 export const CardTemplateGallery = props => {
-  const [indexSelected, setIndexSelected] = useState(1);
+  const [indexSelected, setIndexSelected] = useState(props.tempId);
   const carouselRef = useRef();
-  const colors = ['#5EB330', '#83899D', '#C55739'];
+  const colors = ['#5EB330', '#2A2E3B', '#C55739'];
   const onSelect = indexSelected => {
     setIndexSelected(indexSelected);
+    props.handleChange(indexSelected);
   };
   const onTouchThumbnail = touched => {
     if (touched === indexSelected) {
@@ -100,16 +103,16 @@ export const CardTemplateGallery = props => {
     carouselRef?.current?.snapToItem(touched);
   };
   return (
-    <View style={styles.viewContainer}>
+    <View>
       <Carousel
         ref={carouselRef}
         layout="default"
         data={props.items}
-        sliderWidth={wp('60%')}
-        itemWidth={wp('60%') - 32}
+        sliderWidth={wp('100%')}
+        itemWidth={wp('70%')}
         onSnapToItem={index => onSelect(index)}
         renderItem={({item, index}) => (
-          <cardItem key={index} backgroundColor={colors[index]} />
+          <CardItem key={index} backgroundColor={colors[index]} />
         )}
       />
       <FlatList
@@ -141,11 +144,12 @@ export const CardTemplateGallery = props => {
   );
 };
 
-const cardItem = props => {
+const CardItem = props => {
   return (
     <View
       style={{...styles.cardImagePart, backgroundColor: props.backgroundColor}}>
       <Text style={styles.visaSign}>Visa</Text>
+      <Icon name="check" color="white" size={24} style={styles.checkIcon} />
     </View>
   );
 };
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   bulletList: {
-    marginTop: 8,
+    marginTop: 16,
     alignSelf: 'center',
   },
   bullet: {
@@ -194,5 +198,16 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginLeft: 17,
     marginTop: 16,
+  },
+  checkIcon: {
+    backgroundColor: '#5EB330',
+    borderRadius: 100,
+    width: 30,
+    height: 30,
+    paddingTop: 3,
+    textAlign: 'center',
+    position: 'absolute',
+    right: 20,
+    top: 20,
   },
 });

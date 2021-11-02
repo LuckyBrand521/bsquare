@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, Image, TextInput} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {globalStyles} from '../../styles/global';
@@ -36,15 +36,27 @@ export const DropdownSelect = props => {
 
 export const AmountInput = props => {
   const [value, setValue] = useState(props.val);
+  useEffect(() => {
+    console.log(value);
+  }, []);
   return (
     <View style={{width: '48%'}}>
       <Text style={globalStyles.labeln}>{props.caption}</Text>
       <TextInput
         editable={props.disabled ? false : true}
-        style={styles.textInput}
+        style={{
+          ...styles.textInput,
+          backgroundColor: props.backgroundColor
+            ? props.backgroundColor
+            : styles.textInput.backgroundColor,
+          color: props.textColor ? props.textColor : styles.textInput.color,
+        }}
         value={value}
-        onChange={setValue}
-        keyboardType="phone-pad"
+        onChangeText={res => {
+          props.onChange(res);
+          setValue(Number(res));
+        }}
+        keyboardType="number-pad"
       />
     </View>
   );

@@ -12,7 +12,6 @@ import {
 import styled from 'styled-components';
 import {Paragraph} from 'react-native-paper';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Dash from 'react-native-dash';
 //custom components
 import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
 import {NavigationHeader} from '../../components/Headers';

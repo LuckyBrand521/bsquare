@@ -48,7 +48,7 @@ const {width, height} = Dimensions.get('window');
 //test data
 import {newsList, earningList} from '../../store/datalist';
 
-function SpendingHomeScreen({navigation}) {
+function SpendingHomeScreen(props) {
   const theme = useContext(ThemeContext).theme;
   const [activites, setActivities] = useState([
     {name: 'Apple Store', amount: 500, date: 1635534281},
@@ -89,8 +89,8 @@ function SpendingHomeScreen({navigation}) {
         <View style={styles(theme).cardView}>
           <AddCardBtn
             onPress={() => {
-              // navigation.goBack();
-              navigation.navigate('CreateNewCardScreen');
+              // props.navigation.goBack();
+              props.navigation.navigate('CreateNewCardScreen');
             }}
             style={styles(theme).addBtn}
           />
@@ -100,9 +100,14 @@ function SpendingHomeScreen({navigation}) {
             expireDate={userInfo.card_info.expiration_date}
           />
         </View>
-        <CardFeatureLinks />
+        <CardFeatureLinks navigation={props.navigation} />
         <View>
-          <ListItemWithArrow content="Activate Card" />
+          <ListItemWithArrow
+            onPress={() => {
+              props.navigation.navigate('ActivateCardScreen');
+            }}
+            content="Activate Card"
+          />
           <ListItemWithArrow content="Set a PIN Number" />
         </View>
         <View style={{marginTop: 16}}>
@@ -202,7 +207,7 @@ function SpendingHomeScreen({navigation}) {
             backgroundColor={theme.colors.green}
             textColor={theme.colors.text_primary}
             onPress={() => {
-              console.log('sdf');
+              props.navigation.navigate('WithdrawScreen');
             }}
           />
           <FunctionalButton

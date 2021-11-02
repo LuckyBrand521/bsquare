@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
-import {Icon as FAIcon} from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export const CardFeatureLinks = props => {
   const theme = useContext(ThemeContext).theme;
@@ -10,7 +10,13 @@ export const CardFeatureLinks = props => {
     <View style={styles(theme).btnContainer}>
       <SingleFeature iconName="map-pin" title="Find an ATM" />
       <SingleFeature iconName="alert-circle" title="Report a Problem" />
-      <SingleFeature iconName="repeat" title="Transfer" />
+      <SingleFeature
+        onPress={() => {
+          props.navigation.navigate('TransferChoiceScreen');
+        }}
+        iconName="repeat"
+        title="Transfer"
+      />
     </View>
   );
 };
@@ -18,10 +24,18 @@ export const CardFeatureLinks = props => {
 export const SingleFeature = props => {
   const theme = useContext(ThemeContext).theme;
   return (
-    <TouchableOpacity style={styles(theme).singleFeature}>
+    <TouchableOpacity
+      style={{
+        ...styles(theme).singleFeature,
+        backgroundColor: props.backgroundColor
+          ? props.backgroundColor
+          : theme.colors.background_secondary,
+        borderWidth: props.border ? 1 : 0,
+      }}
+      onPress={props.onPress}>
       <View style={styles(theme).iconContainer}>
         {props.faIcon && (
-          <FAIcon name={props.iconName} color="#5AC53A" size={24} />
+          <FontAwesome name={props.iconName} color="#5AC53A" size={24} />
         )}
         {!props.faIcon && (
           <Icon name={props.iconName} color="#5AC53A" size={24} />
@@ -54,8 +68,8 @@ const styles = theme =>
       borderColor: 'red',
       justifyContent: 'center',
       alignItems: 'center',
-      width: 40,
-      height: 40,
+      width: 45,
+      height: 45,
       backgroundColor: theme.colors.text_primary,
     },
     iconTitle: {
