@@ -80,40 +80,44 @@ export const GoalListItemCard = props => {
   const theme = useContext(ThemeContext).theme;
   return (
     <DropShadow style={styles(theme).dropShadowStyle}>
-      <Card style={{...styles(theme).card, width: props.width}}>
-        <Image
-          source={{uri: props.uri}}
-          style={{
-            width: props.imageWidth,
-            height: props.imageHeight,
-            borderRadius: 10,
-            marginTop: 5,
-          }}
-        />
-        <Card.Content style={{paddingLeft: 7}}>
-          <View>
-            <SmallLine
-              bold
-              paddingVertical={12}
-              title={props.title}
-              titleSize={measures.side}
-              titleColor={theme.colors.text_primary}
-              valueColor={theme.colors.text_primary}
-              value={props.value}
-            />
-            <CustomProgressBar
-              backgroundColor={theme.colors.background_third}
-              val={props.percent / 100}
-              color={theme.colors.green}
-              textColor={theme.colors.text_secondary}
-              text={`${props.percent}%`}
-              barHeight={6}
-              width={260}
-            />
-            <Text style={styles(theme).graylabel}>{props.dates} Days Left</Text>
-          </View>
-        </Card.Content>
-      </Card>
+      <TouchableOpacity onPress={props.onPress}>
+        <Card style={{...styles(theme).card, width: props.width}}>
+          <Image
+            source={{uri: props.uri}}
+            style={{
+              width: props.imageWidth,
+              height: props.imageHeight,
+              borderRadius: 10,
+              marginTop: 5,
+            }}
+          />
+          <Card.Content style={{paddingLeft: 7}}>
+            <View>
+              <SmallLine
+                bold
+                paddingVertical={12}
+                title={props.title}
+                titleSize={measures.side}
+                titleColor={theme.colors.text_primary}
+                valueColor={theme.colors.text_primary}
+                value={props.value}
+              />
+              <CustomProgressBar
+                backgroundColor={theme.colors.background_third}
+                val={props.percent / 100}
+                color={theme.colors.green}
+                textColor={theme.colors.text_secondary}
+                text={`${props.percent}%`}
+                barHeight={6}
+                width={260}
+              />
+              <Text style={styles(theme).graylabel}>
+                {props.dates} Days Left
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
     </DropShadow>
   );
 };

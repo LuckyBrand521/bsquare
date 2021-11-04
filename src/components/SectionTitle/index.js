@@ -81,3 +81,55 @@ export const SmallLine = props => {
     </View>
   );
 };
+
+export const TwoColSmallLine = props => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: props.paddingVertical ? props.paddingVertical : 14,
+        borderColor: props.borderColor ? props.borderColor : '#EBEFF1',
+        borderBottomWidth: props.bottomBorder ? 1 : 0,
+        borderTopWidth: props.topBorder ? 1 : 0,
+        width: props.width ? props.width : '100%',
+      }}>
+      <View>
+        <Text
+          style={{
+            fontSize: props.titleSize ? props.titleSize : 13,
+            fontWeight: props.bold ? 'bold' : '500',
+            color: props.titleColor ? props.titleColor : colors.tn,
+          }}>
+          {props.title1}
+        </Text>
+        <Text
+          style={{
+            fontSize: props.valueSize ? props.valueSize : 13,
+            fontWeight: props.normal ? '500' : 'bold',
+            color: props.valueColor ? props.valueColor : '#000',
+          }}>
+          {props.value1}
+        </Text>
+      </View>
+      <View>
+        <Text
+          style={{
+            fontSize: props.titleSize ? props.titleSize : 13,
+            fontWeight: props.bold ? 'bold' : '500',
+            color: props.titleColor ? props.titleColor : colors.tn,
+          }}>
+          {props.title2}
+        </Text>
+        <Text
+          style={{
+            fontSize: props.valueSize ? props.valueSize : 13,
+            fontWeight: props.normal ? '500' : 'bold',
+            color: props.valueColor ? props.valueColor : '#000',
+          }}>
+          {props.value2}
+        </Text>
+      </View>
+    </View>
+  );
+};

@@ -96,6 +96,9 @@ export const BorderedButton = props => {
         borderColor: props.borderColor,
         borderWidth: props.borderColor ? 1 : 0,
         marginTop: props.marginTop ? props.marginTop : 0,
+        backgroundColor: props.backgroundColor
+          ? props.backgroundColor
+          : globalStyles.borderedBtn.backgroundColor,
       }}
       onPress={props.onPress}>
       <Text
@@ -129,6 +132,14 @@ export const FunctionalButton = props => {
   );
 };
 
+export const FinishButton = props => {
+  return (
+    <TouchableOpacity style={styles.finishButton} onPress={props.onPress}>
+      <Text style={props.captionStyle}>{props.caption}</Text>
+    </TouchableOpacity>
+  );
+};
+
 const calcRadius = varList => {
   const minRadius = 40;
   return varList;
@@ -143,5 +154,17 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     borderWidth: 1,
     marginBottom: 16,
+  },
+  finishButton: {
+    borderRadius: 500,
+    borderWidth: 1,
+    borderColor: '#5EB330',
+    width: 152,
+    height: 152,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 40,
   },
 });

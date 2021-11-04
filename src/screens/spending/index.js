@@ -13,30 +13,19 @@ import {
 //custom components
 import {
   SectionTitle,
-  MoneyTitle,
   PanelTitle,
   SmallLine,
 } from '../../components/SectionTitle';
 import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
-import {
-  BubbleButton,
-  BlackRoundButton,
-  FunctionalButton,
-} from '../../components/BubbleButton';
-import {ProfitLabel} from '../../components/ProfitLabel';
-import {NewsCard, EarningCard} from '../../components/Card';
+import {FunctionalButton} from '../../components/BubbleButton';
 import {
   CreditCard,
   AddCardBtn,
   GoalListItemCard,
 } from '../../components/Card/creditcard';
 import {CardFeatureLinks} from '../../components/CardFeatureLinks';
-import {
-  ListItemWithArrow,
-  ListItemWithOutArrow,
-  ListItemWithPrice,
-} from '../../components/ListItem';
+import {ListItemWithArrow, ListItemWithPrice} from '../../components/ListItem';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
@@ -46,7 +35,6 @@ import {
 } from 'react-native-responsive-screen';
 const {width, height} = Dimensions.get('window');
 //test data
-import {newsList, earningList} from '../../store/datalist';
 
 function SpendingHomeScreen(props) {
   const theme = useContext(ThemeContext).theme;
@@ -57,6 +45,7 @@ function SpendingHomeScreen(props) {
   ]);
   const [goals, setGoals] = useState([
     {
+      id: 0,
       uri: 'https://picsum.photos/700',
       title: 'Tesla Model S',
       dates: 30,
@@ -64,6 +53,7 @@ function SpendingHomeScreen(props) {
       total: 10000,
     },
     {
+      id: 1,
       uri: 'https://picsum.photos/700',
       title: 'Tesla Model S',
       dates: 30,
@@ -72,6 +62,9 @@ function SpendingHomeScreen(props) {
     },
   ]);
   const userInfo = useSelector(state => state.portfolios.userInfo);
+  const viewGoalDetail = id => {
+    props.navigation.navigate('GoalDetailScreen', {goalId: id});
+  };
   return (
     <SafeAreaView
       style={{
@@ -79,7 +72,7 @@ function SpendingHomeScreen(props) {
         backgroundColor: theme.colors.background_primary,
       }}>
       <ScrollView>
-        <SectionTitle title="Cash" color="#F5F7F8" fontSize={30} />
+        <SectionTitle title="Cash" color="#F5F7F8" fontSize={34} />
         <View style={styles(theme).flexRow}>
           <Text style={styles(theme).text}>Purchase Power</Text>
           <Text style={[styles(theme).text, styles(theme).balanceLabel]}>
@@ -216,7 +209,7 @@ function SpendingHomeScreen(props) {
             borderColor={theme.colors.green}
             textColor={theme.colors.green}
             onPress={() => {
-              console.log('sdf');
+              props.navigation.navigate('DepositInterestAccountScreen');
             }}
           />
         </View>
@@ -237,6 +230,9 @@ function SpendingHomeScreen(props) {
                 value={`$${(item.total * item.percent) / 100}/$${item.total}`}
                 imageWidth={300}
                 imageHeight={150}
+                onPress={() => {
+                  viewGoalDetail(index);
+                }}
               />
             );
           })}
@@ -248,7 +244,7 @@ function SpendingHomeScreen(props) {
           borderColor={theme.colors.green}
           textColor={theme.colors.green}
           onPress={() => {
-            console.log('sdf');
+            props.navigation.navigate('GoalCatogorySelectScreen');
           }}
         />
       </ScrollView>

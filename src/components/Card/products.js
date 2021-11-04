@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
+import Pie from 'react-native-pie';
 import {colors, measures} from '../../styles/colors';
 import {globalStyles} from '../../styles/global';
 
@@ -97,3 +98,40 @@ export const HighlightVertical = props => {
     </View>
   );
 };
+
+export const GoalWithRing = props => {
+  return (
+    <View style={{width: props.radius * 2, alignItems: 'center'}}>
+      <Image
+        source={props.image}
+        style={{
+          ...styles.roundImage,
+          width: props.radius * 2 - 16,
+          height: props.radius * 2 - 16,
+          top: 8,
+        }}
+      />
+      <Pie
+        radius={props.radius}
+        innerRadius={props.radius - 4}
+        sections={[
+          {
+            percentage: props.value,
+            color: '#5AC53A',
+          },
+        ]}
+        backgroundColor="#83899D"
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  ringContainer: {},
+  roundImage: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 200,
+  },
+});

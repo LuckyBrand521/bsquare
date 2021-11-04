@@ -1,30 +1,14 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  Dimensions,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/Feather';
+import LottieView from 'lottie-react-native';
 
 //custom components
-import {CreditCard} from '../../../components/Card/creditcard';
-import {CardTemplateGallery} from '../../../components/ImageGallery';
 import {NavigationHeader} from '../../../components/Headers';
 import {SectionTitle, SmallLine} from '../../../components/SectionTitle';
-import {DropdownSelect, AmountInput} from '../../../components/Inputs';
-import {
-  BorderedButton,
-  ContinueBottomBtn,
-} from '../../../components/BubbleButton';
+import {AmountInput} from '../../../components/Inputs';
+import {ContinueBottomBtn} from '../../../components/BubbleButton';
 import {
   ListItemWithImage,
   ListItemWithSwitch,
@@ -147,6 +131,125 @@ export const WithdrawCompleteScreen = props => {
           props.navigation.goBack();
         }}
       />
+      <View style={styles(theme).animView}>
+        <LottieView
+          source={require('../../../assets/animations/withdraw2.json')}
+          autoPlay
+          loop={false}
+          style={{alignSelf: 'center'}}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export const DepositInterestAccountScreen = props => {
+  const theme = useContext(ThemeContext).theme;
+  const [amount, setAmount] = useState(0);
+  const handleAmount = res => {
+    setAmount(res);
+  };
+  return (
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
+      <NavigationHeader
+        title="Add to Interest Account"
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+      />
+      <View style={styles(theme).paddingHor16}>
+        <SmallLine
+          bottomBorder
+          borderColor={theme.colors.text_secondary}
+          titleColor={theme.colors.text_secondary}
+          valueColor={theme.colors.text_primary}
+          title="Payment"
+          value="Monthly"
+        />
+        <SmallLine
+          bottomBorder
+          borderColor={theme.colors.text_secondary}
+          titleColor={theme.colors.text_secondary}
+          valueColor={theme.colors.text_primary}
+          title="Next Pay Date"
+          value="Dec 12, 2021"
+        />
+        <View style={styles(theme).twoCols}>
+          <SmallLine
+            bottomBorder
+            borderColor={theme.colors.text_secondary}
+            titleColor={theme.colors.text_secondary}
+            valueColor={theme.colors.text_primary}
+            title="APY"
+            value="1.8%"
+            width="45%"
+          />
+          <SmallLine
+            bottomBorder
+            borderColor={theme.colors.text_secondary}
+            titleColor={theme.colors.text_secondary}
+            valueColor={theme.colors.text_primary}
+            title="Withdraw"
+            value="Anytime"
+            width="45%"
+          />
+        </View>
+      </View>
+      <View style={{...styles(theme).inputBox, marginTop: 16}}>
+        <AmountInput
+          caption=""
+          backgroundColor={theme.colors.background_secondary}
+          textColor={theme.colors.text_primary}
+          val={200}
+          onChange={handleAmount}
+        />
+      </View>
+      <View style={styles(theme).continueBtn}>
+        <ContinueBottomBtn
+          content="Submit"
+          onPress={() => {
+            props.navigation.navigate('DepositInterestAccountComplete', {
+              amount: Number(amount),
+            });
+          }}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export const DepositInterestAccountComplete = props => {
+  const theme = useContext(ThemeContext).theme;
+  const amount = props.route.params.amount;
+  useEffect(() => {
+    setTimeout(() => {
+      props.navigation.navigate('SpendingHomeScreen');
+    }, 5000);
+  }, []);
+  return (
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
+      <NavigationHeader
+        title=""
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+      />
+      <View style={styles(theme).animView}>
+        <LottieView
+          source={require('../../../assets/animations/piggy.json')}
+          autoPlay
+          loop={false}
+          style={{alignSelf: 'center'}}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -155,6 +258,7 @@ const styles = theme =>
   StyleSheet.create({
     transferOptions: {
       marginHorizontal: 16,
+      marginTop: 20,
     },
     transferInfo: {
       marginHorizontal: 16,
@@ -171,5 +275,19 @@ const styles = theme =>
       position: 'absolute',
       bottom: 0,
       width: '100%',
+    },
+    animView: {
+      height: '90%',
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paddingHor16: {
+      paddingHorizontal: 16,
+      marginTop: 16,
+    },
+    twoCols: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
   });

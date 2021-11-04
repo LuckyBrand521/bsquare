@@ -51,6 +51,21 @@ export const ListItemWithPrice = props => {
   );
 };
 
+export const ListItemWithPriceDate = props => {
+  const theme = useContext(ThemeContext).theme;
+  return (
+    <View style={{...styles(theme).item, paddingVertical: 10}}>
+      <View style={{...styles(theme).flexBetween, width: '100%'}}>
+        <View>
+          <Text style={styles(theme).itemText}>{props.content}</Text>
+          <Text style={styles(theme).grayText}>{cvtDate(props.time)}</Text>
+        </View>
+        <Text style={styles(theme).itemText}>${props.price}</Text>
+      </View>
+    </View>
+  );
+};
+
 export const ListItemWithSwitch = props => {
   const theme = useContext(ThemeContext).theme;
   const [isOn, setIsOn] = useState(props.isOn);
@@ -95,14 +110,49 @@ export const ListItemWithImage = props => {
 
 export const ListItemThree = props => {
   const theme = useContext(ThemeContext).theme;
-  <View style={styles(theme).threeColumn} />;
+  return (
+    <TouchableOpacity
+      style={{
+        ...styles(theme).threeColumn,
+        borderBottomColor: props.bordered
+          ? theme.colors.background_third
+          : 'transparent',
+        borderBottomWidth: props.bordered ? 1 : 0,
+      }}
+      onPress={props.onPress}>
+      <Text style={styles(theme).normalLabel}>{props.value[0]}</Text>
+      <Text style={styles(theme).normalLabel}>{props.value[1]}</Text>
+      <Text style={styles(theme).normalLabel}>{props.value[2]}</Text>
+    </TouchableOpacity>
+  );
+};
+
+export const ListItemThree2 = props => {
+  const theme = useContext(ThemeContext).theme;
+  return (
+    <View
+      style={{
+        ...styles(theme).threeColumn,
+        borderBottomColor: props.bordered
+          ? theme.colors.background_third
+          : 'transparent',
+        borderBottomWidth: props.bordered ? 1 : 0,
+      }}>
+      <Text style={styles(theme).normalsmallLabel}>{props.value[0]}</Text>
+      <Text style={styles(theme).normalsmallLabel}>{props.value[1]}</Text>
+      <Text style={styles(theme).normalsmallLabel}>{props.value[2]}</Text>
+    </View>
+  );
 };
 
 const cvtTime = time => {
   const f = new Date(time);
   return f.toLocaleString();
 };
-
+const cvtDate = time => {
+  const f = new Date(time);
+  return f.toDateString();
+};
 const styles = theme =>
   StyleSheet.create({
     item: {
@@ -119,6 +169,7 @@ const styles = theme =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      paddingVertical: 10,
     },
     borderedItem: {
       alignItems: 'center',
@@ -131,6 +182,16 @@ const styles = theme =>
       fontWeight: '700',
       fontSize: 13,
       color: theme.colors.text_primary,
+    },
+    normalLabel: {
+      fontWeight: '400',
+      fontSize: 16,
+      color: theme.colors.text_primary,
+    },
+    normalsmallLabel: {
+      fontWeight: '400',
+      fontSize: 13,
+      color: theme.colors.text_secondary,
     },
     itemText: {
       fontWeight: '600',

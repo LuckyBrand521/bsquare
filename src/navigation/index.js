@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View, Image, StatusBar, Text, TouchableOpacity} from 'react-native';
 import {withTheme} from 'react-native-elements';
+import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -26,10 +27,35 @@ import {
   ActivateCardScreen,
 } from '../screens/spending/credit-card';
 import {
+  ReportChoiseScreen,
+  FindATMScreen,
+} from '../screens/spending/credit-card/report';
+import {
   TransferChoiceScreen,
   WithdrawScreen,
   WithdrawCompleteScreen,
+  DepositInterestAccountScreen,
+  DepositInterestAccountComplete,
 } from '../screens/spending/transfer';
+import {
+  GoalCatogorySelectScreen,
+  CreateGoalWhereScreen,
+  CreateGoalAmountScreen,
+  CreateGoalDateScreen,
+  CreateGoalPrepayConfirmScreen,
+  CreateGoalPrepayScreen,
+  CreateNewGoalPayMethodScreen,
+  CreateNewGoalCompleteScreen,
+} from '../screens/spending/goals';
+import {
+  GoalDetailScreen,
+  BoostGoalInvestScreen,
+  BoostSubscribeScreen,
+  BoostMethodScreen,
+  BoostReceiptScreen,
+  BoostCompleteScreen,
+} from '../screens/spending/goals/edit';
+import {BorrowingHomeScreen} from '../screens/borrowing';
 
 //custom styles
 import navigationStyles from './style.js';
@@ -43,7 +69,7 @@ const StackNavigation = props => {
     <Stack.Navigator
       animationEnabled
       // headerMode="none"
-      mode="card"
+      presentation="transparentModal"
       screenOptions={{
         headerShown: false,
       }}>
@@ -72,11 +98,76 @@ const StackNavigation = props => {
         name="WithdrawComplete"
         component={WithdrawCompleteScreen}
       />
+      <Stack.Screen
+        name="DepositInterestAccountScreen"
+        component={DepositInterestAccountScreen}
+      />
+      <Stack.Screen
+        name="DepositInterestAccountComplete"
+        component={DepositInterestAccountComplete}
+      />
+      <Stack.Screen
+        name="GoalCatogorySelectScreen"
+        component={GoalCatogorySelectScreen}
+      />
+      <Stack.Screen
+        name="CreateGoalWhereScreen"
+        component={CreateGoalWhereScreen}
+      />
+      <Stack.Screen
+        name="CreateGoalAmountScreen"
+        component={CreateGoalAmountScreen}
+      />
+      <Stack.Screen
+        name="CreateGoalDateScreen"
+        component={CreateGoalDateScreen}
+      />
+      <Stack.Screen
+        name="CreateGoalPrepayConfirmScreen"
+        component={CreateGoalPrepayConfirmScreen}
+      />
+      <Stack.Screen
+        name="CreateGoalPrepayScreen"
+        component={CreateGoalPrepayScreen}
+      />
+      <Stack.Screen
+        name="CreateNewGoalPayMethodScreen"
+        component={CreateNewGoalPayMethodScreen}
+      />
+      <Stack.Screen
+        name="CreateNewGoalCompleteScreen"
+        component={CreateNewGoalCompleteScreen}
+      />
+      {/* spending-goal-edit screens */}
+      <Stack.Screen name="GoalDetailScreen" component={GoalDetailScreen} />
+      <Stack.Screen
+        name="BoostGoalInvestScreen"
+        component={BoostGoalInvestScreen}
+      />
+      <Stack.Screen
+        name="BoostSubscribeScreen"
+        component={BoostSubscribeScreen}
+      />
+      <Stack.Screen name="BoostMethodScreen" component={BoostMethodScreen} />
+      <Stack.Screen name="BoostReceiptScreen" component={BoostReceiptScreen} />
+      <Stack.Screen
+        name="BoostCompleteScreen"
+        component={BoostCompleteScreen}
+      />
+      {/* spending-report screens */}
+      <Stack.Screen name="ReportChoiseScreen" component={ReportChoiseScreen} />
+      <Stack.Screen name="FindATMScreen" component={FindATMScreen} />
+      {/* borrowing screens */}
+      <Stack.Screen
+        name="BorrowingHomeScreen"
+        component={BorrowingHomeScreen}
+      />
     </Stack.Navigator>
   );
 };
 
 export const TabNavigation = () => {
+  const theme = React.useContext(ThemeContext).theme;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -85,7 +176,7 @@ export const TabNavigation = () => {
         tabBarStyle: {
           paddingVertical: Platform.OS === 'ios' ? 20 : 20,
           height: 60,
-          backgroundColor: '#000',
+          backgroundColor: theme.colors.background_primary,
           borderTopWidth: 0,
         },
       }}>
@@ -226,7 +317,7 @@ export const TabNavigation = () => {
           },
         }}
         name="Loans"
-        component={SettingsScreen}
+        component={BorrowingHomeScreen}
       />
       <Tab.Screen
         options={{

@@ -8,8 +8,20 @@ export const CardFeatureLinks = props => {
   const theme = useContext(ThemeContext).theme;
   return (
     <View style={styles(theme).btnContainer}>
-      <SingleFeature iconName="map-pin" title="Find an ATM" />
-      <SingleFeature iconName="alert-circle" title="Report a Problem" />
+      <SingleFeature
+        iconName="map-pin"
+        onPress={() => {
+          props.navigation.navigate('FindATMScreen');
+        }}
+        title="Find an ATM"
+      />
+      <SingleFeature
+        iconName="alert-circle"
+        onPress={() => {
+          props.navigation.navigate('ReportChoiseScreen');
+        }}
+        title="Report a Problem"
+      />
       <SingleFeature
         onPress={() => {
           props.navigation.navigate('TransferChoiceScreen');
