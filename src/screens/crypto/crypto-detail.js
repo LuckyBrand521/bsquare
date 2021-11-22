@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
@@ -7,10 +7,9 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import {useSharedValue} from 'react-native-reanimated';
 // import Icon from 'react-native-vector-icons/AntDesign';
-import styled from 'styled-components';
-import {Paragraph} from 'react-native-paper';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   widthPercentageToDP as wp,
@@ -32,85 +31,108 @@ import {AnalystRatings} from '../../components/Chart';
 import {AnalysisTag} from '../../components/AnalysisTag';
 import SVGLineChart from '../../components/LineChart';
 import CoinPerformanceView from '../../components/CoinPerformanceView';
+
 //custom styles
 import {investmentStyles, cryptoStyles} from '../../styles/investment';
 
-import {analList, cryptoPerformanceList} from '../../store/datalist';
-import {getCryptoNews, getChartsFromCMC} from '../../utils/thirdapi';
 import {
-  calcCryptosDayChange,
-  updateCryptoNewsOnDB,
-  getCryptoNewsFromDB,
-} from '../../utils/utils';
+  getCryptoNews,
+  getChartsFromCMC,
+  getCryptoQuoteFromCMC,
+} from '../../utils/thirdapi';
+import {getReportFromYahoo} from '../../utils/common';
 
-const CryptoDetailScreen = ({navigation}) => {
-  const x = useSharedValue(0);
+const CryptoDetailScreen = props => {
+  const theme = useContext(ThemeContext).theme;
+  const coinId = props.route.params.coinId;
+  const coinSymbol = props.route.params.coinSymbol.toUpperCase();
+  const coinAmount = props.route.params.coinAmount;
+  const [currentInfo, setCurrentInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [newsList, setNewsList] = useState([]);
   const [analData, setAnalData] = useState([]);
+  const [analList, setAnalList] = useState([]);
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
   const refRBSheet4 = useRef();
   const refRBSheet5 = useRef();
-  const [chartData, setChartData] = useState({});
   const [graphData, setGraphData] = useState([]);
-  const portfolio = useSelector(state => state.portfolios.cryptoPortfolio);
-  const userInfo = useSelector(state => state.portfolios.userInfo);
 
   // const touch = useRef(new Animated.ValueXY({x: -2, y: 0})).current;
-
   useEffect(() => {
-    let unmounted = false;
-    calcCryptosDayChange(userInfo.user_id, portfolio).then(data => {
-      setAnalData([
-        {
-          label: '24H Change',
-          red: data.daily_change <= 0 ? false : true,
-          value: data.daily_change + '%',
-        },
-        {label: 'Total Value', red: false, value: '$' + data.total_value},
-        {label: 'P/L', red: false, value: data.profit + '%'},
-      ]);
-      getChartsFromCMC(1).then(res => {
-        setGraphData(res);
-        getCryptoNewsFromDB('cryptocurrency').then(res => {
-          setNewsList(res);
-          if (!unmounted) {
-            setLoading(false);
-          }
-        });
-      });
-    });
-    return () => {
-      unmounted = true;
-    };
-  }, []);
+    Promise.all([
+      getCryptoQuoteFromCMC(coinId),
+      getChartsFromCMC(coinId),
+      getCryptoNews(coinSymbol),
+      getReportFromYahoo(coinSymbol),
+    ])
+      .then(res => {
+        setCurrentInfo(res[0]);
+        setAnalData([
+          {
+            label: '24H Change',
+            red: res[0].quote.USD.percent_change_24h <= 0 ? false : true,
+            value: res[0].quote.USD.percent_change_24h.toFixed(2) + '%',
+          },
+          {
+            label: 'Total Value',
+            red: false,
+            value: '$' + (coinAmount * res[0].quote.USD.price).toFixed(2),
+          },
+          {
+            label: 'P/L',
+            red: false,
+            value: res[0].quote.USD.percent_change_1h.toFixed(2) + '%',
+          },
+        ]);
+        setGraphData(res[1]);
+        setNewsList(res[2].slice(0, 7));
+        setAnalList(res[3] ? res[3] : []);
 
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, []);
   if (loading) {
     return (
-      <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+      <SafeAreaView
+        style={{
+          ...investmentStyles.container,
+          backgroundColor: theme.colors.background_primary,
+        }}>
+        <Spinner
+          visible={loading}
+          textContent={'Loading...'}
+          textStyle={{color: theme.colors.text_primary}}
+        />
       </SafeAreaView>
     );
   }
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
           // navigation.navigate('CryptoHomeScreen');
-          navigation.goBack();
+          props.navigation.goBack();
         }}
       />
       <ScrollView>
         <SVGLineChart
           graphData={graphData}
-          data={chartData}
           width={wp('100%')}
           height={220}
-          coinName="BTC"
-          coinSlug="Bitcoin"
+          coinId={coinId}
+          coinName={currentInfo.symbol}
+          coinSlug={currentInfo.name}
           type="crypto"
         />
         {/* <Cursor /> */}
@@ -120,7 +142,10 @@ const CryptoDetailScreen = ({navigation}) => {
         <Text />
         <View>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="Related News" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="Related News"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>All news</Text>
             </TouchableOpacity>
@@ -130,19 +155,21 @@ const CryptoDetailScreen = ({navigation}) => {
             showsHorizontalScrollIndicator={false}
             style={{paddingBottom: 10, marginBottom: 10}}>
             {newsList.map((item, index) => {
-              return (
-                <NewsCard
-                  title={item.data().article.title}
-                  content={item.data().article.summary}
-                  date={item.data().article.published_date}
-                  uri={item.data().article.media}
-                  key={index}
-                  width={246}
-                  imageWidth={226}
-                  imageHeight={158}
-                  source={item.data().article.link}
-                />
-              );
+              if (item.media) {
+                return (
+                  <NewsCard
+                    title={item.title}
+                    content={item.summary}
+                    date={item.published_date}
+                    uri={item.media}
+                    key={index}
+                    width={246}
+                    imageWidth={226}
+                    imageHeight={158}
+                    source={item.link}
+                  />
+                );
+              }
             })}
           </ScrollView>
         </View>
@@ -152,14 +179,18 @@ const CryptoDetailScreen = ({navigation}) => {
           analList={analList}
         />
         <View>
-          <PanelTitle title="About BTC" />
-          <Paragraph style={cryptoStyles.paragraphStyle}>
-            Bitcoin, often described as a cryptocurrency, a virtual currency or
-            a digital currency - is a type of money that is completely virtual.
-            It's like an online version of cash. People can send Bitcoins (or
-            part of one) to your digital wallet, and you can send Bitcoins to
-            other people.
-          </Paragraph>
+          <PanelTitle
+            color={theme.colors.text_primary}
+            title={'About ' + currentInfo.name}
+          />
+          <Text
+            style={{
+              ...cryptoStyles.paragraphStyle,
+              color: theme.colors.text_primary,
+            }}>
+            {currentInfo.name +
+              ", often described as a cryptocurrency, a virtual currency or a digital currency - is a type of money that is completely virtual. It's like an online version of cash. People can send Bitcoins (or part of one) to your digital wallet, and you can send Bitcoins to other people."}
+          </Text>
           <TouchableOpacity>
             <Text style={cryptoStyles.readMore}>Read more</Text>
           </TouchableOpacity>
@@ -176,6 +207,8 @@ const CryptoDetailScreen = ({navigation}) => {
               titleSize={13}
               valueSize={13}
               bottomBorder
+              titleColor={theme.colors.text_secondary}
+              valueColor={theme.colors.text_primary}
             />
             <SmallLine
               title="Headquarters"
@@ -183,6 +216,8 @@ const CryptoDetailScreen = ({navigation}) => {
               titleSize={13}
               valueSize={13}
               bottomBorder
+              titleColor={theme.colors.text_secondary}
+              valueColor={theme.colors.text_primary}
             />
             <SmallLine
               title="Founded"
@@ -190,24 +225,48 @@ const CryptoDetailScreen = ({navigation}) => {
               titleSize={13}
               valueSize={13}
               bottomBorder
+              titleColor={theme.colors.text_secondary}
+              valueColor={theme.colors.text_primary}
             />
           </View>
         </View>
         <View style={{height: 100}} />
       </ScrollView>
-      <View style={cryptoStyles.fixedBottomBtn}>
+      <View
+        style={{
+          ...cryptoStyles.fixedBottomBtn,
+          backgroundColor: theme.colors.background_primary,
+        }}>
         <View>
-          <Text style={{fontSize: 13, fontWeight: 'bold', marginBottom: 6}}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: 'bold',
+              marginBottom: 6,
+              color: theme.colors.text_primary,
+            }}>
             Today’s Volume
           </Text>
-          <Text style={{fontSize: 13, fontWeight: '400'}}>54,381,175</Text>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '400',
+              color: theme.colors.text_primary,
+            }}>
+            {currentInfo.quote.USD.volume_24h.toFixed(0).toLocaleString()}
+          </Text>
         </View>
         <TouchableOpacity
           style={{...cryptoStyles.tradeBtn, backgroundColor: '#5AC53A'}}
           onPress={() => {
             refRBSheet2.current.open();
           }}>
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: '#fff'}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+              color: theme.colors.text_primary,
+            }}>
             Invest
           </Text>
         </TouchableOpacity>
@@ -220,19 +279,28 @@ const CryptoDetailScreen = ({navigation}) => {
       />
       <TradingCheckoutOrder
         parentRef={refRBSheet3}
+        type={'crypto'}
         item={{
-          name: 'Bitcoin',
-          label: 'BTC',
-          image: require('../../assets/images/btc_icon.png'),
+          id: currentInfo.id,
+          name: currentInfo.name,
+          label: currentInfo.symbol,
+          price: Number(currentInfo.quote.USD.price),
+          image: {
+            uri: `https://cryptologos.cc/logos/${currentInfo.name.toLowerCase()}-${currentInfo.symbol.toLowerCase()}-logo.png`,
+          },
         }}
         reviewRef={refRBSheet4}
       />
       <TradingReceipt
         parentRef={refRBSheet4}
+        type={'crypto'}
         item={{
-          name: 'Bitcoin',
-          label: 'BTC',
-          image: require('../../assets/images/btc_icon.png'),
+          name: currentInfo.name,
+          label: currentInfo.symbol,
+          price: Number(currentInfo.quote.USD.price),
+          image: {
+            uri: `https://cryptologos.cc/logos/${currentInfo.name.toLowerCase()}-${currentInfo.symbol.toLowerCase()}-logo.png`,
+          },
         }}
         completeRef={refRBSheet5}
       />

@@ -139,7 +139,7 @@ export const fetchPortfolio = (userId, category) => {
           if (documentSnapshot.exists) {
             resolve(documentSnapshot.data());
           } else {
-            return reject();
+            return resolve({});
           }
         });
     } else if (category == 'stock') {
@@ -151,7 +151,7 @@ export const fetchPortfolio = (userId, category) => {
           if (documentSnapshot.exists) {
             resolve(documentSnapshot.data());
           } else {
-            return reject();
+            return resolve({});
           }
         });
     } else if (category == 'idea') {
@@ -163,25 +163,204 @@ export const fetchPortfolio = (userId, category) => {
           if (documentSnapshot.exists) {
             resolve(documentSnapshot.data());
           } else {
-            return reject();
+            return resolve({});
           }
         });
     }
   });
 };
 
-export async function getIdeaItems(name) {
+export async function getIdeaItems(name, type) {
+  const collectionName = type == 'crypto' ? 'cryptoIdeaList' : 'stockIdeaList';
   return new Promise((resolve, reject) => {
     firestore()
-      .collection('idea-list')
-      .where('symbol', '==', name)
+      .collection(collectionName)
+      .doc(name)
       .get()
       .then(documentSnapshot => {
         if (!documentSnapshot.empty) {
-          resolve(documentSnapshot.docs[0].data());
+          resolve(documentSnapshot.data());
         } else {
           return reject();
         }
+      });
+  });
+}
+
+const stockIds = [
+  'VIAC',
+  'DIS',
+  'NFLX',
+  'AMZN',
+  'CMCSA',
+  'T',
+  'SONY',
+  'ROKU',
+  'AAPL',
+  'AMC',
+  'CNK',
+  'CINE.L',
+  'RDI',
+  '002739.SZ',
+  'IMAX',
+  'DLB',
+  'EA',
+  'ATVI',
+  'NTDOY',
+  'UBI.PA',
+  'TTWO',
+  'KONMY',
+  'CCOEY',
+  'AMD',
+  'NVDA',
+  'MSFT',
+  'TSLA',
+  'NIO',
+  'GM',
+  'LCID',
+  'ARVL',
+  'BLNK',
+  'EVGO',
+  'CHPT',
+  'PCRFY',
+  '051915.KS',
+  'QS',
+  'RMO',
+  'SE',
+  'NTES',
+  'SQNNY',
+  'EMBRAC-B.ST',
+  'NEXOY',
+  'ZNGA',
+  '036570.KS',
+  'BILI',
+  'KS3.BE',
+  'SF',
+  '251270.KS',
+  '263750.KQ',
+  '293490.KQ',
+  'DNACF',
+  '112040.KQ',
+  'DOYU',
+  'CRSR',
+  'G03.SG',
+  'HUYA',
+  'IGG.L',
+  '078340.KQ',
+  'HEAR',
+  '069080.KQ',
+  'EGLX',
+  '1G9.F',
+  'GRVY',
+  '7QT.F',
+  '042420.KQ',
+  '067000.KQ',
+  '041140.KQ',
+  'EOAN.DE',
+  'BEPC',
+  'CWEN',
+  'FSLR',
+  'NEE',
+  'SEDG',
+  'DNNGY',
+  'IBE',
+  'JKS',
+  'VWDRY',
+  'GCTAY',
+  'CSIQ',
+  'SPWR',
+  'PLNT',
+  'XPOF',
+  'LSF',
+  'BRBR',
+  'NLS',
+  'PTON',
+  'TGYM.MI',
+  'NKE',
+  'LULU',
+  'UAA',
+  'ADS',
+];
+
+// export async function setCryptoIdea() {
+//   temp = [];
+//   ids = makeString(coinIds);
+//   const quotes = await axios.get(
+//     `http://144.126.146.135/yahoo_stock_quote.php?stockId=${ids}`,
+//     {
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json;charset=UTF-8',
+//       },
+//     },
+//   );
+//   console.log(ids);
+//   const quoteRes = quotes.data.quoteResponse.result;
+//   for (let i = 0; i < quoteRes.length; i++) {
+//     temp.push({
+//       stock: coinIds[i].stock,
+//       id: coinIds[i].stock,
+//       percent: coinIds[i].per,
+//       stockDetail: quoteRes[i],
+//       amount:
+//         coinIds[i].per /
+//         10 /
+//         (quoteRes[i].regularMarketPrice?.raw
+//           ? quoteRes[i].regularMarketPrice.raw
+//           : 105),
+//       price: quoteRes[i].regularMarketPrice?.raw
+//         ? quoteRes[i].regularMarketPrice.raw
+//         : 105,
+//       change24h: quoteRes[i].regularMarketChange?.raw
+//         ? quoteRes[i].regularMarketChange.raw
+//         : 0.36,
+//     });
+//   }
+//   firestore()
+//     .collection('stockIdeaList')
+//     .doc('KSP')
+//     .set({
+//       items: temp,
+//       details: {name: 'Keeping in Shape'},
+//       chartData: {},
+//     })
+//     .then(res => {
+//       return res;
+//     });
+// }
+
+export async function updateUserCardInfo(userId, data) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection('Users')
+      .doc(userId)
+      .update({card_info: data})
+      .then(() => {
+        resolve();
+      });
+  });
+}
+
+export async function updateUserInfo(userId, data) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection('Users')
+      .doc(userId)
+      .update(data)
+      .then(() => {
+        resolve();
+      });
+  });
+}
+
+export async function updatePortfolio(userId, collection, data) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection(collection)
+      .doc(userId)
+      .update({items: data})
+      .then(() => {
+        resolve();
       });
   });
 }

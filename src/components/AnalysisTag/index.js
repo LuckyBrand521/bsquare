@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Text, View, TouchableOpacity, Image} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import styled from 'styled-components';
 import {BrandColorLabel} from '../../components/Gadgets';
 
@@ -14,13 +15,16 @@ const GrayLabel = styled.Text`
 `;
 
 export const AnalysisTag = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View style={{justifyContent: 'center'}}>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         {props.items.map((item, index) => {
           return (
             <View style={{flex: 1, alignItems: 'center'}} key={index}>
-              <GrayLabel textColor="#2A2E3B">{item.label}</GrayLabel>
+              <GrayLabel textColor={theme.colors.text_primary}>
+                {item.label}
+              </GrayLabel>
               <BrandColorLabel
                 bold
                 height={25}

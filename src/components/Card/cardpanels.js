@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import DropShadow from 'react-native-drop-shadow';
 import {
@@ -24,9 +25,11 @@ import {
   RealEstateHistoryCard,
   RealEstateNewCard,
   RealEstateDocumentCard,
+  HomeIdeaNewCard,
 } from './index';
 
 export const EstatePropertyPanel = props => {
+  const theme = React.useContext(ThemeContext).theme;
   return (
     <ScrollView
       horizontal={true}
@@ -112,6 +115,28 @@ export const EstateDocumentPanel = props => {
       style={{paddingBottom: 10, marginBottom: 10}}>
       {props.items.map((item, index) => {
         return <RealEstateDocumentCard name={item.name} key={index} />;
+      })}
+    </ScrollView>
+  );
+};
+
+export const HomeNewArrivalPanel = props => {
+  return (
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={{paddingBottom: 10, marginBottom: 10}}>
+      {props.arrivals.map((item, index) => {
+        return (
+          <HomeIdeaNewCard
+            uri={item.image}
+            key={index}
+            width={140}
+            imageWidth={120}
+            imageHeight={120}
+            name={item.title}
+          />
+        );
       })}
     </ScrollView>
   );

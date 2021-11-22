@@ -1,10 +1,18 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
+import {white} from 'react-native-paper/lib/typescript/styles/colors';
 import Pie from 'react-native-pie';
 import {colors, measures} from '../../styles/colors';
 import {globalStyles} from '../../styles/global';
-
+const images = {
+  AAPL: require('../../assets/images/AAPL.png'),
+  AMZN: require('../../assets/images/AMZN.png'),
+  TSLA: require('../../assets/images/TSLA.png'),
+  MSFT: require('../../assets/images/MSFT.png'),
+};
 export const ProductHorizon = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View
       style={{
@@ -13,7 +21,7 @@ export const ProductHorizon = props => {
       }}>
       <View style={globalStyles.coinShadow}>
         <Image
-          source={props.coinImage}
+          source={props.coinImage ? props.coinImage : images[props.coinLabel]}
           style={{
             width: props.imageWidth,
             height: props.imageWidth,
@@ -21,14 +29,21 @@ export const ProductHorizon = props => {
         />
       </View>
       <View style={globalStyles.mhn}>
-        <Text style={globalStyles.labell}>{props.coinName}</Text>
-        <Text style={globalStyles.labeln}>{props.coinLabel}</Text>
+        <Text
+          style={{...globalStyles.labell, color: theme.colors.text_primary}}>
+          {props.coinName}
+        </Text>
+        <Text
+          style={{...globalStyles.labeln, color: theme.colors.text_primary}}>
+          {props.coinLabel}
+        </Text>
       </View>
     </View>
   );
 };
 
 export const ProductVertical = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View
       style={{
@@ -37,7 +52,7 @@ export const ProductVertical = props => {
       }}>
       <View style={globalStyles.coinShadow}>
         <Image
-          source={props.coinImage}
+          source={props.coinImage ? props.coinImage : images[props.coinLabel]}
           style={{
             width: props.imageWidth,
             height: props.imageWidth,
@@ -45,10 +60,20 @@ export const ProductVertical = props => {
         />
       </View>
       <View>
-        <Text style={{...globalStyles.labelB, fontSize: 22}}>
+        <Text
+          style={{
+            ...globalStyles.labelB,
+            fontSize: 22,
+            color: theme.colors.text_primary,
+          }}>
           {props.coinName}
         </Text>
-        <Text style={[globalStyles.labeln, globalStyles.alsc, {marginTop: 16}]}>
+        <Text
+          style={[
+            globalStyles.labeln,
+            globalStyles.alsc,
+            {marginTop: 16, color: theme.colors.text_primary},
+          ]}>
           {props.coinLabel}
         </Text>
       </View>
@@ -69,7 +94,7 @@ export const HighlightVertical = props => {
           style={{
             fontWeight: '400',
             lineHeight: 13,
-            color: colors.tn,
+            color: 'white',
             fontSize: 10,
           }}>
           {props.name}

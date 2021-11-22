@@ -1,15 +1,5 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Button,
-} from 'react-native';
+import React, {useContext} from 'react';
+import {View, SafeAreaView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import MapView, {Marker} from 'react-native-maps';
 import {
@@ -20,15 +10,11 @@ import {
 //custom components
 import {
   ListItemWithArrow,
-  ListItemWithOutArrow,
-  ListItemWithPrice,
   ListItemWithSwitch,
 } from '../../../components/ListItem';
-import {NavigationHeader, TrendViewHeader} from '../../../components/Headers';
+import {NavigationHeader} from '../../../components/Headers';
 //custom styles
 import {investmentStyles} from '../../../styles/investment';
-
-const {width, height} = Dimensions.get('window');
 
 export const ReportChoiseScreen = props => {
   const theme = useContext(ThemeContext).theme;

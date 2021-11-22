@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useContext} from 'react';
 import {
   Text,
   View,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import styled from 'styled-components';
 //custom components
@@ -29,17 +30,8 @@ import {
   realestateArrivalList,
 } from '../../store/datalist';
 
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
-
 function RealEstateHomeScreen({navigation}) {
+  const theme = useContext(ThemeContext).theme;
   const [analData, setAnalData] = useState([
     {label: 'Number of Investments', red: false, value: '3'},
     {label: 'Total Value', red: false, value: '$5,000'},
@@ -53,15 +45,19 @@ function RealEstateHomeScreen({navigation}) {
   }, []);
 
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('InvestmentHomeScreen');
+          navigation.goBack();
         }}
       />
       <ScrollView>
-        <SectionTitle title="Real Estate" />
+        <SectionTitle color={theme.colors.text_primary} title="Real Estate" />
         <View>
           <Text style={{alignSelf: 'center'}} />
           <LottieView
@@ -82,7 +78,10 @@ function RealEstateHomeScreen({navigation}) {
         />
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="My Properties" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="My Properties"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
@@ -96,7 +95,7 @@ function RealEstateHomeScreen({navigation}) {
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="History" />
+            <PanelTitle color={theme.colors.text_primary} title="History" />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
@@ -105,7 +104,10 @@ function RealEstateHomeScreen({navigation}) {
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="New Arrivals" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="New Arrivals"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>

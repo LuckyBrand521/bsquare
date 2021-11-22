@@ -39,6 +39,11 @@ const cvtNumtoCardNum = number => {
 };
 export const CreditCard = props => {
   const theme = useContext(ThemeContext).theme;
+  const colors = [
+    theme.colors.green,
+    theme.colors.background_secondary,
+    theme.colors.red,
+  ];
   return (
     <View style={styles(theme).cardContainer}>
       <View
@@ -46,7 +51,7 @@ export const CreditCard = props => {
           ...styles(theme).cardImagePart,
           backgroundColor: props.backgroundColor
             ? props.backgroundColor
-            : theme.colors.background_secondary,
+            : colors[props.type],
         }}
         resizeMode={'stretch'}
         source={cardImage}>
@@ -166,14 +171,14 @@ const styles = theme =>
       marginTop: 16,
     },
     cardNumber: {
-      color: theme.colors.text_secondary,
+      color: theme.colors.text_primary,
       fontWeight: 'bold',
       fontSize: 16,
       marginLeft: 17,
       marginTop: 30,
     },
     cardHolder: {
-      color: theme.colors.text_secondary,
+      color: theme.colors.text_primary,
       fontSize: 13,
     },
     plusBtn: {

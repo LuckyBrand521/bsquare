@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -57,16 +57,18 @@ export const TagLabel = props => (
 );
 
 export const AboutPanel = props => {
+  const [isOpen, setOn] = useState(false);
   return (
     <View>
-      <PanelTitle title={props.title} />
-      <Paragraph style={styles.paragraphStyle}>
-        Apple Inc. is an American multinational technology company that
-        specializes in consumer electronics, computer software, and online
-        services. Apple is the world's largest technology company by revenue
-        and, since January 2021, the world's most valuable company.
+      <PanelTitle color={props.color} title={props.title} />
+      <Paragraph style={{...styles.paragraphStyle, color: props.color}}>
+        {isOpen && props.info.overview}
+        {!isOpen && props.info.overview.slice(0, 200) + '...'}
       </Paragraph>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          setOn(!isOpen);
+        }}>
         <Text style={styles.readMore}>Read more</Text>
       </TouchableOpacity>
       <View
@@ -74,18 +76,17 @@ export const AboutPanel = props => {
           marginHorizontal: 16,
           marginVertical: 12,
           borderTopWidth: 1,
-          borderColor: '#EBEFF1',
         }}>
         <SmallLine
           title="CEO"
-          value="Timothy Donald Cook"
+          value={props.info.ceo}
           titleSize={13}
           valueSize={13}
           bottomBorder
         />
         <SmallLine
           title="Headquarters"
-          value="Cupertino, California"
+          value={props.info.headquarters}
           titleSize={13}
           valueSize={13}
           bottomBorder
@@ -93,7 +94,7 @@ export const AboutPanel = props => {
         <View style={styles.flexRow}>
           <SmallLine
             title="Founded"
-            value="1976"
+            value={props.info.founded}
             titleSize={13}
             valueSize={13}
             width="45%"
@@ -101,7 +102,7 @@ export const AboutPanel = props => {
           />
           <SmallLine
             title="Employees"
-            value="147 000"
+            value={props.info.employees}
             titleSize={13}
             valueSize={13}
             width="45%"

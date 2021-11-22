@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import {
   Animated,
   Text,
@@ -8,24 +8,18 @@ import {
   Dimensions,
   ScrollView,
   StyleSheet,
-  Image,
-  Linking,
-  TextInput,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/AntDesign';
-import Icon from 'react-native-vector-icons/Feather';
-import {Paragraph} from 'react-native-paper';
-import {LineChart} from 'react-native-chart-kit';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 //custom components
-import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
+import {PanelTitle} from '../../components/SectionTitle';
 import {BlackRoundButton} from '../../components/BubbleButton';
-import {ProfitLabel} from '../../components/ProfitLabel';
 import {SmallLine} from '../../components/SectionTitle';
 import {StockNewsCard, AnalCard, StockCard} from '../../components/Card';
-import {NavigationHeader, TrendViewHeader} from '../../components/Headers';
-import {CustomProgressBar} from '../../components/Gadgets';
+import {NavigationHeader} from '../../components/Headers';
+import {AnalysisTag} from '../../components/AnalysisTag';
 import {SmallBubbleChart, AnalystRatings} from '../../components/Chart';
 import {AboutPanel} from '../../components/TagPanel';
 import SVGLineChart from '../../components/LineChart';
@@ -43,9 +37,16 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {newsList, analList, stockList} from '../../store/datalist';
-import {getStockChartsFromRPD} from '../../utils/thirdapi';
+import {stockList} from '../../store/datalist';
+import {getCryptoNews} from '../../utils/thirdapi';
+import {
+  getDataFromFS,
+  getDetailFromYahoo,
+  getReportFromYahoo,
+  getStockNewsFromNasdaq,
+} from '../../utils/common';
 const {width, height} = Dimensions.get('window');
+import {StockPerformanceView} from '../../components/CoinPerformanceView';
 
 const genChartData = count => {
   const data = [];
@@ -55,54 +56,123 @@ const genChartData = count => {
   return data;
 };
 
-const StockDetailScreen = ({navigation}) => {
-  const priceEl = useRef();
+const StockDetailScreen = props => {
+  const theme = useContext(ThemeContext).theme;
+  const stockId = props.route.params.stockId;
+  const stockAmount = props.route.params.stockAmount;
   const [loading, setLoading] = useState(true);
   const [graphData, setGraphData] = useState([]);
+  const [analData, setAnalData] = useState([]);
+  const [detail, setDetail] = useState({});
+  const [stats, setStats] = useState({});
+  const [newsList, setNewsList] = useState([]);
+  const [analList, setAnalList] = useState([]);
+  const [analystData, setAnalystData] = useState({});
+  const [companyInfo, setCompanyInfo] = useState({});
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
   const refRBSheet4 = useRef();
   const refRBSheet5 = useRef();
-  const [stockName, setStockName] = useState('AAPL');
-  const [chartData, setChartData] = useState(genChartData(48));
-  const [chartSlotIndex, setChartSlotIndex] = useState(1);
-  const [stockPrice, setStockPrice] = useState(chartData[chartData.length - 1]);
 
-  const handleChartScope = index => {
-    setChartSlotIndex(index);
-    switch (index) {
-      case 1:
-        setChartData(genChartData(60));
-        break;
-      case 2:
-        setChartData(genChartData(60));
-        break;
-      case 3:
-        setChartData(genChartData(60));
-        break;
-      case 4:
-        setChartData(genChartData(60));
-        break;
-      case 5:
-        setChartData(genChartData(60));
-        break;
-      case 6:
-        setChartData(genChartData(60));
-        break;
-    }
-    setStockPrice(chartData[chartData.length - 1]);
-  };
   useEffect(() => {
-    getStockChartsFromRPD('AAPL').then(res => {
-      setGraphData(res);
-      setLoading(false);
-      // getStockNewsFromDB('AAPL').then(res => {
-      //   setNewsList(res);
-      //   if (!unmounted) {
-      //     setLoading(false);
-      //   }
-    });
+    Promise.all([
+      getDataFromFS(stockId),
+      getDetailFromYahoo(stockId),
+      getReportFromYahoo(stockId),
+      getCryptoNews(stockId),
+    ])
+      .then(res => {
+        const gData = [
+          {
+            chartValues: res[0].chartData['1d'].close,
+            first_time: res[0].chartData['1d'].startTime,
+            interval: res[0].chartData['5d'].interval,
+          },
+          {
+            chartValues: res[0].chartData['5d'].close,
+            first_time: res[0].chartData['5d'].startTime,
+            interval: res[0].chartData['5d'].interval,
+          },
+          {
+            chartValues: res[0].chartData['1mo'].close,
+            first_time: res[0].chartData['1mo'].startTime,
+            interval: res[0].chartData['1mo'].interval,
+          },
+          {
+            chartValues: res[0].chartData['6mo'].close,
+            first_time: res[0].chartData['6mo'].startTime,
+            interval: res[0].chartData['6mo'].interval,
+          },
+          {
+            chartValues: res[0].chartData['1y'].close,
+            first_time: res[0].chartData['1y'].startTime,
+            interval: res[0].chartData['1y'].interval,
+          },
+          {
+            chartValues: res[0].chartData.max.close,
+            first_time: res[0].chartData.max.startTime,
+            interval: res[0].chartData.max.interval,
+          },
+        ];
+        setGraphData(gData);
+        setCompanyInfo(res[0].companyInfo);
+        setDetail({
+          currentPrice: res[0].regularMarketPrice.raw,
+          regularMarketOpen: res[0].regularMarketOpen,
+          regularMarketVolume: res[0].regularMarketVolume,
+          regularMarketDayHigh: res[0].regularMarketDayHigh,
+          regularMarketPreviousClose: res[0].regularMarketPreviousClose,
+          sharesOutstanding: res[0].sharesOutstanding,
+          marketCap: res[0].marketCap,
+          fiftyTwoWeekHigh: res[0].fiftyTwoWeekHigh,
+          profitMargins: res[1].financialData.profitMargins,
+        });
+        setAnalData([
+          {
+            label: '24H Change',
+            red: res[0].regularMarketChange.raw <= 0 ? true : false,
+            value: res[0].regularMarketChangePercent.raw.toFixed(2) + '%',
+          },
+          {
+            label: 'Total Value',
+            red: false,
+            value:
+              '$' + (stockAmount * res[0].regularMarketPrice.raw).toFixed(2),
+          },
+          {
+            label: 'P/L',
+            red: res[0].fiftyTwoWeekHighChangePercent.raw <= 0 ? true : false,
+            value: res[0].fiftyTwoWeekHighChangePercent.raw.toFixed(2) + '%',
+          },
+        ]);
+        setStats(res[1]);
+        setNewsList(res[3].slice(0, 7));
+        setAnalystData({
+          buy:
+            res[1].recommendationTrend.trend[0].strongBuy +
+            res[1].recommendationTrend.trend[0].buy,
+          hold: res[1].recommendationTrend.trend[0].hold,
+          sell:
+            res[1].recommendationTrend.trend[0].sell +
+            res[1].recommendationTrend.trend[0].strongSell,
+        });
+        setAnalList(res[2]);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
+    // getStockChartsFromRPD('AAPL').then(res => {
+    //   setGraphData(res);
+    //   setLoading(false);
+    //   // getStockNewsFromDB('AAPL').then(res => {
+    //   //   setNewsList(res);
+    //   //   if (!unmounted) {
+    //   //     setLoading(false);
+    //   //   }
+    // });
   }, []);
 
   const touch = useRef(new Animated.ValueXY({x: -60, y: 0})).current;
@@ -111,60 +181,79 @@ const StockDetailScreen = ({navigation}) => {
   // ).current;
   if (loading) {
     return (
-      <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+      <SafeAreaView
+        style={{
+          ...investmentStyles.container,
+          backgroundColor: theme.colors.background_primary,
+        }}>
+        <Spinner
+          visible={loading}
+          textStyle={{color: theme.colors.text_primary}}
+          textContent={'Loading...'}
+        />
       </SafeAreaView>
     );
   }
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('StockHomeScreen');
+          props.navigation.goBack();
         }}
       />
       <ScrollView>
         <SVGLineChart
           graphData={graphData}
-          data={chartData}
           width={wp('100%')}
           height={220}
-          coinName="AAPL"
-          coinSlug="Apple"
+          coinId={stockId}
+          coinName={stockId}
+          coinSlug={companyInfo.company}
           type="stock"
+          stockDetail={detail}
         />
-        <PanelTitle title="In Portfolio" />
-        <View style={investmentStyles.portfolioInfoContainer}>
+        <AnalysisTag items={analData} />
+        <StockPerformanceView graphData={graphData} />
+        <PanelTitle color={theme.colors.text_primary} title="In Portfolio" />
+        <View
+          style={{
+            ...investmentStyles.portfolioInfoContainer,
+            backgroundColor: theme.colors.background_secondary,
+          }}>
           <SmallLine
-            title="10 shares"
-            value="1482.52"
+            title={`${stockAmount} shares`}
+            value={(stockAmount * detail.currentPrice).toFixed(2)}
             titleSize={16}
             valueSize={16}
+            titleColor={theme.colors.text_primary}
+            valueColor={theme.colors.green}
             // bottomBorder
           />
-          <View style={styles.pnlLine}>
-            <Text style={styles.grayLabel}>
-              $210.17{' '}
-              <Icon name="arrow-right" size={12} style={{color: '#83899D'}} />{' '}
-              $148.15
-            </Text>
-            <Text style={styles.pinkLabel}>
-              $619.2 <Icon name="arrow-down-right" size={12} color="#DA3973" />
-            </Text>
-          </View>
           <BlackRoundButton
-            customStyle={{alignSelf: 'center', marginVertical: 20}}
+            customStyle={{
+              alignSelf: 'center',
+              marginVertical: 20,
+              backgroundColor: theme.colors.background_primary,
+            }}
             title="Operations History"
             iconUrl={require('../../assets/icons/watch_icon.png')}
           />
         </View>
         <View style={styles.statsView}>
-          <PanelTitle title="Stats" />
+          <PanelTitle
+            title="Stats"
+            color={theme.colors.text_primary}
+            marginLeft={1}
+          />
           <View style={styles.flexRow}>
             <SmallLine
               title="Open"
-              value="147.92"
+              value={detail.regularMarketOpen.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -172,7 +261,7 @@ const StockDetailScreen = ({navigation}) => {
             />
             <SmallLine
               title="Volumn"
-              value="10.9B"
+              value={detail.regularMarketVolume.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -182,7 +271,7 @@ const StockDetailScreen = ({navigation}) => {
           <View style={styles.flexRow}>
             <SmallLine
               title="High"
-              value="149.02"
+              value={detail.regularMarketDayHigh.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -190,7 +279,7 @@ const StockDetailScreen = ({navigation}) => {
             />
             <SmallLine
               title="Avg.Vol"
-              value="240.5B"
+              value={detail.sharesOutstanding.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -200,7 +289,7 @@ const StockDetailScreen = ({navigation}) => {
           <View style={styles.flexRow}>
             <SmallLine
               title="Low"
-              value="148.109"
+              value={detail.regularMarketPreviousClose.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -208,7 +297,7 @@ const StockDetailScreen = ({navigation}) => {
             />
             <SmallLine
               title="Mrk Cap"
-              value="2.4T"
+              value={detail.marketCap.fmt}
               titleSize={13}
               valueSize={13}
               bottomBorder
@@ -218,14 +307,14 @@ const StockDetailScreen = ({navigation}) => {
           <View style={styles.flexRow}>
             <SmallLine
               title="52wk High"
-              value="509.9"
+              value={detail.fiftyTwoWeekHigh.fmt}
               titleSize={13}
               valueSize={13}
               width="40%"
             />
             <SmallLine
               title="P/E"
-              value="29.06"
+              value={detail.profitMargins.fmt}
               titleSize={13}
               valueSize={13}
               width="40%"
@@ -234,58 +323,65 @@ const StockDetailScreen = ({navigation}) => {
         </View>
         <View>
           <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-            <PanelTitle title="News" />
+            <PanelTitle color={theme.colors.text_primary} title="News" />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>Show more</Text>
             </TouchableOpacity>
           </View>
           <View style={{marginVertical: 20}}>
             {newsList.map((item, index) => {
-              return (
-                <StockNewsCard
-                  title={item.title}
-                  content={item.content}
-                  uri={item.image}
-                  key={item.id}
-                  newsHour={item.hour}
-                  lightHave={item.light}
-                />
-              );
+              if (item.media) {
+                return (
+                  <StockNewsCard
+                    title={item.title.slice(0, 18) + '...'}
+                    content={item.summary}
+                    uri={item.media}
+                    key={index}
+                    newsHour={getHourDiff(new Date(item.published_date))}
+                    source={item.link}
+                  />
+                );
+              }
             })}
           </View>
         </View>
         <AnalystRatings
-          title="43 Analyst Ratings"
-          values={{buy: 74, hold: 21, sell: 5}}
+          title="Analyst Ratings"
+          values={analystData}
           analList={analList}
         />
         <View>
-          <PanelTitle title="Earnings" />
+          <PanelTitle color={theme.colors.text_primary} title="Earnings" />
           <SmallBubbleChart yAxis={[0.6, 0.99, 1.39, 1.78]} />
         </View>
 
         <View
           style={{flexDirection: 'row', marginTop: 30, marginHorizontal: 16}}>
           <View style={{flex: 3, textAlign: 'left'}}>
-            <Text>-</Text>
+            <Text style={{fontSize: 18, color: theme.colors.text_primary}}>
+              -
+            </Text>
           </View>
           <View style={{flex: 2}}>
-            <Text style={{fontSize: 16}}>Expected On 28/10,</Text>
-            <Text style={{fontSize: 16}}>After-Hours</Text>
+            <Text style={{fontSize: 13, color: theme.colors.text_primary}}>
+              Expected On 6/12/21
+            </Text>
+            <Text style={{fontSize: 13, color: theme.colors.text_primary}}>
+              After-Hours
+            </Text>
           </View>
         </View>
         <View>
           <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-            <PanelTitle title="People Also Bought" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="People Also Bought"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
           </View>
-          <Paragraph style={styles.paragraphStyle}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-            pharetra porta commodo, maecenas quam. Pretium gravida mattis
-            laoreet dolor eget commodo.
-          </Paragraph>
+
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -307,19 +403,40 @@ const StockDetailScreen = ({navigation}) => {
           </ScrollView>
         </View>
         <View>
-          <AboutPanel title="About The Company" />
+          <AboutPanel
+            color={theme.colors.text_primary}
+            title="About The Company"
+            info={companyInfo}
+          />
         </View>
         <View style={{height: 100}} />
       </ScrollView>
-      <View style={styles.fixedBottomBtn}>
+      <View
+        style={{
+          ...styles.fixedBottomBtn,
+          backgroundColor: theme.colors.background_primary,
+        }}>
         <View>
-          <Text style={{fontSize: 13, fontWeight: 'bold', marginBottom: 6}}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: 'bold',
+              marginBottom: 6,
+              color: theme.colors.text_primary,
+            }}>
             Today’s Volume
           </Text>
-          <Text style={{fontSize: 13, fontWeight: '400'}}>54,381,175</Text>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '400',
+              color: theme.colors.text_primary,
+            }}>
+            {detail.regularMarketVolume.fmt}
+          </Text>
         </View>
         <TouchableOpacity
-          style={styles.tradeBtn}
+          style={{...styles.tradeBtn, backgroundColor: theme.colors.green}}
           onPress={() => {
             refRBSheet2.current.open();
           }}>
@@ -333,22 +450,27 @@ const StockDetailScreen = ({navigation}) => {
         parentRef={refRBSheet2}
         buyRef={refRBSheet3}
         sellRef={refRBSheet1}
+        volume={detail.regularMarketVolume.fmt}
       />
       <TradingCheckoutOrder
         parentRef={refRBSheet3}
+        type={'stock'}
         item={{
-          name: 'Apple Stock',
-          label: 'AAPL',
-          image: require('../../assets/images/apple_stock.png'),
+          id: stockId,
+          name: companyInfo.company,
+          label: stockId,
+          price: Number(detail.currentPrice),
         }}
         reviewRef={refRBSheet4}
       />
       <TradingReceipt
         parentRef={refRBSheet4}
+        type={'stock'}
         item={{
-          name: 'Apple Stock',
-          label: 'AAPL',
-          image: require('../../assets/images/apple_stock.png'),
+          id: stockId,
+          name: companyInfo.company,
+          label: stockId,
+          price: Number(detail.currentPrice),
         }}
         completeRef={refRBSheet5}
       />
@@ -358,7 +480,11 @@ const StockDetailScreen = ({navigation}) => {
 };
 
 export default StockDetailScreen;
-
+const getHourDiff = time => {
+  const now = new Date();
+  const r = Math.round(Math.abs(now.getTime() - time.getTime()) / 3600 / 1000);
+  return r;
+};
 const styles = StyleSheet.create({
   pnlLine: {
     flexDirection: 'row',
@@ -393,7 +519,7 @@ const styles = StyleSheet.create({
   fixedBottomBtn: {
     position: 'absolute',
     bottom: 0,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     height: 100,
     width: wp(100),
     paddingHorizontal: 16,

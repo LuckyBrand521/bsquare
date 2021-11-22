@@ -6,18 +6,31 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export default Cursor = ({chartData, width, x, y, active}) => {
   const CURSOR_RADIUS = 5;
   const gestureHandler = useAnimatedGestureHandler({
     onStart: event => {
       x.value = event.x;
-      y.value = chartData[parseInt((x.value / width) * chartData.length)];
+      y.value = chartData[parseInt((x.value / width) * chartData.length)]
+        ? chartData[parseInt((x.value / width) * chartData.length)]
+        : 0;
     },
     onActive: event => {
       active.value = true;
       x.value = event.x;
-      y.value = chartData[parseInt((x.value / width) * chartData.length)];
+      if (x.value >= width) {
+        x.value = width - 1;
+      } else if (x.value < 0) {
+        x.value = 0;
+      }
+      y.value = chartData[parseInt((x.value / width) * chartData.length)]
+        ? chartData[parseInt((x.value / width) * chartData.length)]
+        : 0;
     },
     onEnd: () => {
       active.value = false;

@@ -1,14 +1,6 @@
-import React, {useState, useCallback} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
-import styled from 'styled-components';
+import React, {useState, useCallback, useContext} from 'react';
+import {Text, View, SafeAreaView, Dimensions, ScrollView} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 //custom components
 import {GreenMap} from '../../components/Map';
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
@@ -29,16 +21,6 @@ const RATIO = width / height;
 //test data
 import {realestatePropertyList} from '../../store/datalist';
 
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
-
 const initialRegion = {
   latitude: 25.276987,
   longitude: 55.296249,
@@ -51,6 +33,7 @@ const markers = [
   {latitude: 46.003677, longitude: 8.951052},
 ];
 function RealEstatePropertyScreen({navigation}) {
+  const theme = useContext(ThemeContext).theme;
   const [analData, setAnalData] = useState([
     {label: 'Number of Investments', red: false, value: '3'},
     {label: 'Total Value', red: false, value: '$5,000'},
@@ -60,25 +43,36 @@ function RealEstatePropertyScreen({navigation}) {
     navigation.navigate(screenName);
   }, []);
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('RealEstateHomeScreen');
+          navigation.geBack();
         }}
       />
       <ScrollView>
-        <SectionTitle title="Real Estate" fontSize={30} />
+        <SectionTitle
+          color={theme.colors.text_primary}
+          title="Real Estate"
+          fontSize={30}
+        />
         <GreenMap initialRegion={initialRegion} markers={markers} />
 
-        <View style={{backgroundColor: 'white'}}>
+        <View style={{backgroundColor: theme.colors.background_primary}}>
           <Text style={{alignSelf: 'center'}} />
 
           <AnalysisTag items={analData} />
         </View>
 
         <View style={{marginTop: 32}}>
-          <PanelTitle title="List Of Properties" />
+          <PanelTitle
+            color={theme.colors.text_primary}
+            title="List Of Properties"
+          />
           <View style={{marginTop: 16}}>
             {realestatePropertyList.map((item, index) => {
               return (

@@ -1,6 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 
@@ -15,6 +21,8 @@ import {
 } from '../../../components/ListItem';
 //custom styles
 import {investmentStyles} from '../../../styles/investment';
+import {updateUserInfo} from '../../../utils/firestoreapi';
+import {updateUserBalance} from '../../../redux/slices/portfolioSlice';
 
 const tempplateColors = ['#5EB330', '#2A2E3B', '#C55739'];
 
@@ -119,6 +127,24 @@ export const WithdrawScreen = props => {
 
 export const WithdrawCompleteScreen = props => {
   const theme = useContext(ThemeContext).theme;
+  const anims = [
+    require('../../../assets/animations/piggy_tap1.json'),
+    require('../../../assets/animations/piggy_tap1.json'),
+    require('../../../assets/animations/piggy_tap2.json'),
+    require('../../../assets/animations/piggy_tap3.json'),
+  ];
+  const [animation, setAnimation] = useState();
+  const [animId, setAnimId] = useState(0);
+  const handleAnimation = () => {
+    if (animId >= 3) {
+      setTimeout(() => {
+        props.navigation.navigate('SpendingHomeScreen');
+      }, 1000);
+    } else {
+      setAnimId(animId + 1);
+      animation.play();
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -133,11 +159,27 @@ export const WithdrawCompleteScreen = props => {
       />
       <View style={styles(theme).animView}>
         <LottieView
-          source={require('../../../assets/animations/withdraw2.json')}
-          autoPlay
+          ref={animation => {
+            setAnimation(animation);
+          }}
+          source={anims[animId]}
           loop={false}
           style={{alignSelf: 'center'}}
         />
+      </View>
+      <View style={styles(theme).tapScreenBtn}>
+        <TouchableOpacity
+          style={styles(theme).tapBtn}
+          onPress={handleAnimation}>
+          <Text
+            style={{
+              color: theme.colors.text_primary,
+              fontWeight: 'bold',
+              fontSize: 16,
+            }}>
+            Tap Three Times To Withdraw
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -145,7 +187,9 @@ export const WithdrawCompleteScreen = props => {
 
 export const DepositInterestAccountScreen = props => {
   const theme = useContext(ThemeContext).theme;
-  const [amount, setAmount] = useState(0);
+  const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.portfolios.userInfo);
+  const [amount, setAmount] = useState('');
   const handleAmount = res => {
     setAmount(res);
   };
@@ -204,7 +248,7 @@ export const DepositInterestAccountScreen = props => {
           caption=""
           backgroundColor={theme.colors.background_secondary}
           textColor={theme.colors.text_primary}
-          val={200}
+          val={amount.toString()}
           onChange={handleAmount}
         />
       </View>
@@ -212,8 +256,15 @@ export const DepositInterestAccountScreen = props => {
         <ContinueBottomBtn
           content="Submit"
           onPress={() => {
-            props.navigation.navigate('DepositInterestAccountComplete', {
-              amount: Number(amount),
+            updateUserInfo(userInfo.userId, {
+              account_balance: userInfo.account_balance - Number(amount),
+            }).then(() => {
+              dispatch(
+                updateUserBalance(userInfo.account_balance - Number(amount)),
+              );
+              props.navigation.navigate('DepositInterestAccountComplete', {
+                amount: Number(amount),
+              });
             });
           }}
         />
@@ -289,5 +340,17 @@ const styles = theme =>
     twoCols: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+    },
+    tapScreenBtn: {
+      position: 'absolute',
+      bottom: 0,
+      height: 100,
+      width: '100%',
+    },
+    tapBtn: {
+      backgroundColor: theme.colors.green,
+      height: 120,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });

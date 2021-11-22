@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 //custom styles
 import {globalStyles} from '../../styles/global';
 import {colors} from '../../styles/colors';
 
 export const BubbleButton = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <TouchableOpacity
       style={{
@@ -18,10 +20,61 @@ export const BubbleButton = props => {
         backgroundColor: props.backgroundColor,
         left: props.position.x ? props.position.x : 80,
         top: props.position.y ? props.position.y : 80,
+        opacity: 0.9,
       }}
       onPress={props.onPress}>
-      <Text style={{fontSize: 12, fontWeight: '400'}}>{props.title}</Text>
-      <Text style={{fontSize: 17, fontWeight: '700'}}>${props.quantity}</Text>
+      <Text
+        style={{
+          fontSize: 12,
+          fontWeight: '400',
+          color: theme.colors.text_primary,
+        }}>
+        {props.title}
+      </Text>
+      <Text
+        style={{
+          fontSize: 17,
+          fontWeight: '700',
+          color: theme.colors.text_primary,
+        }}>
+        ${props.quantity}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+export const PopularBubble = props => {
+  const theme = useContext(ThemeContext).theme;
+  return (
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={{
+        width: props.radius * 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        left: props.position.x ? props.position.x : 80,
+        top: props.position.y ? props.position.y : 80,
+      }}>
+      <Image
+        style={{
+          borderRadius: 100,
+          width: props.radius ? 2 * props.radius : 100,
+          height: props.radius ? 2 * props.radius : 100,
+          opacity: 0.5,
+        }}
+        source={props.image}
+      />
+      <Text
+        style={{
+          fontSize: props.labelSize ? props.labelSize : 17,
+          fontWeight: '700',
+          color: theme.colors.text_primary,
+          position: 'absolute',
+          top: props.radius - 12,
+        }}>
+        {props.label}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -42,7 +95,6 @@ export const BlackRoundButton = props => {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#2A2E3B',
         borderRadius: 40,
       }}
       onPress={() => {
@@ -89,6 +141,11 @@ export const ContinueBottomBtn = props => {
 };
 
 export const BorderedButton = props => {
+  const [backgroundColor, setBackgroundColor] = React.useState(
+    props.backgroundColor
+      ? props.backgroundColor
+      : globalStyles.borderedBtn.backgroundColor,
+  );
   return (
     <TouchableOpacity
       style={{
@@ -96,10 +153,16 @@ export const BorderedButton = props => {
         borderColor: props.borderColor,
         borderWidth: props.borderColor ? 1 : 0,
         marginTop: props.marginTop ? props.marginTop : 0,
-        backgroundColor: props.backgroundColor
-          ? props.backgroundColor
-          : globalStyles.borderedBtn.backgroundColor,
+        backgroundColor: backgroundColor,
       }}
+      // onPressIn={() => {
+      //   setBackgroundColor('#5EB330');
+      // }}
+      // onPressOut={() => {
+      //   props.backgroundColor
+      //     ? props.backgroundColor
+      //     : globalStyles.borderedBtn.backgroundColor;
+      // }}
       onPress={props.onPress}>
       <Text
         style={{color: props.captionColor, fontSize: 16, fontWeight: 'bold'}}>

@@ -112,7 +112,7 @@ export const CardTemplateGallery = props => {
         itemWidth={wp('70%')}
         onSnapToItem={index => onSelect(index)}
         renderItem={({item, index}) => (
-          <CardItem key={index} backgroundColor={colors[index]} />
+          <CardItem key={index} backgroundColor={colors[index]} type={index} />
         )}
       />
       <FlatList

@@ -1,10 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
 } from 'react-native';
 
@@ -14,47 +13,50 @@ import {
   MoneyTitle,
   PanelTitle,
 } from '../../components/SectionTitle';
+import {ThemeContext} from 'react-native-elements';
 import {BubbleButton, BlackRoundButton} from '../../components/BubbleButton';
 import {ProfitLabel} from '../../components/ProfitLabel';
 import {NewsCard, EarningCard} from '../../components/Card';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
 //test data
 import {newsList, earningList} from '../../store/datalist';
 
 function InvestmentHomeScreen({navigation}) {
   const [totalAmount, setTotalAmount] = useState('11.520');
+  const theme = useContext(ThemeContext).theme;
   const goStock = screenName => {
     navigation.navigate(screenName);
   };
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <ScrollView>
-        <SectionTitle title="Investments" />
+        <SectionTitle title="Investments" color={theme.colors.text_primary} />
         <Text />
-        <MoneyTitle title={totalAmount} />
+        <MoneyTitle title={totalAmount} color={theme.colors.text_primary} />
         <View>
           <View style={investmentStyles.bubbleChart}>
             <ProfitLabel
               customStyle={{paddingLeft: 16}}
               greenLabel="+ $3.445"
               blackLabel="Total profit"
+              labelColor={theme.colors.text_primary}
             />
             <ProfitLabel
               customStyle={{paddingLeft: 16}}
               greenLabel="+ $5.34"
               blackLabel="Today"
+              labelColor={theme.colors.text_primary}
             />
             <BubbleButton
               title="Ideas"
               quantity={5030}
-              backgroundColor="rgba(103, 196, 49, 0.15)"
+              backgroundColor={theme.colors.brand_green}
               onPress={() => {
                 goStock('IdeaHomeScreen');
               }}
@@ -64,7 +66,7 @@ function InvestmentHomeScreen({navigation}) {
             <BubbleButton
               title="Real estate"
               quantity={2535}
-              backgroundColor="rgba(235, 102, 59, 0.15)"
+              backgroundColor={theme.colors.red}
               onPress={() => {
                 goStock('RealEstateHomeScreen');
               }}
@@ -74,7 +76,7 @@ function InvestmentHomeScreen({navigation}) {
             <BubbleButton
               title="Crypto"
               quantity={1985}
-              backgroundColor="rgba(103, 196, 49, 0.15)"
+              backgroundColor={theme.colors.background_third}
               onPress={() => {
                 goStock('CryptoHomeScreen');
               }}
@@ -84,7 +86,7 @@ function InvestmentHomeScreen({navigation}) {
             <BubbleButton
               title="Stocks"
               quantity={1140}
-              backgroundColor="rgba(235, 102, 59, 0.15)"
+              backgroundColor={theme.colors.background_tertiary}
               onPress={() => {
                 goStock('StockHomeScreen');
               }}
@@ -99,7 +101,7 @@ function InvestmentHomeScreen({navigation}) {
           />
           <View>
             <View style={investmentStyles.panelHeader}>
-              <PanelTitle title="News" />
+              <PanelTitle title="News" color={theme.colors.text_primary} />
               <TouchableOpacity>
                 <Text style={investmentStyles.greenLabel}>All news</Text>
               </TouchableOpacity>
@@ -119,6 +121,7 @@ function InvestmentHomeScreen({navigation}) {
                     width={246}
                     imageWidth={226}
                     imageHeight={158}
+                    source={item.source}
                   />
                 );
               })}
@@ -126,7 +129,10 @@ function InvestmentHomeScreen({navigation}) {
           </View>
           <View>
             <View style={investmentStyles.panelHeader}>
-              <PanelTitle title="Upcoming Earnings" />
+              <PanelTitle
+                color={theme.colors.text_primary}
+                title="Upcoming Earnings"
+              />
               <TouchableOpacity>
                 <Text style={investmentStyles.greenLabel}>See all</Text>
               </TouchableOpacity>

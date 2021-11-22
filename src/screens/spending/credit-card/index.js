@@ -16,6 +16,10 @@ import {SmallLine} from '../../../components/SectionTitle';
 import {BorderedButton} from '../../../components/BubbleButton';
 //custom styles
 import {investmentStyles} from '../../../styles/investment';
+//redux actions
+import {updateCardInfo} from '../../../redux/slices/portfolioSlice';
+//apis
+import {updateUserCardInfo} from '../../../utils/firestoreapi';
 
 const tempplateColors = ['#5EB330', '#2A2E3B', '#C55739'];
 
@@ -98,6 +102,8 @@ export const CreateNewCardScreen = props => {
 
 export const CreateNewCardConfirmScreen = props => {
   const theme = useContext(ThemeContext).theme;
+  const userInfo = useSelector(state => state.portfolios.userInfo);
+  const dispatch = useDispatch();
   const [templateId, setTemplateId] = useState(props.route.params.templateId);
   useEffect(() => {
     console.log(props.route.params);
@@ -130,7 +136,28 @@ export const CreateNewCardConfirmScreen = props => {
           caption="Only electronic"
           marginTop={16}
           onPress={() => {
-            props.navigation.navigate('CreateNewCardCompleteScreen', {type: 0});
+            updateUserCardInfo(userInfo.userId, {
+              balance: 0,
+              type: templateId,
+              created_at: new Date().getTime(),
+              expiration_date: '12/24/2022',
+              holder_name: 'Mohammed Anderson',
+              number: 4812564684558159,
+            }).then(() => {
+              dispatch(
+                updateCardInfo({
+                  balance: 0,
+                  type: templateId,
+                  created_at: new Date().getTime(),
+                  expiration_date: '12/24/2022',
+                  holder_name: 'Mohammed Anderson',
+                  number: 4812564684558159,
+                }),
+              );
+              props.navigation.navigate('CreateNewCardCompleteScreen', {
+                type: 0,
+              });
+            });
           }}
         />
         <BorderedButton
@@ -139,7 +166,28 @@ export const CreateNewCardConfirmScreen = props => {
           caption="Electronic and physical"
           marginTop={16}
           onPress={() => {
-            props.navigation.navigate('CreateNewCardCompleteScreen', {type: 1});
+            updateUserCardInfo(userInfo.userId, {
+              balance: 0,
+              type: templateId,
+              created_at: new Date().getTime(),
+              expiration_date: '12/24/2022',
+              holder_name: 'Mohammed Anderson',
+              number: 4812564684558159,
+            }).then(() => {
+              dispatch(
+                updateCardInfo({
+                  balance: 0,
+                  type: templateId,
+                  created_at: new Date().getTime(),
+                  expiration_date: '12/24/2022',
+                  holder_name: 'Mohammed Anderson',
+                  number: 4812564684558159,
+                }),
+              );
+              props.navigation.navigate('CreateNewCardCompleteScreen', {
+                type: 1,
+              });
+            });
           }}
         />
       </View>
@@ -150,7 +198,7 @@ export const CreateNewCardConfirmScreen = props => {
 export const CreateNewCardCompleteScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const type = props.route.params.type;
-
+  console.log(type);
   return (
     <SafeAreaView
       style={{

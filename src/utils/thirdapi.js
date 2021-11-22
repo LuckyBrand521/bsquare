@@ -66,7 +66,7 @@ export async function getCoinListFromCMC() {
 }
 export async function getStockChartsFromRPD(stockId) {
   let data = [];
-  let ranges = ['1d', '5d', '3mo', '6mo', '1y', '5y', 'max'];
+  let ranges = ['1d', '5d', '1mo', '6mo', '1y', 'max'];
   for (let i = 0; i < ranges.length; i++) {
     setTimeout(function () {
       console.log('delay');
@@ -150,8 +150,8 @@ export const getCryptoNews = query => {
       return Promise.resolve(res.data.articles);
     })
     .catch(err => {
-      console.log(err);
-      return Promise.reject(err);
+      console.log('News error-----', err);
+      return Promise.resolve([]);
     });
 };
 

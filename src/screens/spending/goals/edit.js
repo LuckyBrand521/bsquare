@@ -1,47 +1,24 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import {ThemeContext, CheckBox} from 'react-native-elements';
+import {Text, View, SafeAreaView, StyleSheet, ScrollView} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import {ProgressBar} from 'react-native-paper';
 
 //custom components
 import {NavigationHeader} from '../../../components/Headers';
 import {SectionTitle, SmallLine} from '../../../components/SectionTitle';
-import {
-  AmountInput,
-  MonthYearPicker,
-  SimpleSlider,
-  DropdownSelect,
-} from '../../../components/Inputs';
+
 import {
   ContinueBottomBtn,
   BorderedButton,
   FinishButton,
 } from '../../../components/BubbleButton';
 import {GoalWithRing} from '../../../components/Card/products';
-import {
-  ListItemWithImage,
-  ListItemWithSwitch,
-  ListItemWithPrice,
-  ListItemWithPriceDate,
-  ListItemThree,
-  ListItemThree2,
-} from '../../../components/ListItem';
+import {ListItemThree, ListItemThree2} from '../../../components/ListItem';
 //custom styles
 import {investmentStyles} from '../../../styles/investment';
+import {updateUserInfo} from '../../../utils/firestoreapi';
+import {updateUserBalance} from '../../../redux/slices/portfolioSlice';
 
 const data = [
   {
@@ -350,6 +327,8 @@ export const BoostMethodScreen = props => {
 export const BoostReceiptScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const lastgoal = props.route.params.goal;
+  const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.portfolios.userInfo);
   return (
     <SafeAreaView
       style={{
@@ -427,7 +406,12 @@ export const BoostReceiptScreen = props => {
         caption="Let's do it"
         captionStyle={styles(theme).finishStyle}
         onPress={() => {
-          props.navigation.navigate('BoostCompleteScreen', {goal: lastgoal});
+          updateUserInfo(userInfo.userId, {
+            account_balance: userInfo.account_balance - 1001.2,
+          }).then(() => {
+            dispatch(updateUserBalance(userInfo.account_balance - 1001.2));
+            props.navigation.navigate('BoostCompleteScreen', {goal: lastgoal});
+          });
         }}
       />
     </SafeAreaView>

@@ -19,13 +19,12 @@ const ranges = [
   {id: 5, label: 'ALL'},
 ];
 const stockranges = [
-  {id: 0, label: '1D'},
-  {id: 1, label: '5D'},
-  {id: 2, label: '3M'},
-  {id: 3, label: '6M'},
-  {id: 4, label: '1Y'},
-  {id: 5, label: '5Y'},
-  {id: 6, label: 'ALL'},
+  {id: 0, label: '1D', str: '1d'},
+  {id: 1, label: '5D', str: '5d'},
+  {id: 2, label: '1M', str: '1mo'},
+  {id: 3, label: '6M', str: '6mo'},
+  {id: 4, label: '1Y', str: '1y'},
+  {id: 5, label: 'ALL', str: 'max'},
 ];
 
 export default SVGLineChart = props => {
@@ -46,13 +45,14 @@ export default SVGLineChart = props => {
       d: path,
     };
   });
-
   return (
     <View>
       <ChartHeader
         chartData={props.graphData[current]}
+        currentPrice={props.stockDetail ? props.stockDetail.currentPrice : 0}
         width={props.width}
         x={x}
+        coinId={props.coinId}
         coinName={props.coinName}
         coinSlug={props.coinSlug}
         active={active}

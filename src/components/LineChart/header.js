@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
 } from 'react-native-reanimated';
+import {ThemeContext} from 'react-native-elements';
 import {ReText} from 'react-native-redash';
 import {TrendViewHeader} from '../../components/Headers';
 import {StockStateLabel} from '../../components/ProfitLabel';
@@ -14,13 +15,15 @@ export default ChartHeader = ({
   chartData,
   width,
   x,
+  coinId,
   coinName,
   coinSlug,
   active,
   type,
   detail,
+  currentPrice,
 }) => {
-  const coinId = 1; ///change after testing
+  const theme = useContext(ThemeContext).theme;
   const [currentInfo, setCurrentInfo] = useState({});
 
   useEffect(() => {
@@ -35,27 +38,20 @@ export default ChartHeader = ({
           setCurrentInfo(res);
         });
       }, 15000000);
-    } else if (type == 'stock') {
+    } else {
       setCurrentInfo({
         quote: {
           USD: {
-            price: parseFloat(
-              chartData.chartValues[chartData.chartValues.length - 1],
-            ),
+            price: currentPrice
+              ? currentPrice
+              : parseFloat(
+                  chartData.chartValues[chartData.chartValues.length - 1],
+                ),
             percent_change_24h:
               ((chartData.chartValues[chartData.chartValues.length - 1] -
                 chartData.chartValues[0]) /
                 chartData.chartValues[0]) *
               100,
-          },
-        },
-      });
-    } else {
-      setCurrentInfo({
-        quote: {
-          USD: {
-            price: parseFloat(detail.analysis.total_value),
-            percent_change_24h: parseFloat(detail.analysis.daily_change),
           },
         },
       });
@@ -111,15 +107,23 @@ export default ChartHeader = ({
 
   return (
     <View>
-      <Text style={styles.coinName}>{coinName}</Text>
+      <Text style={{...styles.coinName, color: theme.colors.text_primary}}>
+        {coinName}
+      </Text>
       <TrendViewHeader
         title={coinSlug}
         source={require('../../assets/icons/candle.png')}
       />
-      <ReText style={styles.price} text={price} />
+      <ReText
+        style={{...styles.price, color: theme.colors.text_primary}}
+        text={price}
+      />
       <Animated.View style={[styles.timeView]}>
         <Animated.View style={[timeLabelStyle]}>
-          <ReText style={{paddingVertical: 0}} text={time} />
+          <ReText
+            style={{paddingVertical: 0, color: theme.colors.text_primary}}
+            text={time}
+          />
         </Animated.View>
         {Object.keys(currentInfo).length !== 0 && (
           <StockStateLabel
@@ -127,19 +131,20 @@ export default ChartHeader = ({
             percentage={parseFloat(currentInfo.quote.USD.percent_change_24h)}
             currentPrice={parseFloat(currentInfo.quote.USD.price)}
             blackLabel="Today"
+            labelColor={theme.colors.text_primary}
           />
         )}
       </Animated.View>
       {type == 'idea' && (
         <View style={styles.levelLabel}>
-          <Text>
+          <Text style={{color: theme.colors.text_primary}}>
             Volatility:{' '}
-            <Text style={{color: '#E45A28'}}>
-              {levels[detail.ideaDetails.volatility - 1]}
+            <Text style={{color: theme.colors.green}}>
+              {levels[detail.ideaDetails.details.volatility - 1]}
             </Text>
           </Text>
           <LevelBar
-            level={detail.ideaDetails.volatility}
+            level={detail.ideaDetails.details.volatility}
             background
             scale={1}
           />

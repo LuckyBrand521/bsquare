@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef} from 'react';
+import React, {useState, useCallback, useRef, useContext} from 'react';
 import {
   Text,
   View,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import {ProgressBar} from 'react-native-paper';
 import MapView, {Marker} from 'react-native-maps';
 //custom components
@@ -48,6 +49,7 @@ const markers = [
   {latitude: 46.003677, longitude: 8.951052},
 ];
 function RealEstateDetailScreen({navigation}) {
+  const theme = useContext(ThemeContext).theme;
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
@@ -61,15 +63,23 @@ function RealEstateDetailScreen({navigation}) {
   }, []);
 
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('RealEstatePropertyScreen');
+          navigation.goBack();
         }}
       />
       <ScrollView>
-        <SectionTitle title="London Apartment" fontSize={30} />
+        <SectionTitle
+          color={theme.colors.text_primary}
+          title="London Apartment"
+          fontSize={30}
+        />
         <ImageGallery items={realestateHistoryList} />
         <RealEstateDetailCard
           percent={0.73}
@@ -94,7 +104,7 @@ function RealEstateDetailScreen({navigation}) {
           endDate={'31 Dec 21'}
         />
         <View>
-          <PanelTitle title="Location" />
+          <PanelTitle color={theme.colors.text_primary} title="Location" />
           <Text />
           <MapView
             // style={{height: 240, width: '100%'}}
@@ -114,12 +124,26 @@ function RealEstateDetailScreen({navigation}) {
             />
           </MapView>
         </View>
-        <View style={[styles.whiteBackground, {paddingTop: measures.side}]}>
-          <PanelTitle title="Highlights" fontSize={16} />
+        <View
+          style={[
+            styles.whiteBackground,
+            {
+              paddingTop: measures.side,
+              backgroundColor: theme.colors.background_primary,
+            },
+          ]}>
+          <PanelTitle
+            title="Highlights"
+            color={theme.colors.text_primary}
+            fontSize={16}
+          />
           <HighlightPanel highlights={realestateHighlightList} />
         </View>
         <View>
-          <PanelTitle title="Property Details" />
+          <PanelTitle
+            color={theme.colors.text_primary}
+            title="Property Details"
+          />
           <PropertyDetailCard
             floors={7}
             apartments={20}
@@ -129,22 +153,36 @@ function RealEstateDetailScreen({navigation}) {
         </View>
         <View style={globalStyles.mvn}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="Property Documents" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="Property Documents"
+            />
             {/* <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity> */}
           </View>
           <EstateDocumentPanel items={realestateDocumentList} />
         </View>
+        <View style={{height: 80}} />
       </ScrollView>
-      <View style={investmentStyles.fixedBottomBtn}>
+      <View
+        style={{
+          ...investmentStyles.fixedBottomBtn,
+          backgroundColor: theme.colors.background_primary,
+        }}>
         <View>
-          <Text style={{fontSize: 13, fontWeight: 'bold', marginBottom: 6}}>
+          <Text
+            style={{
+              fontSize: 13,
+              color: theme.colors.text_primary,
+              fontWeight: 'bold',
+              marginBottom: 6,
+            }}>
             85% Funded
           </Text>
           <ProgressBar
             progress={0.85}
-            color={colors.tn}
+            color={theme.colors.green}
             style={{
               backgroundColor: '#EBEFF1',
               height: 4,

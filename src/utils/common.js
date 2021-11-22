@@ -107,3 +107,92 @@ export async function interpolateArray(arr, currency) {
     return arr;
   }
 }
+
+export async function getStockData(stockId) {
+  Promise.all([
+    fetch('http://144.126.146.135/yahoo_stock_report.php?stockId=AAPL'),
+    fetch('http://144.126.146.135/yahoo_stock_summary.php?stockId=AAPL'),
+  ]).then(res => {
+    return Promise.resolve(res);
+  });
+}
+
+export async function getDataFromFS(stockId) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection('stockList')
+      .doc(stockId)
+      .get()
+      .then(snapshot => {
+        if (snapshot.exists) {
+          resolve(snapshot.data());
+        } else {
+          return resolve({});
+        }
+      });
+  });
+}
+
+export async function getDetailFromYahoo(stockId) {
+  return axios(
+    `http://144.126.146.135/yahoo_stock_summary.php?stockId=${stockId}`,
+  )
+    .then(res => {
+      return Promise.resolve(res.data.quoteSummary.result[0]);
+    })
+    .catch(err => {
+      console.log(err);
+      return Promise.reject(err);
+    });
+}
+
+export async function getReportFromYahoo(stockId) {
+  return axios(
+    `http://144.126.146.135/yahoo_stock_report.php?stockId=${stockId}`,
+  )
+    .then(res => {
+      return Promise.resolve(res.data.finance.result.reports);
+    })
+    .catch(err => {
+      console.log(err);
+      return Promise.reject(err);
+    });
+}
+
+export async function getStockNewsFromNasdaq(stockId) {
+  const base = 'https://nasdaq.com';
+  return axios(`http://144.126.146.135/nasdaq-news.php?stockId=${stockId}`)
+    .then(res => {
+      return Promise.resolve(res.data.data.rows);
+    })
+    .catch(err => {
+      console.log(err);
+      return Promise.reject(err);
+    });
+}
+
+export async function addCardToAccount(
+  userId,
+  balance,
+  name = 'Mohammed Anderson',
+  type = 1,
+) {
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection('Users')
+      .doc(userId)
+      .update({
+        card_info: {
+          balance: balance,
+          created_at: new Date().getTime(),
+          expiration_date: '12/31/2023',
+          holder_name: name,
+          type: type,
+        },
+      })
+      .then(() => {
+        resolve();
+      })
+      .catch(err => reject);
+  });
+}

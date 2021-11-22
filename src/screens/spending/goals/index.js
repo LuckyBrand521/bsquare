@@ -33,6 +33,8 @@ import {GoalWithRing} from '../../../components/Card/products';
 import {ListItemWithPriceDate} from '../../../components/ListItem';
 //custom styles
 import {investmentStyles} from '../../../styles/investment';
+import {updateUserInfo} from '../../../utils/firestoreapi';
+import {updateUserGoals} from '../../../redux/slices/portfolioSlice';
 
 const data = [
   {
@@ -187,7 +189,7 @@ export const CreateGoalAmountScreen = props => {
           caption=""
           backgroundColor={theme.colors.background_secondary}
           textColor={theme.colors.text_primary}
-          val={''}
+          val={amount.toString()}
           onChange={handleAmount}
           placeholder="$200"
           numbertype={true}
@@ -414,6 +416,8 @@ export const CreateNewGoalPayMethodScreen = props => {
 
 export const CreateNewGoalCompleteScreen = props => {
   const theme = useContext(ThemeContext).theme;
+  const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.portfolios.userInfo);
   const lastgoal = props.route.params.goal;
   const [checked, setChecked] = useState(lastgoal.spendAuto ? false : true);
   return (
@@ -463,6 +467,30 @@ export const CreateNewGoalCompleteScreen = props => {
         caption="Let's do it"
         captionStyle={styles(theme).finishStyle}
         onPress={() => {
+          updateUserInfo(userInfo.userId, {
+            goals: [
+              ...userInfo.goals,
+              {
+                id: 0,
+                uri: 'https://picsum.photos/700',
+                title: 'Travel to ' + lastgoal.where,
+                dates: 30,
+                percent: 0,
+                total: lastgoal.amount,
+              },
+            ],
+          }).then(() => {
+            dispatch(
+              updateUserGoals({
+                id: 0,
+                uri: 'https://picsum.photos/700',
+                title: 'Travel to ' + lastgoal.where,
+                dates: 30,
+                percent: 0,
+                total: lastgoal.amount,
+              }),
+            );
+          });
           props.navigation.navigate('SpendingHomeScreen');
         }}
       />

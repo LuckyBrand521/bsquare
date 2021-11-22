@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useContext} from 'react';
 import {
   Animated,
   Text,
@@ -12,6 +12,7 @@ import {
   Linking,
   TextInput,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/Feather';
 import Pie from 'react-native-pie';
@@ -37,13 +38,19 @@ import {newsList, analList, stockList} from '../../store/datalist';
 const {width, height} = Dimensions.get('window');
 
 export const SmallBubbleChart = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <>
       <View style={styles.earningChart}>
         <View style={{flex: 1}}>
           {props.yAxis.reverse().map((item, index) => {
             return (
-              <Text key={index} style={styles.earningChartYaxis}>
+              <Text
+                key={index}
+                style={{
+                  ...styles.earningChartYaxis,
+                  color: theme.colors.text_primary,
+                }}>
                 {item}
               </Text>
             );
@@ -60,10 +67,20 @@ export const SmallBubbleChart = props => {
               }}
             />
           </View>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 0,
+              color: theme.colors.text_primary,
+            }}>
             Q4
           </Text>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 5,
+              color: theme.colors.text_primary,
+            }}>
             FY20
           </Text>
         </View>
@@ -78,10 +95,20 @@ export const SmallBubbleChart = props => {
               }}
             />
           </View>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 0,
+              color: theme.colors.text_primary,
+            }}>
             Q1
           </Text>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 5,
+              color: theme.colors.text_primary,
+            }}>
             FY21
           </Text>
         </View>
@@ -96,10 +123,20 @@ export const SmallBubbleChart = props => {
               }}
             />
           </View>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 0,
+              color: theme.colors.text_primary,
+            }}>
             Q2
           </Text>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 5,
+              color: theme.colors.text_primary,
+            }}>
             FY21
           </Text>
         </View>
@@ -114,26 +151,46 @@ export const SmallBubbleChart = props => {
               }}
             />
           </View>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 0,
+              color: theme.colors.text_primary,
+            }}>
             Q3
           </Text>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 5,
+              color: theme.colors.text_primary,
+            }}>
             FY21
           </Text>
         </View>
         <View style={{flex: 1}}>
           <View style={{height: 180}} />
-          <Text style={{...styles.earningChartYaxis, marginVertical: 0}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 0,
+              color: theme.colors.text_primary,
+            }}>
             Q4
           </Text>
-          <Text style={{...styles.earningChartYaxis, marginVertical: 5}}>
+          <Text
+            style={{
+              ...styles.earningChartYaxis,
+              marginVertical: 5,
+              color: theme.colors.text_primary,
+            }}>
             FY21
           </Text>
         </View>
       </View>
       <View style={{flexDirection: 'row', marginTop: 30, marginHorizontal: 16}}>
         <View style={{flex: 3, flexDirection: 'row', alignItems: 'center'}}>
-          <Text>Expected EPS </Text>
+          <Text style={{color: theme.colors.text_primary}}>Expected EPS </Text>
           <Text style={styles.greenBubble} />
         </View>
         <View style={{flex: 2, flexDirection: 'row', alignItems: 'center'}}>
@@ -153,9 +210,12 @@ export const SmallBubbleChart = props => {
 };
 
 export const AnalystRatings = props => {
+  const theme = useContext(ThemeContext).theme;
+  const total = props.values.buy + props.values.sell + props.values.hold;
+
   return (
     <View>
-      <PanelTitle title={props.title} />
+      <PanelTitle title={props.title} color={theme.colors.text_primary} />
       <View style={styles.analystContainer}>
         <View style={{width: '20%', justifyContent: 'center'}}>
           <Pie
@@ -163,15 +223,15 @@ export const AnalystRatings = props => {
             innerRadius={32}
             sections={[
               {
-                percentage: props.values.buy,
+                percentage: Math.round((100 * props.values.buy) / total, 1),
                 color: '#5AC53A',
               },
             ]}
-            backgroundColor="#ddd"
+            backgroundColor={theme.colors.background_secondary}
           />
           <View style={styles.percentLabel}>
             <Text style={{color: '#5AC53A', fontSize: 24}}>
-              {props.values.buy}
+              {Math.round((100 * props.values.buy) / total, 2)}
               <Text style={{color: '#5AC53A', fontSize: 13}}>%</Text>
             </Text>
             <Text style={{color: '#5AC53A', fontSize: 13}}>BUY</Text>
@@ -179,40 +239,91 @@ export const AnalystRatings = props => {
         </View>
         <View style={{width: '75%'}}>
           <CustomProgressBar
-            val={props.values.buy / 100}
-            color="#5AC53A"
-            text={`${props.values.buy}% Buy`}
+            val={props.values.buy / total.toFixed(2)}
+            color={theme.colors.green}
+            text={`${((100 * props.values.buy) / total).toFixed(2)}% Buy`}
             width={180}
           />
           <CustomProgressBar
-            val={props.values.hold / 100}
-            color="#2A2E3B"
-            text={`${props.values.buy}% Hold`}
+            val={props.values.hold / total.toFixed(2)}
+            color={theme.colors.text_primary}
+            text={`${((100 * props.values.hold) / total).toFixed(2)}% Hold`}
             width={180}
           />
           <CustomProgressBar
-            val={props.values.sell / 100}
-            color="#E45A28"
-            text={`${props.values.buy}% Sell`}
+            val={props.values.sell / total.toFixed(2)}
+            color={theme.colors.red}
+            text={`${((100 * props.values.sell) / total).toFixed(2)}% Sell`}
             width={180}
           />
         </View>
       </View>
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={{paddingBottom: 10, marginBottom: 10}}>
-        {props.analList.map((item, index) => {
-          return (
-            <AnalCard
-              title={item.title}
-              content={item.content}
-              key={item.id}
-              width={270}
-            />
-          );
-        })}
-      </ScrollView>
+      {props.analList && (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={{paddingBottom: 10, marginBottom: 10}}>
+          {props.analList.map((item, index) => {
+            return (
+              <AnalCard
+                title={item.provider}
+                content={item.reportTitle.slice(0, 90) + '...'}
+                key={item.id}
+                width={270}
+              />
+            );
+          })}
+        </ScrollView>
+      )}
+    </View>
+  );
+};
+
+export const WealthChart = props => {
+  return (
+    <View>
+      <Pie
+        radius={props.radius}
+        innerRadius={props.radius - 4}
+        sections={[
+          {
+            percentage: props.values[0].value,
+            color: props.values[0].color,
+          },
+          {
+            percentage: props.values[1].value,
+            color: props.values[1].color,
+          },
+          {
+            percentage: props.values[2].value,
+            color: props.values[2].color,
+          },
+          {
+            percentage: props.values[3].value,
+            color: props.values[3].color,
+          },
+          {
+            percentage: props.values[4].value,
+            color: props.values[4].color,
+          },
+        ]}
+        dividerSize={2}
+        strokeCap={'butt'}
+        backgroundColor={props.backgroundColor}
+      />
+      <View
+        style={{
+          ...styles.gauge,
+          left: props.radius / 2 + 8,
+          top: props.radius / 2 + 20,
+        }}>
+        <Text style={{...styles.guageLabel, color: props.labelColor}}>
+          {props.label}
+        </Text>
+        <Text style={{...styles.gaugeText, color: props.amountColor}}>
+          ${Number(props.amount).toFixed(2)}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -258,5 +369,19 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  gauge: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gaugeText: {
+    backgroundColor: 'transparent',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  gaugeLabel: {
+    backgroundColor: 'transparent',
+    fontSize: 13,
   },
 });

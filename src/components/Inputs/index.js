@@ -59,8 +59,11 @@ export const AmountInput = props => {
     console.log(value);
   }, []);
   return (
-    <View style={{width: '48%'}}>
-      <Text style={globalStyles.labeln}>{props.caption}</Text>
+    <View style={{width: props.width ? props.width : '48%'}}>
+      <Text
+        style={{...globalStyles.labeln, color: theme.colors.text_secondary}}>
+        {props.caption}
+      </Text>
       <TextInput
         editable={props.disabled ? false : true}
         style={{
@@ -68,16 +71,18 @@ export const AmountInput = props => {
           backgroundColor: props.backgroundColor
             ? props.backgroundColor
             : styles(theme).textInput.backgroundColor,
-          color: props.textColor ? props.textColor : styles.textInput.color,
+          color: props.textColor
+            ? props.textColor
+            : styles(theme).textInput.color,
         }}
-        value={value}
+        value={props.val ? props.val : value.toString()}
         placeholder={props.placeholder ? props.placeholder : '0'}
         placeholderTextColor={
           props.placeholderTextColor ? props.placeholderTextColor : '#888'
         }
         onChangeText={res => {
           props.onChange(res);
-          setValue(props.numbertype ? Number(res) : res);
+          setValue(props.numbertype ? res : res);
         }}
         keyboardType={props.numbertype ? 'number-pad' : 'default'}
       />
@@ -86,20 +91,132 @@ export const AmountInput = props => {
 };
 
 export const SearchInput = props => {
-  const [query, setQuery] = useState('');
   const theme = useContext(ThemeContext).theme;
+  const [query, setQuery] = useState('');
+  const onQueryChange = res => {
+    setQuery(res);
+  };
+  const data = [
+    {
+      id: 'AAPL',
+      source: require('../../assets/images/AAPL.png'),
+      symbol: 'AAPL',
+      price: 150.62,
+      type: 'stock',
+    },
+    {
+      id: 'TSLA',
+      source: require('../../assets/images/TSLA.png'),
+      symbol: 'TSLA',
+      price: 1075.28,
+      type: 'stock',
+    },
+    {
+      id: 'AMZN',
+      source: require('../../assets/images/AMZN.png'),
+      symbol: 'AMZN',
+      price: 3538.34,
+      type: 'stock',
+    },
+    {
+      id: 2010,
+      source: require('../../assets/images/ada_icon.png'),
+      symbol: 'ADA',
+      price: 2.04,
+      type: 'crypto',
+    },
+    {
+      id: 1,
+      source: require('../../assets/images/btc_icon.png'),
+      symbol: 'BTC',
+      price: 66721.8,
+      type: 'crypto',
+    },
+    {
+      id: 1027,
+      source: require('../../assets/images/eth_icon.png'),
+      symbol: 'ETH',
+      price: 4784.42,
+      type: 'crypto',
+    },
+  ];
+
+  const goDetail = (type, id, symbol) => {
+    if (type == 'crypto') {
+      props.navigation.navigate('CryptoDetailScreen', {
+        coinId: id,
+        coinSymbol: symbol,
+        coinAmount: 1,
+      });
+    } else if (type == 'stock') {
+      props.navigation.navigate('Investment', {
+        screen: 'StockDetailScreen',
+        params: {
+          stockId: symbol,
+          stockAmount: 1,
+        },
+      });
+    }
+    setQuery('');
+  };
   return (
-    <TextInput
-      value={query}
-      onChange={setQuery}
-      style={{
-        ...styles(theme).textInput,
-        marginHorizontal: 16,
-        marginVertical: 24,
-      }}
-      placeholder="Search by ticker or name"
-      placeholderTextColor={colors.tm}
-    />
+    <View>
+      <TextInput
+        value={query}
+        onChangeText={res => {
+          onQueryChange(res);
+        }}
+        style={{
+          ...styles(theme).textInput,
+          marginHorizontal: 16,
+          marginVertical: 24,
+          color: theme.colors.text_primary,
+        }}
+        placeholder="Search by ticker or name"
+        placeholderTextColor={colors.tm}
+      />
+      {query.length > 0 && (
+        <View style={{marginHorizontal: 16, paddingHorizontal: 16}}>
+          {data.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 2,
+                  justifyContent: 'space-between',
+                }}
+                onPress={() => {
+                  goDetail(item.type, item.id, item.symbol);
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    style={{width: 45, height: 45, borderRadius: 50}}
+                    source={item.source}
+                  />
+                  <Text
+                    style={{color: theme.colors.text_primary, marginLeft: 16}}>
+                    {item.symbol}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    color: theme.colors.green,
+                    marginLeft: 16,
+                  }}>
+                  ${item.price}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -182,7 +299,7 @@ const styles = theme =>
       color: theme.colors.text_primary,
     },
     textInput: {
-      backgroundColor: colors.grayColor,
+      backgroundColor: theme.colors.background_secondary,
       borderWidth: 0,
       borderBottomWidth: 0,
       borderRadius: 10,

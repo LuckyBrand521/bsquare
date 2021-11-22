@@ -1,74 +1,90 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useState, useCallback, useEffect, useContext} from 'react';
+import {useSelector} from 'react-redux';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
-  LinearGradient,
 } from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
-import {StockNewsCard, StockCard} from '../../components/Card';
+import {StockNewsCard, IdeaCard} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
 import {IdeaPortfolioPanel, CryptoHistoryPanel} from '../../components/Gadgets';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 //apis for DB and thirdapi
-import {getIdeaPortfolioWithDetail} from '../../utils/utils';
-import {
-  getCryptoNewsForIdeas,
-  getCryptoIdeaChartData,
-} from '../../utils/thirdapi';
-import {ideaHistoryList, ideaList} from '../../store/datalist';
-function IdeaHomeScreen({navigation}) {
+import {getIdeaPortfolioWithDetail, getMoreIdeas} from '../../utils/utils';
+import {getCryptoNews} from '../../utils/thirdapi';
+import {ideaHistoryList} from '../../store/datalist';
+const getHourDiff = time => {
+  const now = new Date();
+  const r = Math.round(Math.abs(now.getTime() - time.getTime()) / 3600 / 1000);
+  return r;
+};
+const IdeaHomeScreen = props => {
+  const theme = useContext(ThemeContext).theme;
   const [loading, setLoading] = useState(true);
   const [ideaPortfolioList, setIdeaPortfolioList] = useState([]);
   const [newsList, setNewsList] = useState([]);
+  const [ideaList, setIdeaList] = useState([]);
   const portfolio = useSelector(state => state.portfolios.ideaPortfolio);
   const userInfo = useSelector(state => state.portfolios.userInfo);
-  const goDetail = useCallback(item => {
-    navigation.navigate('IdeaDetailScreen', {item: item});
-  }, []);
-
+  console.log(portfolio);
   useEffect(() => {
-    getIdeaPortfolioWithDetail(userInfo.user_id, portfolio).then(res => {
-      setIdeaPortfolioList(res);
-      // getCryptoIdeaChartData(res[0].ideaDetails.items).then(data => {
-      //   console.log('chartssssssssssssssssssssss', data);
-      // });
-      getCryptoNewsForIdeas(res)
-        .then(resList => {
-          setNewsList(resList);
-          setLoading(false);
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-        });
-    });
+    Promise.all([
+      getIdeaPortfolioWithDetail(userInfo.user_id, portfolio),
+      getCryptoNews('NFT'),
+      getMoreIdeas(),
+    ])
+      .then(values => {
+        setIdeaPortfolioList(values[0]);
+        setNewsList(values[1].slice(0, 5));
+        setIdeaList(values[2]);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      });
   }, []);
   if (loading) {
     return (
-      <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+      <SafeAreaView
+        style={{
+          ...investmentStyles.container,
+          backgroundColor: theme.colors.background_primary,
+        }}>
+        <Spinner
+          visible={loading}
+          textStyle={{color: theme.colors.text_primary}}
+          textContent={'Loading...'}
+        />
       </SafeAreaView>
     );
   }
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('InvestmentHomeScreen');
+          props.navigation.navigate('InvestmentHomeScreen');
         }}
       />
       <ScrollView>
-        <SectionTitle title="Ideas" fontSize={30} />
+        <SectionTitle
+          title="Ideas"
+          color={theme.colors.text_primary}
+          fontSize={30}
+        />
         <View>
           <Text style={{alignSelf: 'center'}} />
           <LottieView
@@ -80,19 +96,22 @@ function IdeaHomeScreen({navigation}) {
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="My Portfolio" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="My Portfolio"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
           </View>
           <IdeaPortfolioPanel
-            navigation={navigation}
+            navigation={props.navigation}
             items={ideaPortfolioList}
           />
         </View>
         <View style={{marginTop: 16}}>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="History" />
+            <PanelTitle color={theme.colors.text_primary} title="History" />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
@@ -101,30 +120,34 @@ function IdeaHomeScreen({navigation}) {
         </View>
         <View>
           <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-            <PanelTitle title="Related News" />
+            <PanelTitle
+              color={theme.colors.text_primary}
+              title="Related News"
+            />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>Show more</Text>
             </TouchableOpacity>
           </View>
-          {/* <View style={{marginVertical: 20}}>
+          <View style={{marginVertical: 20}}>
             {newsList.map((item, index) => {
-              return (
-                <StockNewsCard
-                  title={item.title}
-                  content={item.content}
-                  source={item.source}
-                  uri={item.image}
-                  key={index}
-                  newsHour={item.hour}
-                  lightHave={true}
-                />
-              );
+              if (item.media) {
+                return (
+                  <StockNewsCard
+                    title={item.title.slice(0, 18) + '...'}
+                    content={item.summary}
+                    uri={item.media}
+                    key={index}
+                    newsHour={getHourDiff(new Date(item.published_date))}
+                    source={item.link}
+                  />
+                );
+              }
             })}
-          </View> */}
+          </View>
         </View>
         <View>
           <View style={investmentStyles.panelHeader}>
-            <PanelTitle title="More Ideas" />
+            <PanelTitle color={theme.colors.text_primary} title="More Ideas" />
             <TouchableOpacity>
               <Text style={investmentStyles.greenLabel}>See all</Text>
             </TouchableOpacity>
@@ -135,11 +158,10 @@ function IdeaHomeScreen({navigation}) {
             style={{paddingBottom: 10, marginVertical: 20}}>
             {ideaList.map((item, index) => {
               return (
-                <StockCard
-                  title={item.title}
-                  name={item.name}
-                  val={item.val}
-                  uri={item.image}
+                <IdeaCard
+                  title={item.name}
+                  symbol={item.symbol}
+                  val={item.percent}
                   key={index}
                   width={246}
                   imageWidth={45}
@@ -152,5 +174,5 @@ function IdeaHomeScreen({navigation}) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 export default IdeaHomeScreen;

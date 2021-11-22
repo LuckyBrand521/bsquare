@@ -21,6 +21,19 @@ export const ListItemWithArrow = props => {
     </View>
   );
 };
+
+export const ListItemWithGreenArrow = props => {
+  const theme = useContext(ThemeContext).theme;
+  return (
+    <TouchableOpacity style={styles(theme).item2} onPress={props.onPress}>
+      <View>
+        <Text style={styles(theme).mediumText}>{props.content1}</Text>
+        <Text style={styles(theme).normalsmallLabel}>{props.content2}</Text>
+      </View>
+      <Icon name="chevron-right" size={20} color={theme.colors.green} />
+    </TouchableOpacity>
+  );
+};
 export const ListItemWithOutArrow = props => {
   const theme = useContext(ThemeContext).theme;
   return (
@@ -90,7 +103,12 @@ export const ListItemWithImage = props => {
   const theme = useContext(ThemeContext).theme;
   return (
     <TouchableOpacity
-      style={{...styles(theme).item, paddingVertical: 0, marginHorizontal: 0}}>
+      style={{
+        ...styles(theme).item,
+        paddingVertical: 0,
+        marginHorizontal: 0,
+      }}
+      onPress={props.onPress}>
       <View style={styles(theme).flexRow}>
         <SingleFeature
           faIcon={props.faIcon}
@@ -99,11 +117,22 @@ export const ListItemWithImage = props => {
           backgroundColor="transparent"
           border={false}
         />
-        <Text style={{...styles(theme).normalText, fontWeight: '700'}}>
+        <Text
+          style={{
+            ...styles(theme).normalText,
+            fontWeight: '700',
+            fontSize: props.fontSize
+              ? props.fontSize
+              : styles(theme).normalText.fontSize,
+          }}>
           {props.content}
         </Text>
       </View>
-      <Icon name="chevron-right" size={24} color="#5AC53A" />
+      <Icon
+        name={props.rightIcon ? props.rightIcon : 'chevron-right'}
+        size={24}
+        color={theme.colors.green}
+      />
     </TouchableOpacity>
   );
 };
@@ -161,8 +190,17 @@ const styles = theme =>
       alignItems: 'center',
       paddingVertical: 20,
       borderBottomWidth: 1,
-      borderBottomColor: theme.colors.background_third,
+      borderBottomColor: theme.colors.background_secondary,
       marginHorizontal: 16,
+      paddingRight: 5,
+    },
+    item2: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.background_third,
       paddingRight: 5,
     },
     threeColumn: {
@@ -181,6 +219,11 @@ const styles = theme =>
     normalText: {
       fontWeight: '700',
       fontSize: 13,
+      color: theme.colors.text_primary,
+    },
+    mediumText: {
+      fontWeight: '700',
+      fontSize: 16,
       color: theme.colors.text_primary,
     },
     normalLabel: {

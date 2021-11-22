@@ -11,7 +11,12 @@ export const ProfitLabel = props => {
       <Text style={{color: '#67C431', fontSize: 13, fontWeight: '700'}}>
         {props.greenLabel}{' '}
       </Text>
-      <Text style={{color: '#222', fontSize: 13, fontWeight: '500'}}>
+      <Text
+        style={{
+          color: props.labelColor ? props.labelColor : 'white',
+          fontSize: 12,
+          fontWeight: '400',
+        }}>
         {props.blackLabel}{' '}
       </Text>
     </View>
@@ -51,7 +56,12 @@ export const StockStateLabel = props => {
         }}>
         {label}{' '}
       </Text>
-      <Text style={{color: '#222', fontSize: 13, fontWeight: '500'}}>
+      <Text
+        style={{
+          color: props.labelColor ? props.labelColor : 'white',
+          fontSize: 13,
+          fontWeight: '500',
+        }}>
         {props.blackLabel}{' '}
       </Text>
     </View>

@@ -9,6 +9,29 @@ import {SectionTitle} from '../SectionTitle';
 import {ThemeContext} from 'react-native-elements';
 
 export const NavigationHeader = props => {
+  const theme = useContext(ThemeContext).theme;
+  return (
+    <View style={styles(theme).container}>
+      <View style={styles(theme).back}>
+        <TouchableOpacity style={styles(theme).back} onPress={props.onPress}>
+          <Icon
+            name="angle-left"
+            size={30}
+            style={{color: theme.colors.text_primary}}
+          />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles(theme).time}>{props.title ? props.title : ''}</Text>
+      <Icon
+        name="bookmark-o"
+        size={20}
+        style={{color: '#67C431', marginLeft: 24}}
+      />
+    </View>
+  );
+};
+
+export const NavigationProgressHeader = props => {
   const theme = useContext(ThemeContext);
   return (
     <View style={styles(theme.theme).container}>
@@ -23,14 +46,19 @@ export const NavigationHeader = props => {
           />
         </TouchableOpacity>
       </View>
-      <Text style={styles(theme.theme).time}>
-        {props.title ? props.title : ''}
-      </Text>
-      <Icon
-        name="bookmark-o"
-        size={20}
-        style={{color: '#67C431', marginLeft: 24}}
-      />
+      <View style={styles(theme.theme).barContainer}>
+        <View
+          style={{
+            ...styles(theme.theme).greenBar,
+            width: `${(props.value * 100) / props.total}%`,
+          }}
+        />
+      </View>
+      <Text
+        style={{
+          color: theme.theme.colors.green,
+          fontSize: 16,
+        }}>{`${props.value}/${props.total}`}</Text>
     </View>
   );
 };
@@ -49,7 +77,7 @@ export const HomeHeader = props => {
   const theme = useContext(ThemeContext);
   return (
     <View style={styles(theme.theme).homeHeader}>
-      <SectionTitle title="Home" />
+      <SectionTitle color={theme.theme.colors.text_primary} title="Home" />
       <Image
         source={props.imageSource}
         style={styles(theme.theme).profileImage}
@@ -68,6 +96,17 @@ const styles = theme =>
       justifyContent: 'space-between',
       backgroundColor: theme.colors.background_primary,
     },
+    barContainer: {
+      borderRadius: 2,
+      backgroundColor: theme.colors.background_secondary,
+      height: 2,
+      width: 240,
+    },
+    greenBar: {
+      borderRadius: 2,
+      backgroundColor: theme.colors.green,
+      height: 2,
+    },
     trendHeader: {
       paddingHorizontal: 18,
       flexDirection: 'row',
@@ -79,6 +118,7 @@ const styles = theme =>
       fontSize: 18,
       fontWeight: '500',
       color: theme.colors.text_primary,
+      marginLeft: -10,
     },
     back: {
       alignItems: 'center',

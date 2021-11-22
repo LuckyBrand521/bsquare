@@ -1,26 +1,24 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {
-  CustomProgressBar,
-  BrandColorLabel,
-  CryptoPerformanceRow,
-} from '../../components/Gadgets';
+import {CustomProgressBar} from '../../components/Gadgets';
+import {ThemeContext} from 'react-native-elements';
 import {SmallLine, PanelTitle} from '../SectionTitle';
 import {colors, measures} from '../../styles/colors.js';
 import {globalStyles} from '../../styles/global';
 
 export const RealEstateDetailCard = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View style={styles.container}>
       <View style={styles.barContainer}>
         <CustomProgressBar
           val={props.percent}
           color="#5AC53A"
-          textColor={colors.tn}
+          textColor={theme.colors.text_primary}
           text={`${props.percent * 100}% Funded`}
           barHeight={8}
           width={wp('100%') - 125}
@@ -78,64 +76,65 @@ export const RealEstateDetailCard = props => {
 };
 
 export const RealEstateInfoCard = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View style={styles.container}>
       <SmallLine
-        titleColor={colors.tm}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Max Amount"
         topBorder
         bottomBorder
         value={props.maxAmount}
-        valueColor={colors.tn}
+        valueColor={theme.colors.text_primary}
         normal
       />
       <SmallLine
-        titleColor={colors.tm}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Min Amount"
         bottomBorder
         value={props.minAmount}
-        valueColor={colors.tn}
+        valueColor={theme.colors.text_primary}
         normal
       />
       <SmallLine
-        titleColor={colors.tm}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Investment Period"
         bottomBorder
         value={props.period}
-        valueColor={colors.tn}
+        valueColor={theme.colors.text_primary}
         normal
       />
       <SmallLine
-        titleColor={colors.tm}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Expected ROI"
         bottomBorder
         value={props.roi}
-        valueColor={colors.tn}
+        valueColor={theme.colors.text_primary}
         normal
       />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <SmallLine
-          titleColor={colors.tm}
+          titleColor={theme.colors.text_primary}
           width="45%"
           paddingVertical={12}
           title="Start Date"
           bottomBorder
           value={props.startDate}
-          valueColor={colors.tn}
+          valueColor={theme.colors.text_primary}
           normal
         />
         <SmallLine
-          titleColor={colors.tm}
+          titleColor={theme.colors.text_primary}
           width="45%"
           paddingVertical={12}
           title="End Date"
           bottomBorder
           value={props.endDate}
-          valueColor={colors.tn}
+          valueColor={theme.colors.text_primary}
           normal
         />
       </View>
@@ -144,6 +143,7 @@ export const RealEstateInfoCard = props => {
 };
 
 export const ReadMorePanel = props => {
+  const theme = useContext(ThemeContext).theme;
   const [textShown, setTextShown] = useState(false); //To show your remaining Text
   const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
   const [triggerTextLocation, setTriggerTextLocation] = useState({
@@ -168,11 +168,13 @@ export const ReadMorePanel = props => {
   };
   return (
     <View style={styles.mainBody}>
-      <Text style={styles.titleStyle}>{props.title}</Text>
+      <Text style={{...styles.titleStyle, color: theme.colors.text_primary}}>
+        {props.title}
+      </Text>
       <Text
         onTextLayout={onTextLayout}
         numberOfLines={textShown ? undefined : props.targetLines || 1}
-        style={styles.txtStyle}>
+        style={{...styles.txtStyle, color: theme.colors.text_primary}}>
         {props.text || ''}
       </Text>
       {lengthMore ? (
@@ -185,31 +187,32 @@ export const ReadMorePanel = props => {
 };
 
 export const PropertyDetailCard = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View style={globalStyles.mhn}>
       <SmallLine
-        titleColor={colors.tn}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Floors"
         bottomBorder
         value={props.floors}
       />
       <SmallLine
-        titleColor={colors.tn}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Number of Apartments"
         bottomBorder
         value={props.apartments}
       />
       <SmallLine
-        titleColor={colors.tn}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Occupation"
         bottomBorder
         value={props.occupation}
       />
       <SmallLine
-        titleColor={colors.tn}
+        titleColor={theme.colors.text_primary}
         paddingVertical={12}
         title="Total Rent"
         bottomBorder

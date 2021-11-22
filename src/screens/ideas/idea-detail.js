@@ -1,15 +1,13 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useState, useRef, useEffect, useContext} from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import styled from 'styled-components';
+import {ThemeContext} from 'react-native-elements';
 import {Paragraph} from 'react-native-paper';
 import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
@@ -25,15 +23,7 @@ import {
   TradingReceipt,
   PurchaseComplete,
 } from '../../components/InvestCheckout';
-const GrayLabel = styled.Text`
-  color: ${props => props.textColor};
-  font-size: 10px;
-  font-weight: 500;
-  text-align: center;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  padding: 4px;
-`;
+
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
@@ -44,21 +34,20 @@ import {
 
 import SVGLineChart from '../../components/LineChart';
 //apis for DB and thirdapi
-import {
-  getCryptoNewsForIdeas,
-  getStockNewsForIdeas,
-  getCryptoIdeaChartData,
-  getStockIdeaChartData,
-} from '../../utils/thirdapi';
+import {getCryptoNews, getChartsFromCMC} from '../../utils/thirdapi';
+import {ideaImages} from '../../utils/constants';
+const getHourDiff = time => {
+  const now = new Date();
+  const r = Math.round(Math.abs(now.getTime() - time.getTime()) / 3600 / 1000);
+  return r;
+};
 
-const IdeaDetailScreen = ({route, navigation}) => {
-  const [product, setProduct] = useState(route.params.item);
+const IdeaDetailScreen = props => {
+  const theme = useContext(ThemeContext).theme;
+  const product = props.route.params.item;
   const [loading, setLoading] = useState(true);
-  const [ideaPortfolioList, setIdeaPortfolioList] = useState([]);
   const [newsList, setNewsList] = useState([]);
   const [graphData, setGraphData] = useState([]);
-  const portfolio = useSelector(state => state.portfolios.ideaPortfolio);
-  const userInfo = useSelector(state => state.portfolios.userInfo);
 
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
@@ -71,74 +60,83 @@ const IdeaDetailScreen = ({route, navigation}) => {
       {
         label: 'Quantity',
         red: false,
-        value: product.amount,
+        value: 10,
       },
-      {label: 'Price', red: false, value: '$' + product.analysis.total_value},
-      {label: 'P/L', red: false, value: product.analysis.daily_change + '%'},
+      {label: 'Price', red: false, value: '$' + 450},
+      {label: 'P/L', red: false, value: 12.45 + '%'},
     ]);
-    if (product.ideaDetails.type == 'crypto') {
-      //crypto product
-      getCryptoIdeaChartData(product.ideaDetails.items).then(data => {
-        setGraphData(data);
-        getCryptoNewsForIdeas([product]).then(resList => {
-          setNewsList(resList);
-          setLoading(false);
-        });
+    //crypto product
+    Promise.all([getChartsFromCMC(6535), getCryptoNews('Tesla')])
+      .then(values => {
+        setGraphData(values[0]);
+        setNewsList(values[1].slice(0, 5));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
       });
-    } else {
-      //stock product
-      getStockIdeaChartData(product.ideaDetails.items)
-        .then(data => {
-          setGraphData(data);
-          setLoading(false);
-          // getStockNewsForIdeas([product]).then(resList => {
-          //   setNewsList(resList);
-          //   setLoading(false);
-          // });
-        })
-        .catch(err => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
   }, []);
   if (loading) {
     return (
-      <SafeAreaView style={investmentStyles.container}>
-        <Spinner visible={loading} textContent={'Loading...'} />
+      <SafeAreaView
+        style={{
+          ...investmentStyles.container,
+          backgroundColor: theme.colors.background_primary,
+        }}>
+        <Spinner
+          visible={loading}
+          textStyle={{color: theme.colors.text_primary}}
+          textContent={'Loading...'}
+        />
       </SafeAreaView>
     );
   }
   return (
-    <SafeAreaView style={investmentStyles.container}>
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('IdeaHomeScreen');
+          props.navigation.goBack();
         }}
       />
       <ScrollView>
-        <SVGLineChart
-          graphData={graphData}
-          width={wp('100%')}
-          height={220}
-          coinName={product.symbol}
-          coinSlug={product.ideaDetails.name}
-          type="idea"
-          productData={product}
-        />
-
-        <AnalysisTag items={analData} />
-        <View style={{marginTop: 16}}>
-          <PanelTitle title="Coins and Tokens" />
-          <IdeaItemPanel
-            onPress={() => {}}
-            items={product.analysis.current_portfolio}
+        {graphData && (
+          <SVGLineChart
+            graphData={graphData}
+            width={wp('100%')}
+            height={220}
+            coinName={product.symbol}
+            coinSlug={product.ideaDetails.details.name}
+            type="idea"
+            productData={product}
           />
+        )}
+        <AnalysisTag items={analData} />
+        <View>
+          <PanelTitle color={theme.colors.text_primary} title="Overview" />
+          <Paragraph
+            style={{
+              ...styles.paragraphStyle,
+              color: theme.colors.text_primary,
+            }}>
+            {product.ideaDetails.details.overview}
+          </Paragraph>
+        </View>
+        <View style={{marginTop: 16}}>
+          <PanelTitle
+            color={theme.colors.text_primary}
+            title="Coins and Tokens"
+          />
+          <IdeaItemPanel onPress={() => {}} items={product.ideaDetails.items} />
         </View>
 
         <View style={{...investmentStyles.panelHeader, marginVertical: 20}}>
-          <PanelTitle title="News" />
+          <PanelTitle color={theme.colors.text_primary} title="News" />
           <TouchableOpacity>
             <Text style={investmentStyles.greenLabel}>Show more</Text>
           </TouchableOpacity>
@@ -147,31 +145,35 @@ const IdeaDetailScreen = ({route, navigation}) => {
           {newsList.map((item, index) => {
             return (
               <StockNewsCard
-                title={item.title}
-                content={item.content}
-                source={item.source}
-                uri={item.image}
+                title={item.title.slice(0, 18) + '...'}
+                content={item.summary}
+                uri={item.media}
                 key={index}
-                newsHour={item.hour}
-                lightHave={true}
+                newsHour={getHourDiff(new Date(item.published_date))}
+                source={item.link}
               />
             );
           })}
         </View>
-        <View>
-          <PanelTitle title="About" />
-          <Paragraph style={styles.paragraphStyle}>
-            {product.ideaDetails.overview}
-          </Paragraph>
-        </View>
         <View style={{height: 100}} />
       </ScrollView>
-      <View style={styles.fixedBottomBtn}>
+      <View
+        style={{
+          ...styles.fixedBottomBtn,
+          backgroundColor: theme.colors.background_primary,
+        }}>
         <View>
           <Text style={{fontSize: 13, fontWeight: 'bold', marginBottom: 6}}>
             Today’s Volume
           </Text>
-          <Text style={{fontSize: 13, fontWeight: '400'}}>54,381,175</Text>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '400',
+              color: theme.colors.text_primary,
+            }}>
+            54,381,175
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.tradeBtn}
@@ -191,19 +193,27 @@ const IdeaDetailScreen = ({route, navigation}) => {
       />
       <TradingCheckoutOrder
         parentRef={refRBSheet3}
+        type={'idea'}
         item={{
-          name: 'Blockchain Gaming',
-          label: 'BCG',
-          image: require('../../assets/images/bcg_icon.png'),
+          name: product.ideaDetails.details.name,
+          label: product.symbol,
+          id: product.symbol,
+          price: Number(product.ideaDetails.details.price),
+          image: ideaImages[product.symbol],
+          category: product.type,
         }}
         reviewRef={refRBSheet4}
       />
       <TradingReceipt
         parentRef={refRBSheet4}
+        type={'idea'}
         item={{
-          name: 'Blockchain Gaming',
-          label: 'BCG',
-          image: require('../../assets/images/bcg_icon.png'),
+          id: product.symbol,
+          name: product.ideaDetails.details.name,
+          label: product.symbol,
+          price: Number(product.ideaDetails.details.price),
+          image: ideaImages[product.symbol],
+          category: product.type,
         }}
         completeRef={refRBSheet5}
       />

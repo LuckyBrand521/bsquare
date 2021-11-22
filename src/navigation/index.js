@@ -2,11 +2,10 @@ import * as React from 'react';
 import {View, Image, StatusBar, Text, TouchableOpacity} from 'react-native';
 import {withTheme} from 'react-native-elements';
 import {ThemeContext} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeScreen from '../screens/home';
-import SettingsScreen from '../screens/setting';
 import SplashScreen from '../screens/splash';
 import InvestmentHomeScreen from '../screens/investment/home';
 import StockHomeScreen from '../screens/investment/stock';
@@ -18,6 +17,7 @@ import RealEstatePropertyScreen from '../screens/realestate/property';
 import RealEstateDetailScreen from '../screens/realestate/realestate-detail';
 import IdeaHomeScreen from '../screens/ideas';
 import IdeaDetailScreen from '../screens/ideas/idea-detail';
+import ArrivalScreen from '../screens/home/arrivals';
 // spending screens
 import SpendingHomeScreen from '../screens/spending';
 import {
@@ -55,8 +55,26 @@ import {
   BoostReceiptScreen,
   BoostCompleteScreen,
 } from '../screens/spending/goals/edit';
-import {BorrowingHomeScreen} from '../screens/borrowing';
+import {
+  BorrowingHomeScreen,
+  BorrowingRepayScreen,
+  BorrowingStep1Screen,
+  BorrowingStep2Screen,
+  BorrowingStep3Screen,
+  BorrowingStep4Screen,
+  BorrowingStep5Screen,
+  BorrowingStep6Screen,
+} from '../screens/borrowing';
 
+//Profile screens
+import ProfileHomeScreen, {
+  WithdrawChoiceScreen,
+  ProfileDepositScreen,
+  ProfileAddCardScreen,
+  ProfileCardListScreen,
+  ProfileDepositAmountScreen,
+  ProfileDepositConfirmScreen,
+} from '../screens/setting';
 //custom styles
 import navigationStyles from './style.js';
 
@@ -75,6 +93,10 @@ const StackNavigation = props => {
       }}>
       <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="TabNavigation" component={TabNavigation} />
+      <Stack1.Screen name="ArrivalScreen" component={ArrivalScreen} />
+      {/* Investment screens */}
+      <Stack1.Screen name="CryptoHomeScreen" component={CryptoHomeScreen} />
+      <Stack1.Screen name="CryptoDetailScreen" component={CryptoDetailScreen} />
       {/* Spending Screens */}
       <Stack.Screen
         name="CreateNewCardScreen"
@@ -159,8 +181,57 @@ const StackNavigation = props => {
       <Stack.Screen name="FindATMScreen" component={FindATMScreen} />
       {/* borrowing screens */}
       <Stack.Screen
-        name="BorrowingHomeScreen"
-        component={BorrowingHomeScreen}
+        name="BorrowingRepayScreen"
+        component={BorrowingRepayScreen}
+      />
+      <Stack.Screen
+        name="BorrowingStep1Screen"
+        component={BorrowingStep1Screen}
+      />
+      <Stack.Screen
+        name="BorrowingStep2Screen"
+        component={BorrowingStep2Screen}
+      />
+      <Stack.Screen
+        name="BorrowingStep3Screen"
+        component={BorrowingStep3Screen}
+      />
+      <Stack.Screen
+        name="BorrowingStep4Screen"
+        component={BorrowingStep4Screen}
+      />
+      <Stack.Screen
+        name="BorrowingStep5Screen"
+        component={BorrowingStep5Screen}
+      />
+      <Stack.Screen
+        name="BorrowingStep6Screen"
+        component={BorrowingStep6Screen}
+      />
+      {/* Profile Screens */}
+      <Stack.Screen
+        name="ProfileDepositScreen"
+        component={ProfileDepositScreen}
+      />
+      <Stack.Screen
+        name="WithdrawChoiceScreen"
+        component={WithdrawChoiceScreen}
+      />
+      <Stack.Screen
+        name="ProfileAddCardScreen"
+        component={ProfileAddCardScreen}
+      />
+      <Stack.Screen
+        name="ProfileCardListScreen"
+        component={ProfileCardListScreen}
+      />
+      <Stack.Screen
+        name="ProfileDepositAmountScreen"
+        component={ProfileDepositAmountScreen}
+      />
+      <Stack.Screen
+        name="ProfileDepositConfirmScreen"
+        component={ProfileDepositConfirmScreen}
       />
     </Stack.Navigator>
   );
@@ -192,7 +263,11 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Icon name="home" size={24} color={'white'} />
+                  <Icon
+                    name="home"
+                    size={28}
+                    color={theme.colors.text_primary}
+                  />
                 </View>
               );
             } else {
@@ -201,7 +276,11 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Icon name="home" size={22} color="#A5A7A8" />
+                  <Icon
+                    name="home"
+                    size={22}
+                    color={theme.colors.text_secondary}
+                  />
                 </View>
               );
             }
@@ -222,9 +301,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/invest_icon_active.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="trophy"
+                    size={28}
+                    color={theme.colors.text_primary}
                   />
                 </View>
               );
@@ -234,9 +314,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/invest_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="trophy"
+                    size={22}
+                    color={theme.colors.text_secondary}
                   />
                 </View>
               );
@@ -259,9 +340,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/wallet_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="credit-card-alt"
+                    size={28}
+                    color={theme.colors.text_primary}
                   />
                 </View>
               );
@@ -271,9 +353,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/wallet_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="credit-card-alt"
+                    size={20}
+                    color={theme.colors.text_secondary}
                   />
                 </View>
               );
@@ -295,9 +378,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/loans_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="bank"
+                    size={28}
+                    color={theme.colors.text_primary}
                   />
                 </View>
               );
@@ -307,16 +391,17 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/loans_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="bank"
+                    size={20}
+                    color={theme.colors.text_secondary}
                   />
                 </View>
               );
             }
           },
         }}
-        name="Loans"
+        name="BorrowingHomeScreen"
         component={BorrowingHomeScreen}
       />
       <Tab.Screen
@@ -330,9 +415,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/profile_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="user-circle-o"
+                    size={28}
+                    color={theme.colors.text_primary}
                   />
                 </View>
               );
@@ -342,9 +428,10 @@ export const TabNavigation = () => {
                   style={{
                     height: 49,
                   }}>
-                  <Image
-                    source={require('../assets/icons/profile_icon.png')}
-                    style={{width: 24, height: 24}}
+                  <Icon
+                    name="user-circle-o"
+                    size={20}
+                    color={theme.colors.text_secondary}
                   />
                 </View>
               );
@@ -352,7 +439,7 @@ export const TabNavigation = () => {
           },
         }}
         name="Profile"
-        component={SettingsScreen}
+        component={ProfileHomeScreen}
       />
     </Tab.Navigator>
   );
@@ -373,8 +460,7 @@ function InvestmentStack() {
       />
       <Stack1.Screen name="StockHomeScreen" component={StockHomeScreen} />
       <Stack1.Screen name="StockDetailScreen" component={StockDetailScreen} />
-      <Stack1.Screen name="CryptoHomeScreen" component={CryptoHomeScreen} />
-      <Stack1.Screen name="CryptoDetailScreen" component={CryptoDetailScreen} />
+
       <Stack1.Screen
         name="RealEstateHomeScreen"
         component={RealEstateHomeScreen}

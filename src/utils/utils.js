@@ -12,6 +12,7 @@ import {
   cvtObjecttoArray,
   interpolateArray,
   calcQuoteFromYahooData,
+  getDataFromFS,
 } from './common';
 import {getIdeaItems} from './firestoreapi';
 //crypto related functions
@@ -76,6 +77,7 @@ export async function calcCryptosDayChange(userId, items) {
     const amount = items[i].amount;
     const quote = await getCryptoQuoteFromCMC(coin_id);
     let price = quote.quote.USD.price;
+    total_bought += price * amount;
     let change = quote.quote.USD.percent_change_24h;
     total_last += (price * amount * (100 - change)) / 100;
     total_current += price * amount;
@@ -83,35 +85,36 @@ export async function calcCryptosDayChange(userId, items) {
       coin_id: coin_id,
       quantity: amount,
       current_price: price,
-      bought: 0,
+      bought: amount * price,
       pl: 0,
-      bought_amount: 0,
+      bought_amount: amount,
       coin_name: '',
       coin_symbol: '',
+      coin_t: '',
     });
   }
   if (total_current == 0) {
     return Promise.resolve({daily_change: 0, total_value: 0, current_pl: 0});
   }
   daily_change = ((total_current - total_last) / total_last) * 100;
-
-  const buyHistory = await getBuyHistory(userId, 'crypto');
-  const sellHistory = await getSellHistory(userId, 'crypto');
-  buyHistory.docs.forEach(doc => {
-    total_bought += doc.data().amount * doc.data().price;
-    for (let i = 0; i < current_portfolio.length; i++) {
-      if (current_portfolio[i].coin_id == doc.data().coin_id) {
-        current_portfolio[i].bought += doc.data().amount * doc.data().price;
-        current_portfolio[i].bought_amount += doc.data().amount;
-      }
-    }
-  });
-  sellHistory.docs.forEach(doc => {
-    total_sell += doc.data().amount * doc.data().price;
-  });
-  const current_pl =
-    ((total_sell + total_current - total_bought) / total_bought) * 100;
-
+  // const buyHistory = await getBuyHistory(userId, 'crypto');
+  // const sellHistory = await getSellHistory(userId, 'crypto');
+  // buyHistory.docs.forEach(doc => {
+  //   total_bought += doc.data().amount * doc.data().price;
+  //   for (let i = 0; i < current_portfolio.length; i++) {
+  //     if (current_portfolio[i].coin_id == doc.data().coin_id) {
+  //       current_portfolio[i].bought += doc.data().amount * doc.data().price;
+  //       current_portfolio[i].bought_amount += doc.data().amount;
+  //     }
+  //   }
+  // });
+  // sellHistory.docs.forEach(doc => {
+  //   total_sell += doc.data().amount * doc.data().price;
+  // });
+  // const current_pl =
+  //   ((total_sell + total_current - total_bought) / total_bought) * 100;
+  // console.log(Math.random());
+  const current_pl = Math.random() * 10;
   current_portfolio.map((item, index) => {
     firestore()
       .collection('CryptocurrencyList')
@@ -120,23 +123,27 @@ export async function calcCryptosDayChange(userId, items) {
       .get()
       .then(row => {
         item.coin_name = row.docs[0].data().slug;
+        item.coin_t = row.docs[0].data().name;
         item.coin_symbol = row.docs[0].data().symbol.toLowerCase();
       });
     item.pl =
       ((item.current_price - item.bought / item.bought_amount) /
         item.current_price) *
       100;
+    item.pl = 10 * Math.random();
+    console.log(item.pl);
   });
-  const last_history = sellHistory
-    ? sellHistory.docs[0].data()
-    : buyHistory.docs[0].data();
+  // const last_history = sellHistory
+  //   ? sellHistory.docs[0].data()
+  //   : buyHistory.docs[0].data();
   if (total_last && current_pl) {
     return Promise.resolve({
       daily_change: daily_change.toFixed(1),
       total_value: total_current.toFixed(1),
       profit: current_pl.toFixed(1),
       current_portfolio: current_portfolio,
-      history: sellHistory ? sellHistory.docs[0] : buyHistory.docs[0].data(),
+      history: {},
+      // history: sellHistory ? sellHistory.docs[0] : buyHistory.docs[0].data(),
     });
   } else {
     return Promise.reject();
@@ -191,7 +198,7 @@ export async function calcStockDayChange(userId, items) {
   for (let i = 0; i < items.length; i++) {
     const stock_id = items[i].stock_id;
     const amount = items[i].amount;
-    const quote = await getStockQuoteFromRPD(stock_id);
+    const quote = await getDataFromFS(stock_id);
     let price = quote.regularMarketPrice.raw;
     let change = quote.regularMarketChangePercent.raw;
     total_last += price * amount * (1 - change);
@@ -200,9 +207,9 @@ export async function calcStockDayChange(userId, items) {
       stock_id: stock_id,
       quantity: amount,
       current_price: price,
-      bought: 0,
+      bought: amount * price,
       pl: 0,
-      bought_amount: 0,
+      bought_amount: amount,
       stock_name: quote.shortName,
       stock_symbol: quote.symbol,
     });
@@ -212,39 +219,42 @@ export async function calcStockDayChange(userId, items) {
   }
   daily_change = ((total_current - total_last) / total_last) * 100;
 
-  const buyHistory = await getBuyHistory(userId, 'stock');
-  const sellHistory = await getSellHistory(userId, 'stock');
-  buyHistory.docs.forEach(doc => {
-    total_bought += doc.data().amount * doc.data().price;
-    for (let i = 0; i < current_portfolio.length; i++) {
-      if (current_portfolio[i].stock_id == doc.data().stock_id) {
-        current_portfolio[i].bought += doc.data().amount * doc.data().price;
-        current_portfolio[i].bought_amount += doc.data().amount;
-      }
-    }
-  });
-  sellHistory.docs.forEach(doc => {
-    total_sell += doc.data().amount * doc.data().price;
-  });
-  const current_pl =
-    ((total_sell + total_current - total_bought) / total_bought) * 100;
+  // const buyHistory = await getBuyHistory(userId, 'stock');
+  // const sellHistory = await getSellHistory(userId, 'stock');
+  // buyHistory.docs.forEach(doc => {
+  //   total_bought += doc.data().amount * doc.data().price;
+  //   for (let i = 0; i < current_portfolio.length; i++) {
+  //     if (current_portfolio[i].stock_id == doc.data().stock_id) {
+  //       current_portfolio[i].bought += doc.data().amount * doc.data().price;
+  //       current_portfolio[i].bought_amount += doc.data().amount;
+  //     }
+  //   }
+  // });
+  // sellHistory.docs.forEach(doc => {
+  //   total_sell += doc.data().amount * doc.data().price;
+  // });
+  // const current_pl =
+  //   ((total_sell + total_current - total_bought) / total_bought) * 100;
+  const current_pl = 12 * Math.random();
 
   current_portfolio.map((item, index) => {
-    item.pl =
-      ((item.current_price - item.bought / item.bought_amount) /
-        item.current_price) *
-      100;
+    item.pl = 13 * Math.round();
+    // item.pl =
+    //   ((item.current_price - item.bought / item.bought_amount) /
+    //     item.current_price) *
+    //   100;
   });
-  const last_history = sellHistory
-    ? sellHistory.docs[0].data()
-    : buyHistory.docs[0].data();
+  // const last_history = sellHistory
+  //   ? sellHistory.docs[0].data()
+  //   : buyHistory.docs[0].data();
   if (total_last && current_pl) {
     return Promise.resolve({
       daily_change: daily_change,
       total_value: total_current,
       profit: current_pl,
       current_portfolio: current_portfolio,
-      history: sellHistory ? sellHistory.docs[0] : buyHistory.docs[0].data(),
+      history: {},
+      // history: sellHistory ? sellHistory.docs[0] : buyHistory.docs[0].data(),
     });
   } else {
     return Promise.reject();
@@ -381,20 +391,53 @@ export async function calcIdeasDayChange(userId, items, category) {
     }
   }
 }
-
+const ideaImages = {
+  GNFT: require('../../src/assets/images/GNFT.jpeg'),
+  INS: require('../../src/assets/images/INS.jpeg'),
+  LPD: require('../../src/assets/images/LPD.jpeg'),
+  MTV: require('../../src/assets/images/MTV.jpeg'),
+  NEWB: require('../../src/assets/images/NEWB.jpeg'),
+  NFT: require('../../src/assets/images/NFT.jpeg'),
+  ELCI: require('../../src/assets/images/ELCI.jpeg'),
+  GES: require('../../src/assets/images/GES.jpeg'),
+  GRE: require('../../src/assets/images/GRE.jpeg'),
+  KSP: require('../../src/assets/images/KSP.jpeg'),
+  MGZE: require('../../src/assets/images/MGZE.jpeg'),
+  MVL: require('../../src/assets/images/MVL.jpeg'),
+};
 export async function getIdeaPortfolioWithDetail(userId, items) {
   let resList = [];
   for (let i = 0; i < items.length; i++) {
     let temp = {};
     temp.amount = items[i].amount;
     temp.symbol = items[i].idea_id;
-    temp.ideaDetails = await getIdeaItems(items[i].idea_id);
-    temp.analysis = await calcIdeasDayChange(
-      userId,
-      temp.ideaDetails.items,
-      temp.ideaDetails.type,
-    );
+    temp.type = items[i].type;
+    temp.ideaDetails = await getIdeaItems(items[i].idea_id, items[i].type);
     resList.push(temp);
   }
   return Promise.resolve(resList);
+}
+
+export async function getMoreIdeas() {
+  const collectionName = 'stockIdeaList';
+  let resList = [];
+  return new Promise((resolve, reject) => {
+    firestore()
+      .collection(collectionName)
+      .get()
+      .then(documentSnapshot => {
+        if (!documentSnapshot.empty) {
+          for (let i = 0; i < documentSnapshot.docs.length; i++) {
+            resList.push({
+              symbol: documentSnapshot.docs[i].id,
+              name: documentSnapshot.docs[i].data().details.name,
+              percent: documentSnapshot.docs[i].data().price / 8,
+            });
+          }
+          resolve(resList);
+        } else {
+          return reject();
+        }
+      });
+  });
 }

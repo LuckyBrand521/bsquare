@@ -6,6 +6,7 @@ const initialState = {
   stockPortfolio: [],
   estatePortfolio: [],
   ideaPortfolio: [],
+  purchaseStore: {id: 0, amount: 0, quantity: 0, buy: 1},
 };
 export const portfolioSlice = createSlice({
   name: 'portfolios',
@@ -17,6 +18,17 @@ export const portfolioSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    updateUserBalance: (state, action) => {
+      let temp = action.payload;
+      state.userInfo = {...state.userInfo, account_balance: action.payload};
+    },
+    updateCardInfo: (state, action) => {
+      // state.userInfo = {...state.userInfo, card_info: action.payload};
+      state.userInfo.card_info = action.payload;
+    },
+    updateUserGoals: (state, action) => {
+      state.userInfo.goals.push(action.payload);
+    },
     setCryptoPortfolio: (state, action) => {
       state.cryptoPortfolio = action.payload;
     },
@@ -25,6 +37,9 @@ export const portfolioSlice = createSlice({
     },
     setIdeaPortfolio: (state, action) => {
       state.ideaPortfolio = action.payload;
+    },
+    setPurchaseStore: (state, action) => {
+      state.purchaseStore = action.payload;
     },
   },
 });
@@ -35,6 +50,10 @@ export const {
   setCryptoPortfolio,
   setStockPortfolio,
   setIdeaPortfolio,
+  updateUserBalance,
+  updateCardInfo,
+  updateUserGoals,
+  setPurchaseStore,
 } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;

@@ -1,11 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useState, useContext} from 'react';
+import {useSelector} from 'react-redux';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
   StyleSheet,
 } from 'react-native';
@@ -26,14 +25,10 @@ import {
 } from '../../components/Card/creditcard';
 import {CardFeatureLinks} from '../../components/CardFeatureLinks';
 import {ListItemWithArrow, ListItemWithPrice} from '../../components/ListItem';
+
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
 //test data
 
 function SpendingHomeScreen(props) {
@@ -43,24 +38,17 @@ function SpendingHomeScreen(props) {
     {name: 'Amazon', amount: 365, date: 1635534281},
     {name: 'Starbucks', amount: 6, date: 1635534281},
   ]);
-  const [goals, setGoals] = useState([
-    {
-      id: 0,
-      uri: 'https://picsum.photos/700',
-      title: 'Tesla Model S',
-      dates: 30,
-      percent: 12,
-      total: 10000,
-    },
-    {
-      id: 1,
-      uri: 'https://picsum.photos/700',
-      title: 'Tesla Model S',
-      dates: 30,
-      percent: 12,
-      total: 10000,
-    },
-  ]);
+  // const [goals, setGoals] = useState([
+  //   {
+  //     id: 0,
+  //     uri: 'https://picsum.photos/700',
+  //     title: 'Tesla Model S',
+  //     dates: 30,
+  //     percent: 12,
+  //     total: 10000,
+  //   },
+  // ]);
+  const [goals, setGoals] = useState([]);
   const userInfo = useSelector(state => state.portfolios.userInfo);
   const viewGoalDetail = id => {
     props.navigation.navigate('GoalDetailScreen', {goalId: id});
@@ -76,7 +64,7 @@ function SpendingHomeScreen(props) {
         <View style={styles(theme).flexRow}>
           <Text style={styles(theme).text}>Purchase Power</Text>
           <Text style={[styles(theme).text, styles(theme).balanceLabel]}>
-            ${userInfo.card_info.balance}
+            ${userInfo.account_balance.toFixed(2)}
           </Text>
         </View>
         <View style={styles(theme).cardView}>
@@ -87,11 +75,14 @@ function SpendingHomeScreen(props) {
             }}
             style={styles(theme).addBtn}
           />
-          <CreditCard
-            cardNumber={userInfo.card_info.number}
-            cardHolder={userInfo.name}
-            expireDate={userInfo.card_info.expiration_date}
-          />
+          {Object.keys(userInfo.card_info).length !== 0 && (
+            <CreditCard
+              cardNumber={Number(userInfo.card_info.number)}
+              cardHolder={userInfo.card_info.holder_name}
+              expireDate={userInfo.card_info.expiration_date}
+              type={userInfo.card_info.type}
+            />
+          )}
         </View>
         <CardFeatureLinks navigation={props.navigation} />
         <View>
@@ -126,11 +117,11 @@ function SpendingHomeScreen(props) {
         </View>
         <View>
           <LottieView
-            source={require('../../assets/animations/piggy2.json')}
-            autoPlay
+            source={require('../../assets/animations/piggy.json')}
+            autoPlay={false}
             loop={false}
             style={{
-              height: 200,
+              height: 300,
               alignSelf: 'center',
               backgroundColor: 'transparent',
             }}
@@ -214,29 +205,31 @@ function SpendingHomeScreen(props) {
           />
         </View>
         <PanelTitle title="Goals" color={theme.colors.text_primary} />
-        <ScrollView
-          style={styles(theme).top16}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}>
-          {goals.map((item, index) => {
-            return (
-              <GoalListItemCard
-                uri={item.uri}
-                width={320}
-                key={index}
-                title={item.title}
-                dates={item.dates}
-                percent={item.percent}
-                value={`$${(item.total * item.percent) / 100}/$${item.total}`}
-                imageWidth={300}
-                imageHeight={150}
-                onPress={() => {
-                  viewGoalDetail(index);
-                }}
-              />
-            );
-          })}
-        </ScrollView>
+        {userInfo.goals.length > 0 && (
+          <ScrollView
+            style={styles(theme).top16}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}>
+            {userInfo.goals.map((item, index) => {
+              return (
+                <GoalListItemCard
+                  uri={item.uri}
+                  width={320}
+                  key={index}
+                  title={item.title}
+                  dates={item.dates}
+                  percent={item.percent}
+                  value={`$${(item.total * item.percent) / 100}/$${item.total}`}
+                  imageWidth={300}
+                  imageHeight={150}
+                  onPress={() => {
+                    viewGoalDetail(index);
+                  }}
+                />
+              );
+            })}
+          </ScrollView>
+        )}
         <Text />
         <FunctionalButton
           caption="Set a new Goal"

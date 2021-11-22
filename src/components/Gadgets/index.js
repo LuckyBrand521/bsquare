@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, {useContext} from 'react';
 import {Text, TextPropTypes, View, Image, TouchableOpacity} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import styled from 'styled-components';
 import {ProgressBar} from 'react-native-paper';
@@ -20,6 +21,7 @@ const GrayLabel = styled.Text`
 `;
 
 export const CustomProgressBar = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View
       style={{
@@ -34,7 +36,7 @@ export const CustomProgressBar = props => {
         style={{
           backgroundColor: props.backgroundColor
             ? props.backgroundColor
-            : '#EBEFF1',
+            : theme.colors.background_secondary,
           height: props.barHeight ? props.barHeight : 4,
           width: props.width ? props.width : '100%',
           borderRadius: 2,
@@ -78,6 +80,7 @@ export const BrandColorLabel = props => {
 };
 
 export const CryptoPortfolioPanel = props => {
+  const theme = useContext(ThemeContext).theme;
   const itemLength = props.items.length;
   return props.items.map((item, index) => {
     const pl_str = item.pl.toFixed(1);
@@ -114,7 +117,11 @@ export const CryptoPortfolioPanel = props => {
             }}>
             <TouchableOpacity
               onPress={() => {
-                props.onPress('CryptoDetailScreen');
+                props.navigation.navigate('CryptoDetailScreen', {
+                  coinId: item.coin_id,
+                  coinSymbol: item.coin_symbol,
+                  coinAmount: item.quantity,
+                });
               }}>
               <Image
                 source={{
@@ -127,21 +134,34 @@ export const CryptoPortfolioPanel = props => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={{fontSize: 12, fontWeight: '400', color: '#83899D'}}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '400',
+              color: theme.colors.text_secondary,
+            }}>
             {item.coin_symbol.toUpperCase()}
           </Text>
         </View>
         <View style={{flex: 5, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Quantity</GrayLabel>
-            <Text>{item.quantity}</Text>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Quantity
+            </GrayLabel>
+            <Text style={{color: theme.colors.text_primary, fontSize: 13}}>
+              {item.quantity}
+            </Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Bought for</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Bought for
+            </GrayLabel>
             <BrandColorLabel green value={`$${bought_str}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Current Price</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Current Price
+            </GrayLabel>
             <BrandColorLabel
               green={item.current_price > item.bought ? true : false}
               red={item.current_price < item.bought ? true : false}
@@ -149,7 +169,7 @@ export const CryptoPortfolioPanel = props => {
             />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">P/L</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>P/L</GrayLabel>
             <BrandColorLabel
               green={item.pl > 0 ? true : false}
               red={item.pl < 0 ? true : false}
@@ -163,6 +183,7 @@ export const CryptoPortfolioPanel = props => {
 };
 
 export const CryptoHistoryPanel = props => {
+  const theme = useContext(ThemeContext).theme;
   const itemLength = props.items.length;
   return props.items.map((item, index) => {
     return (
@@ -194,6 +215,7 @@ export const CryptoHistoryPanel = props => {
               style={{
                 width: 45,
                 height: 45,
+                borderRadius: 100,
               }}
             />
           </View>
@@ -203,15 +225,19 @@ export const CryptoHistoryPanel = props => {
         </View>
         <View style={{flex: 4, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#2A2E3B">Bought for</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Bought for
+            </GrayLabel>
             <BrandColorLabel red={false} value={`$${item.bought}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#2A2E3B">Sold for</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Sold for
+            </GrayLabel>
             <BrandColorLabel green value={`$${item.sold}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#2A2E3B">P/L</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>P/L</GrayLabel>
             <BrandColorLabel
               green={item.pl > 0 ? true : false}
               red={item.pl < 0 ? true : false}
@@ -219,7 +245,7 @@ export const CryptoHistoryPanel = props => {
             />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#2A2E3B">Date</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_secondary}>Date</GrayLabel>
             <BrandColorLabel green value={item.date} />
           </View>
         </View>
@@ -229,6 +255,7 @@ export const CryptoHistoryPanel = props => {
 };
 
 export const CryptoPerformanceRow = props => {
+  const theme = useContext(ThemeContext).theme;
   return (
     <View
       style={{
@@ -237,7 +264,7 @@ export const CryptoPerformanceRow = props => {
         marginHorizontal: 16,
         marginTop: 0,
         borderBottomWidth: 1,
-        borderBottomColor: '#EBEFF1',
+        borderBottomColor: theme.colors.background_secondary,
       }}>
       <View style={{flex: 1, justifyContent: 'center'}}>
         <Text style={{color: '#999'}}>{props.time}</Text>
@@ -255,9 +282,9 @@ export const CryptoPerformanceRow = props => {
           width={100}
           height={60}
           chartConfig={{
-            backgroundColor: '#fff',
-            backgroundGradientFrom: '#fff',
-            backgroundGradientTo: '#fff',
+            backgroundColor: 'transparent',
+            backgroundGradientFrom: 'transparent',
+            backgroundGradientTo: 'transparent',
             decimalPlaces: 3, // optional, defaults to 2dp #E45A28
             color: props.green
               ? (opacity = 1) => 'rgba(103, 196, 49, 1)'
@@ -272,7 +299,7 @@ export const CryptoPerformanceRow = props => {
             // propsForBackgroundLines: {strokeWidth: 0},
             propsForVerticalLabels: false,
             propsForBackgroundLines: {
-              stroke: '#ffffff',
+              stroke: 'transparent',
             },
             strokeWidth: 1,
           }}
@@ -303,6 +330,7 @@ export const CryptoPerformanceRow = props => {
 };
 
 export const StockPortfolioPanel = props => {
+  const theme = useContext(ThemeContext).theme;
   const itemLength = props.items.length;
   const images = {
     AAPL: require('../../assets/images/AAPL.png'),
@@ -344,15 +372,42 @@ export const StockPortfolioPanel = props => {
             }}>
             <TouchableOpacity
               onPress={() => {
-                props.onPress('StockDetailScreen');
+                props.navigation.navigate('StockDetailScreen', {
+                  stockId: item.stock_symbol,
+                  stockAmount: item.quantity,
+                });
               }}>
-              <Image
-                source={images[item.stock_symbol]}
-                style={{
-                  width: 45,
-                  height: 45,
-                }}
-              />
+              {images[item.stock_symbol] && (
+                <Image
+                  source={images[item.stock_symbol]}
+                  // source={{
+                  //   uri: `https://s3-symbol-logo.tradingview.com/${item.stock_name
+                  //     .split(' ')[0]
+                  //     .toLowerCase()}.svg`,
+                  // }}
+                  style={{
+                    width: 45,
+                    height: 45,
+                  }}
+                />
+              )}
+              {!images[item.stock_symbol] && (
+                <Text
+                  style={{
+                    color: theme.colors.text_primary,
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    alignItems: 'center',
+                    backgroundColor: theme.colors.background_secondary,
+                    width: 45,
+                    height: 45,
+                    borderRadius: 100,
+                    paddingTop: 10,
+                    fontWeight: 'bold',
+                  }}>
+                  {item.stock_symbol}
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
           <Text style={{fontSize: 12, fontWeight: '400', color: '#83899D'}}>
@@ -389,8 +444,22 @@ export const StockPortfolioPanel = props => {
     );
   });
 };
-
+const ideaImages = {
+  GNFT: require('../../assets/images/GNFT.jpeg'),
+  INS: require('../../assets/images/INS.jpeg'),
+  LPD: require('../../assets/images/LPD.jpeg'),
+  MTV: require('../../assets/images/MTV.jpeg'),
+  NEWB: require('../../assets/images/NEWB.jpeg'),
+  NFT: require('../../assets/images/NFT.jpeg'),
+  ELCI: require('../../assets/images/ELCI.jpeg'),
+  GES: require('../../assets/images/GES.jpeg'),
+  GRE: require('../../assets/images/GRE.jpeg'),
+  KSP: require('../../assets/images/KSP.jpeg'),
+  MGZE: require('../../assets/images/MGZE.jpeg'),
+  MVL: require('../../assets/images/MVL.jpeg'),
+};
 export const IdeaPortfolioPanel = props => {
+  const theme = useContext(ThemeContext).theme;
   const itemLength = props.items.length;
   const levelRange = ['Very Low', 'Low', 'Mid', 'High', 'Very High'];
   const navigation = props.navigation;
@@ -399,17 +468,19 @@ export const IdeaPortfolioPanel = props => {
   };
 
   return props.items.map((item, index) => {
-    if (index == 1) {
-      console.log(item.analysis.current_portfolio);
-    }
+    const bought_str = (item.ideaDetails.details.price - 0.9684).toFixed(2);
+    const price_str = Number(item.ideaDetails.details.price);
+    const pl_str = (item.ideaDetails.details.price / 5.3981).toFixed(2);
     return (
       <View
         key={index}
         style={{
-          marginHorizontal: 24,
+          marginHorizontal: 16,
           paddingBottom: 16,
           borderBottomColor:
-            itemLength === index + 1 ? 'transparent' : '#EBEFF1',
+            itemLength === index + 1
+              ? 'transparent'
+              : theme.colors.background_secondary,
           borderBottomWidth: itemLength === index + 1 ? 0 : 1,
         }}>
         <View
@@ -424,34 +495,49 @@ export const IdeaPortfolioPanel = props => {
                 goDetail(item);
               }}>
               <Image
-                source={{uri: `${UPLOADED_IMAGES}${item.symbol}_icon.png`}}
+                source={ideaImages[item.symbol]}
                 style={{
                   width: 45,
                   height: 45,
                   marginRight: 10,
+                  borderRadius: 100,
                 }}
               />
             </TouchableOpacity>
-            <Text style={investmentStyles.boldLabel}>{item.symbol}</Text>
-          </View>
-          <Text style={investmentStyles.boldLabel}>
-            {item.analysis.total_value}
-          </Text>
-        </View>
-        <View style={investmentStyles.contentBetweenCenter}>
-          <GrayLabel textColor="#83899D" fontSize={13}>
-            ${item.analysis.total_last} - ${item.analysis.total_value}
-          </GrayLabel>
-          <Text>{item.analysis.daily_change}%</Text>
-        </View>
-        <View style={investmentStyles.contentBetweenCenter}>
-          <View style={investmentStyles.contentBottom}>
-            <LevelBar level={item.ideaDetails.volatility} scale={0.8} />
-            <Text style={{marginLeft: 10}}>
-              {levelRange[item.ideaDetails.volatility - 1]}
+            <Text
+              style={{
+                ...investmentStyles.boldLabel,
+                color: theme.colors.text_primary,
+              }}>
+              {item.ideaDetails.details.name}
             </Text>
           </View>
-          <Text>{item.amount}shares</Text>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{alignItems: 'center'}}>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Quantity
+            </GrayLabel>
+            <Text style={{color: theme.colors.text_primary, fontSize: 13}}>
+              {item.amount}
+            </Text>
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Bought for
+            </GrayLabel>
+            <BrandColorLabel green value={`$${bought_str}`} />
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <GrayLabel textColor={theme.colors.text_secondary}>
+              Current Price
+            </GrayLabel>
+            <BrandColorLabel green value={`$${price_str.toFixed(2)}`} />
+          </View>
+          <View style={{alignItems: 'center'}}>
+            <GrayLabel textColor={theme.colors.text_secondary}>P/L</GrayLabel>
+            <BrandColorLabel green={true} value={`${pl_str}%`} />
+          </View>
         </View>
       </View>
     );
@@ -515,10 +601,11 @@ export const InvestmentStatusOveriew = props => {
 
 export const IdeaItemPanel = props => {
   const itemLength = props.items.length;
+  const theme = useContext(ThemeContext).theme;
   return props.items.map((item, index) => {
-    const change_str = item.change.toFixed(1);
-    const percentage_str = item.percentage;
-    const price_str = item.current_price.toFixed(1);
+    const change_str = item.change24h.toFixed(1);
+    const percentage_str = item.percent;
+    const price_str = item.price.toFixed(1);
     return (
       <View
         key={index}
@@ -549,43 +636,67 @@ export const IdeaItemPanel = props => {
               shadowRadius: 2,
             }}>
             <TouchableOpacity>
-              <Image
-                source={{
-                  uri: `https://cryptologos.cc/logos/${
-                    item.coin_slug
-                  }-${item.coin_symbol.toLowerCase()}-logo.png`,
-                }}
-                style={{
-                  width: 45,
-                  height: 45,
-                }}
-              />
+              {item.coin && (
+                <Image
+                  source={{
+                    uri: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`,
+                  }}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 100,
+                  }}
+                />
+              )}
+              {item.stock && (
+                <View
+                  style={{
+                    width: 45,
+                    height: 45,
+                    backgroundColor: theme.colors.text_secondary,
+                    borderRadius: 100,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: theme.colors.red,
+                      fontSize: 24,
+                      fontWeight: 'bold',
+                    }}>
+                    {item.stock.slice(0, 1)}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
-          <Text style={{fontSize: 12, fontWeight: '400', color: '#83899D'}}>
-            {item.coin_symbol.toUpperCase()}
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '400',
+              color: theme.colors.text_primary,
+            }}>
+            {item.coin ? item.coin.toUpperCase() : item.stock.toUpperCase()}
           </Text>
         </View>
         <View style={{flex: 5, flexDirection: 'row'}}>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Qty</GrayLabel>
-            <Text>{item.quantity.toFixed(5)}</Text>
+            <GrayLabel textColor={theme.colors.text_primary}>Qty</GrayLabel>
+            <Text style={{color: theme.colors.text_primary}}>
+              {item.amount.toFixed(5)}
+            </Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">%</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_primary}>%</GrayLabel>
             <BrandColorLabel green value={`$${percentage_str}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">Price</GrayLabel>
+            <GrayLabel textColor={theme.colors.text_primary}>Price</GrayLabel>
             <BrandColorLabel green value={`$${price_str}`} />
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <GrayLabel textColor="#83899D">24H</GrayLabel>
-            <BrandColorLabel
-              green={item.change > 0 ? true : false}
-              red={item.change < 0 ? true : false}
-              value={`${change_str}%`}
-            />
+            <GrayLabel textColor={theme.colors.text_primary}>24H</GrayLabel>
+            <BrandColorLabel green value={`${change_str}%`} />
           </View>
         </View>
       </View>

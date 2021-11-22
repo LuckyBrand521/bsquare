@@ -82,7 +82,7 @@ const styles = theme =>
       alignItems: 'center',
       width: 45,
       height: 45,
-      backgroundColor: theme.colors.text_primary,
+      backgroundColor: theme.colors.background_secondary,
     },
     iconTitle: {
       marginTop: 10,
