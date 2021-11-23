@@ -110,8 +110,12 @@ export async function interpolateArray(arr, currency) {
 
 export async function getStockData(stockId) {
   Promise.all([
-    fetch('http://144.126.146.135/yahoo_stock_report.php?stockId=AAPL'),
-    fetch('http://144.126.146.135/yahoo_stock_summary.php?stockId=AAPL'),
+    fetch(
+      'https://query2.finance.yahoo.com/ws/insights/v2/finance/insights?lang=en-US&region=US&symbol=AAPL',
+    ),
+    fetch(
+      'nance/quoteSummary/AAPL?formatted=true&crumb=KnKDLwDAA4z&lang=en-US&region=US&modules=recommendationTrend%2CfinancialData%2CearningsHistory%2CearningsTrend%2CindustryTrend%2CindexTrend%2CsectorTrend&corsDomain=finance.yahoo.com',
+    ),
   ]).then(res => {
     return Promise.resolve(res);
   });
@@ -135,7 +139,7 @@ export async function getDataFromFS(stockId) {
 
 export async function getDetailFromYahoo(stockId) {
   return axios(
-    `http://144.126.146.135/yahoo_stock_summary.php?stockId=${stockId}`,
+    `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${stockId}?formatted=true&crumb=KnKDLwDAA4z&lang=en-US&region=US&modules=recommendationTrend%2CfinancialData%2CearningsHistory%2CearningsTrend%2CindustryTrend%2CindexTrend%2CsectorTrend&corsDomain=finance.yahoo.com`,
   )
     .then(res => {
       return Promise.resolve(res.data.quoteSummary.result[0]);
@@ -148,7 +152,7 @@ export async function getDetailFromYahoo(stockId) {
 
 export async function getReportFromYahoo(stockId) {
   return axios(
-    `http://144.126.146.135/yahoo_stock_report.php?stockId=${stockId}`,
+    `https://query2.finance.yahoo.com/ws/insights/v2/finance/insights?lang=en-US&region=US&symbol=${stockId}&getAllResearchReports=true&reportsCount=3&corsDomain=finance.yahoo.com`,
   )
     .then(res => {
       return Promise.resolve(res.data.finance.result.reports);
@@ -161,7 +165,9 @@ export async function getReportFromYahoo(stockId) {
 
 export async function getStockNewsFromNasdaq(stockId) {
   const base = 'https://nasdaq.com';
-  return axios(`http://144.126.146.135/nasdaq-news.php?stockId=${stockId}`)
+  return axios(
+    `https://api.nasdaq.com/api/news/topic/articlebysymbol?q=${stockId}|stocks&offset=0&limit=7&fallback=true`,
+  )
     .then(res => {
       return Promise.resolve(res.data.data.rows);
     })

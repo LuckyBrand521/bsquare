@@ -282,53 +282,6 @@ const stockIds = [
   'ADS',
 ];
 
-// export async function setCryptoIdea() {
-//   temp = [];
-//   ids = makeString(coinIds);
-//   const quotes = await axios.get(
-//     `http://144.126.146.135/yahoo_stock_quote.php?stockId=${ids}`,
-//     {
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json;charset=UTF-8',
-//       },
-//     },
-//   );
-//   console.log(ids);
-//   const quoteRes = quotes.data.quoteResponse.result;
-//   for (let i = 0; i < quoteRes.length; i++) {
-//     temp.push({
-//       stock: coinIds[i].stock,
-//       id: coinIds[i].stock,
-//       percent: coinIds[i].per,
-//       stockDetail: quoteRes[i],
-//       amount:
-//         coinIds[i].per /
-//         10 /
-//         (quoteRes[i].regularMarketPrice?.raw
-//           ? quoteRes[i].regularMarketPrice.raw
-//           : 105),
-//       price: quoteRes[i].regularMarketPrice?.raw
-//         ? quoteRes[i].regularMarketPrice.raw
-//         : 105,
-//       change24h: quoteRes[i].regularMarketChange?.raw
-//         ? quoteRes[i].regularMarketChange.raw
-//         : 0.36,
-//     });
-//   }
-//   firestore()
-//     .collection('stockIdeaList')
-//     .doc('KSP')
-//     .set({
-//       items: temp,
-//       details: {name: 'Keeping in Shape'},
-//       chartData: {},
-//     })
-//     .then(res => {
-//       return res;
-//     });
-// }
-
 export async function updateUserCardInfo(userId, data) {
   return new Promise((resolve, reject) => {
     firestore()

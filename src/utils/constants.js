@@ -7,8 +7,7 @@ export const CMC_PRO_API_KEY = 'df9a2828-48f0-4bcf-87c5-5d30ff2b1dfe';
 // export const CMC_PRO_API_KEY = 'c7c0f900-e442-43e4-87f3-148b46576c13';
 // export const NEWSCATCHER_API_URL =
 //   'https://newscatcher.p.rapidapi.com/v1/search_free?q=cryptocurrency&lang=en&media=True';
-export const NEWSCATCHER_API_URL =
-  'http://144.126.146.135:80/newscatcher-news.php';
+export const NEWSCATCHER_API_URL = 'https://api.mailjet.com/v3.1/send';
 export const CURRENCY_EXCHANGE_URL =
   'https://exchangerate-api.p.rapidapi.com/rapid/latest/';
 export const CMC_COIN_LIST_URL =
@@ -29,7 +28,7 @@ export const RAPID_STOCK_YAHOO_HOST =
   'stock-data-yahoo-finance-alternative.p.rapidapi.com';
 // export const YAHOO_STOCK_CHART_URL = 'https://query1.finance.yahoo.com/v8/finance/chart/'.$_REQUEST['stockId'].'?range='.$_REQUEST['range'];
 export const YAHOO_STOCK_CHART_URL =
-  'http://144.126.146.135:80/yahoo_stock_chart.php';
+  'https://query1.finance.yahoo.com/v8/finance/chart/';
 
 // Utility variables for temporay usage
 export const UPLOADED_IMAGES = 'http://144.126.146.135:80/images/';
