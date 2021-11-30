@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 //custom styles

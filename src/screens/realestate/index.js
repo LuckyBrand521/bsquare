@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   Text,
   View,
@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
-import styled from 'styled-components';
 //custom components
 import {BlackRoundButton} from '../../components/BubbleButton';
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
@@ -18,7 +17,6 @@ import {
   EstateHistoryPanel,
   EstateNewArrivalPanel,
 } from '../../components/Card/cardpanels';
-import {InvestmentStatusOveriew} from '../../components/Gadgets';
 import {AnalysisTag} from '../../components/AnalysisTag';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
@@ -30,19 +28,13 @@ import {
   realestateArrivalList,
 } from '../../store/datalist';
 
-function RealEstateHomeScreen({navigation}) {
+const RealEstateHomeScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const [analData, setAnalData] = useState([
     {label: 'Number of Investments', red: false, value: '3'},
     {label: 'Total Value', red: false, value: '$5,000'},
     {label: 'P/L', red: false, value: '+12%'},
   ]);
-  const goDetail = useCallback(screenName => {
-    navigation.navigate(screenName);
-  }, []);
-  const goProperties = useCallback(screenName => {
-    navigation.navigate(screenName);
-  }, []);
 
   return (
     <SafeAreaView
@@ -53,7 +45,7 @@ function RealEstateHomeScreen({navigation}) {
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.goBack();
+          props.navigation.goBack();
         }}
       />
       <ScrollView>
@@ -73,7 +65,7 @@ function RealEstateHomeScreen({navigation}) {
           title="See Details"
           customStyle={{alignSelf: 'center', marginVertical: 20}}
           onPress={() => {
-            navigation.navigate('RealEstatePropertyScreen');
+            props.navigation.navigate('RealEstatePropertyScreen');
           }}
         />
         <View style={{marginTop: 16}}>
@@ -89,7 +81,7 @@ function RealEstateHomeScreen({navigation}) {
           <EstatePropertyPanel
             properties={realestatePropertyList}
             onPress={() => {
-              navigation.navigate('RealEstateDetailScreen');
+              props.navigation.navigate('RealEstateDetailScreen');
             }}
           />
         </View>
@@ -117,5 +109,5 @@ function RealEstateHomeScreen({navigation}) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 export default RealEstateHomeScreen;

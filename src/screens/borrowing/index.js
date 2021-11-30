@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -33,7 +32,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
 //data source
 const primaryDetails = [
   {title: 'Residual Intrest (USDT)', value: '0.00208'},

@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useSelector} from 'react-redux';
 import {
   Text,

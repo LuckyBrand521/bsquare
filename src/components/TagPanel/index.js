@@ -3,24 +3,16 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   ScrollView,
   StyleSheet,
 } from 'react-native';
 import {Paragraph} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Feather';
-import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
+import {PanelTitle} from '../../components/SectionTitle';
 import {SmallLine} from '../../components/SectionTitle';
 //custom styles
-import {investmentStyles, cryptoStyles} from '../../styles/investment';
-import {globalStyles} from '../../styles/global';
 import {colors} from '../../styles/colors';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 
-export const TagPanel = props => {
+export const TagPanel = () => {
   return (
     <View>
       <Text style={styles.panelLabel}>Popular list</Text>

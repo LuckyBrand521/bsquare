@@ -16,8 +16,6 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-const {width, height} = Dimensions.get('window');
-const RATIO = width / height;
 //test data
 import {realestatePropertyList} from '../../store/datalist';
 
@@ -32,16 +30,13 @@ const markers = [
   {latitude: 25.234381, longitude: 55.26157},
   {latitude: 46.003677, longitude: 8.951052},
 ];
-function RealEstatePropertyScreen({navigation}) {
+const RealEstatePropertyScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const [analData, setAnalData] = useState([
     {label: 'Number of Investments', red: false, value: '3'},
     {label: 'Total Value', red: false, value: '$5,000'},
     {label: 'P/L', red: false, value: '+12%'},
   ]);
-  const goDetail = useCallback(screenName => {
-    navigation.navigate(screenName);
-  }, []);
   return (
     <SafeAreaView
       style={{
@@ -51,7 +46,7 @@ function RealEstatePropertyScreen({navigation}) {
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.geBack();
+          props.navigation.geBack();
         }}
       />
       <ScrollView>
@@ -89,7 +84,7 @@ function RealEstatePropertyScreen({navigation}) {
                   plValue={`${item.plValue}%`}
                   rioValue={`${item.rioValue}%`}
                   onPress={() => {
-                    navigation.navigate('RealEstateDetailScreen');
+                    props.navigation.navigate('RealEstateDetailScreen');
                   }}
                 />
               );
@@ -99,5 +94,5 @@ function RealEstatePropertyScreen({navigation}) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 export default RealEstatePropertyScreen;

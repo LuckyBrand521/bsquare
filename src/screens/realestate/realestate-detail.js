@@ -48,19 +48,13 @@ const markers = [
   {latitude: 51.513561, longitude: -0.137706},
   {latitude: 46.003677, longitude: 8.951052},
 ];
-function RealEstateDetailScreen({navigation}) {
+const RealEstateDetailScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const refRBSheet1 = useRef();
   const refRBSheet2 = useRef();
   const refRBSheet3 = useRef();
   const refRBSheet4 = useRef();
   const refRBSheet5 = useRef();
-  const goDetail = useCallback(screenName => {
-    navigation.navigate(screenName);
-  }, []);
-  const goProperties = useCallback(screenName => {
-    navigation.navigate(screenName);
-  }, []);
 
   return (
     <SafeAreaView
@@ -71,7 +65,7 @@ function RealEstateDetailScreen({navigation}) {
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.goBack();
+          props.navigation.goBack();
         }}
       />
       <ScrollView>
@@ -157,9 +151,6 @@ function RealEstateDetailScreen({navigation}) {
               color={theme.colors.text_primary}
               title="Property Documents"
             />
-            {/* <TouchableOpacity>
-              <Text style={investmentStyles.greenLabel}>See all</Text>
-            </TouchableOpacity> */}
           </View>
           <EstateDocumentPanel items={realestateDocumentList} />
         </View>
@@ -232,7 +223,7 @@ function RealEstateDetailScreen({navigation}) {
       />
     </SafeAreaView>
   );
-}
+};
 export default RealEstateDetailScreen;
 const styles = StyleSheet.create({
   container: {

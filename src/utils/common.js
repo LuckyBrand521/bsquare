@@ -16,7 +16,7 @@ export const getTodayDateString = () => {
   return today;
 };
 
-export const cvtObjecttoArray = obj => {
+export const cvtObjectToArray = obj => {
   const keys = Object.keys(obj);
   let res = [];
   for (let i = 0; i < keys.length; i++) {
@@ -31,7 +31,7 @@ export const cvtObjecttoArray = obj => {
   };
 };
 
-export const cvtYahooCharttoArray = (obj, exchangeRates) => {
+export const cvtYahooChartToArray = (obj, exchangeRates) => {
   const quote = obj.data.chart.result[0].indicators.quote[0].close;
   //interpolate the array by replacing null values inside the array
   var earliestIndex = 0;
@@ -156,20 +156,6 @@ export async function getReportFromYahoo(stockId) {
   )
     .then(res => {
       return Promise.resolve(res.data.finance.result.reports);
-    })
-    .catch(err => {
-      console.log(err);
-      return Promise.reject(err);
-    });
-}
-
-export async function getStockNewsFromNasdaq(stockId) {
-  const base = 'https://nasdaq.com';
-  return axios(
-    `https://api.nasdaq.com/api/news/topic/articlebysymbol?q=${stockId}|stocks&offset=0&limit=7&fallback=true`,
-  )
-    .then(res => {
-      return Promise.resolve(res.data.data.rows);
     })
     .catch(err => {
       console.log(err);

@@ -1,24 +1,7 @@
 import * as React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Linking,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import {Card, Title, Paragraph} from 'react-native-paper';
-import DropShadow from 'react-native-drop-shadow';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import styles from './styles.js';
-import {BrandColorLabel} from '../Gadgets';
-import {SmallLine} from '../SectionTitle';
-import {colors, measures} from '../../styles/colors.js';
+import {measures} from '../../styles/colors.js';
 import {HighlightVertical} from './products';
 import {
   RealEstatePropertyCard,

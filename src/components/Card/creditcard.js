@@ -1,25 +1,13 @@
 import React, {useContext} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import DropShadow from 'react-native-drop-shadow';
-import {Card, Title, Paragraph} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import {CircularProgressWithChild} from 'react-native-circular-progress-indicator';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {SmallLine} from '../SectionTitle';
 import {CustomProgressBar} from '../../components/Gadgets';
-import {colors, measures} from '../../styles/colors';
-import {globalStyles} from '../../styles/global';
+import {measures} from '../../styles/colors';
 const cardImage = require('../../assets/images/visa_card.png');
 
 const cvtNumtoCardNum = number => {

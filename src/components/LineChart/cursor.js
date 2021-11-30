@@ -6,10 +6,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 
 export default Cursor = ({chartData, width, x, y, active}) => {
   const CURSOR_RADIUS = 5;

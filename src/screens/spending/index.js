@@ -38,16 +38,7 @@ function SpendingHomeScreen(props) {
     {name: 'Amazon', amount: 365, date: 1635534281},
     {name: 'Starbucks', amount: 6, date: 1635534281},
   ]);
-  // const [goals, setGoals] = useState([
-  //   {
-  //     id: 0,
-  //     uri: 'https://picsum.photos/700',
-  //     title: 'Tesla Model S',
-  //     dates: 30,
-  //     percent: 12,
-  //     total: 10000,
-  //   },
-  // ]);
+
   const [goals, setGoals] = useState([]);
   const userInfo = useSelector(state => state.portfolios.userInfo);
   const viewGoalDetail = id => {

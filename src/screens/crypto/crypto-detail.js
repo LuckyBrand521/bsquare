@@ -1,5 +1,4 @@
 import React, {useState, useRef, useEffect, useContext} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
@@ -8,7 +7,6 @@ import {
   ScrollView,
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import {useSharedValue} from 'react-native-reanimated';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {

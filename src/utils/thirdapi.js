@@ -1,5 +1,4 @@
 import axios from 'axios';
-import firestore from '@react-native-firebase/firestore';
 import {
   COIN_MARKET_CAP_URL,
   CMC_URL,
@@ -16,8 +15,7 @@ import {
   RAPIDAPI_CURRENCY_EXCHANGE_HOST,
   YAHOO_STOCK_CHART_URL,
 } from './constants';
-import {cvtObjecttoArray, cvtYahooCharttoArray} from './common';
-import IdeaHomeScreen from '../screens/ideas';
+import {cvtObjectToArray, cvtYahooChartToArray} from './common';
 
 export const getChartFromCMC = (coinId, range) => {
   return axios
@@ -33,7 +31,7 @@ export const getChartFromCMC = (coinId, range) => {
     )
     .then(res => {
       let obj = res.data.data.points;
-      return Promise.resolve(cvtObjecttoArray(obj));
+      return Promise.resolve(cvtObjectToArray(obj));
     })
     .catch(err => {
       console.log(err);
@@ -55,7 +53,7 @@ export async function getChartsFromCMC(coinId) {
         },
       },
     );
-    data.push(cvtObjecttoArray(t.data.data.points));
+    data.push(cvtObjectToArray(t.data.data.points));
   }
   return Promise.resolve(data);
 }
@@ -278,7 +276,7 @@ export async function getChartsFromYahoo(id) {
   const exchangeRates = await getCurrencyExchangeRates('USD');
   for (let i = 0; i < ranges.length; i++) {
     temp = await getStockQuoteFromYahoo(id, ranges[i]);
-    resList.push(cvtYahooCharttoArray(temp, exchangeRates));
+    resList.push(cvtYahooChartToArray(temp, exchangeRates));
   }
   return Promise.resolve(resList);
 }

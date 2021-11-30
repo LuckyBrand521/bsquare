@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {Text, View} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import {colors, measures} from '../../styles/colors';
+import {colors} from '../../styles/colors';
 
 export const SectionTitle = props => {
   return (

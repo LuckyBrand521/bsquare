@@ -24,8 +24,6 @@ import {investmentStyles} from '../../../styles/investment';
 import {updateUserInfo} from '../../../utils/firestoreapi';
 import {updateUserBalance} from '../../../redux/slices/portfolioSlice';
 
-const tempplateColors = ['#5EB330', '#2A2E3B', '#C55739'];
-
 export const TransferChoiceScreen = props => {
   const theme = useContext(ThemeContext).theme;
   return (

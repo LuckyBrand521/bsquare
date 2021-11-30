@@ -11,11 +11,11 @@ import {ThemeContext} from 'react-native-elements';
 import {Paragraph} from 'react-native-paper';
 import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
-import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
+import {PanelTitle} from '../../components/SectionTitle';
 import {NavigationHeader} from '../../components/Headers';
 import {AnalysisTag} from '../../components/AnalysisTag';
 import {IdeaItemPanel} from '../../components/Gadgets';
-import {StockNewsCard, StockCard} from '../../components/Card';
+import {StockNewsCard} from '../../components/Card';
 import {
   RatingStoryPopup,
   TradingCheckoutFirst,

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {View, Image, StatusBar, Text, TouchableOpacity} from 'react-native';
-import {withTheme} from 'react-native-elements';
+import {View} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -76,7 +75,6 @@ import ProfileHomeScreen, {
   ProfileDepositConfirmScreen,
 } from '../screens/setting';
 //custom styles
-import navigationStyles from './style.js';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

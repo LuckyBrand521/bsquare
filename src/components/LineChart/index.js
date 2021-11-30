@@ -18,14 +18,6 @@ const ranges = [
   {id: 4, label: '1Y'},
   {id: 5, label: 'ALL'},
 ];
-const stockranges = [
-  {id: 0, label: '1D', str: '1d'},
-  {id: 1, label: '5D', str: '5d'},
-  {id: 2, label: '1M', str: '1mo'},
-  {id: 3, label: '6M', str: '6mo'},
-  {id: 4, label: '1Y', str: '1y'},
-  {id: 5, label: 'ALL', str: 'max'},
-];
 
 export default SVGLineChart = props => {
   const x = useSharedValue(0);

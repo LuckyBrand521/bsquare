@@ -64,7 +64,6 @@ export const FindATMScreen = props => {
       />
       <View style={{marginTop: 24}} />
       <MapView
-        // style={{height: 240, width: '100%'}}
         style={styles(theme).map}
         mapType="terrain"
         initialRegion={{

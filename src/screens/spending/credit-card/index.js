@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Text, View, SafeAreaView, Dimensions, StyleSheet} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
@@ -304,9 +304,6 @@ export const ActivateCardScreen = props => {
           captionColor={theme.colors.text_primary}
           caption="Add to Apple Wallet"
           marginTop={16}
-          // onPress={() => {
-          //   props.navigation.navigate('CreateNewCardCompleteScreen', {type: 1});
-          // }}
         />
       </View>
     </SafeAreaView>

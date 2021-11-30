@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Text, View, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
+import {View, SafeAreaView, ScrollView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
@@ -13,7 +13,7 @@ import {HomeIdeaNewCard} from '../../components/Card';
 import {investmentStyles} from '../../styles/investment';
 import {getIdeaItems} from '../../utils/firestoreapi';
 
-function ArrivalScreen(props) {
+const ArrivalScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const goIdeaDetail = (type, id) => {
     getIdeaItems(id, type).then(res => {
@@ -135,13 +135,6 @@ function ArrivalScreen(props) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 export default ArrivalScreen;
-
-const styles = theme =>
-  StyleSheet.create({
-    bubbleContainer: {
-      height: 280,
-    },
-  });

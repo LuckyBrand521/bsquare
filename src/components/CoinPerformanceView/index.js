@@ -1,10 +1,5 @@
 import React, {useContext} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  withTiming,
-} from 'react-native-reanimated';
+import {View} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import {PanelTitle} from '../../components/SectionTitle';
 import {CryptoPerformanceRow} from '../../components/Gadgets';

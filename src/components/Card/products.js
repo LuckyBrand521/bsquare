@@ -1,9 +1,8 @@
 import React, {useContext} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import {white} from 'react-native-paper/lib/typescript/styles/colors';
 import Pie from 'react-native-pie';
-import {colors, measures} from '../../styles/colors';
+import {measures} from '../../styles/colors';
 import {globalStyles} from '../../styles/global';
 const images = {
   AAPL: require('../../assets/images/AAPL.png'),

@@ -9,7 +9,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
-import auth from '@react-native-firebase/auth';
 import {fetchPortfolio} from '../../utils/firestoreapi';
 import {
   setUserInfo,

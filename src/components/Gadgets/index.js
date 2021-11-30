@@ -1,13 +1,11 @@
 import React, {useContext} from 'react';
-import {Text, TextPropTypes, View, Image, TouchableOpacity} from 'react-native';
+import {Text, View, Image, TouchableOpacity} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Feather';
 import styled from 'styled-components';
 import {ProgressBar} from 'react-native-paper';
 import {LineChart} from 'react-native-chart-kit';
-import LevelBar from '../LevelBar';
 //constants
-import {UPLOADED_IMAGES} from '../../utils/constants';
 import {investmentStyles} from '../../styles/investment';
 
 const GrayLabel = styled.Text`

@@ -1,16 +1,14 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
-import styled from 'styled-components';
 import Spinner from 'react-native-loading-spinner-overlay';
 //custom components
 import {SectionTitle, PanelTitle} from '../../components/SectionTitle';
@@ -34,7 +32,7 @@ const getHourDiff = time => {
   return r;
 };
 
-function StockHomeScreen({navigation}) {
+const StockHomeScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const [loading, setLoading] = useState(true);
   const [newsList, setNewsList] = useState([]);
@@ -70,7 +68,7 @@ function StockHomeScreen({navigation}) {
   }, []);
 
   const goDetail = useCallback(screenName => {
-    navigation.navigate(screenName);
+    props.navigation.navigate(screenName);
   }, []);
 
   if (loading) {
@@ -97,7 +95,7 @@ function StockHomeScreen({navigation}) {
       <NavigationHeader
         title=""
         onPress={() => {
-          navigation.navigate('InvestmentHomeScreen');
+          props.navigation.navigate('InvestmentHomeScreen');
         }}
       />
       <ScrollView>
@@ -126,7 +124,7 @@ function StockHomeScreen({navigation}) {
             </TouchableOpacity>
           </View>
           <StockPortfolioPanel
-            navigation={navigation}
+            navigation={props.navigation}
             onPress={goDetail}
             items={stockPortfolioList}
           />
@@ -146,22 +144,9 @@ function StockHomeScreen({navigation}) {
               color={theme.colors.text_primary}
               title="Related News"
             />
-            {/* <TouchableOpacity>
-              <Text style={investmentStyles.greenLabel}>Show more</Text>
-            </TouchableOpacity> */}
           </View>
           <View style={{marginVertical: 20}}>
             {newsList.map((item, index) => {
-              {
-                /* <StockNewsCard
-                  title={item.title.slice(0, 10) + '...'}
-                  content={item.title}
-                  uri={`https://www.nasdaq.com//sites/acquia.prod/files/styles/720x400/public${item.image}`}
-                  key={index}
-                  newsHour={parseInt(item.ago.split(' ')[0])}
-                  source={`https://www.nasdaq.com/${item.url}`}
-                /> */
-              }
               if (item.media) {
                 return (
                   <StockNewsCard
@@ -207,5 +192,5 @@ function StockHomeScreen({navigation}) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 export default StockHomeScreen;

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   Text,
   View,
@@ -23,11 +23,11 @@ import {investmentStyles} from '../../styles/investment';
 //test data
 import {newsList, earningList} from '../../store/datalist';
 
-function InvestmentHomeScreen({navigation}) {
+const InvestmentHomeScreen = props => {
   const [totalAmount, setTotalAmount] = useState('11.520');
   const theme = useContext(ThemeContext).theme;
   const goStock = screenName => {
-    navigation.navigate(screenName);
+    props.navigation.navigate(screenName);
   };
   return (
     <SafeAreaView
@@ -162,6 +162,6 @@ function InvestmentHomeScreen({navigation}) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 export default InvestmentHomeScreen;

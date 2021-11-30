@@ -2,7 +2,6 @@ import React, {useState, useContext} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {ThemeContext} from 'react-native-elements';
-import {Icon as FAIcon} from 'react-native-vector-icons/FontAwesome';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {SingleFeature} from '../CardFeatureLinks';
 

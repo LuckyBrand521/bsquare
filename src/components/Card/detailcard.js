@@ -6,7 +6,7 @@ import {
 } from 'react-native-responsive-screen';
 import {CustomProgressBar} from '../../components/Gadgets';
 import {ThemeContext} from 'react-native-elements';
-import {SmallLine, PanelTitle} from '../SectionTitle';
+import {SmallLine} from '../SectionTitle';
 import {colors, measures} from '../../styles/colors.js';
 import {globalStyles} from '../../styles/global';
 

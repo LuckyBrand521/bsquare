@@ -9,7 +9,7 @@ import {
 } from './thirdapi';
 import {
   getTodayDateString,
-  cvtObjecttoArray,
+  cvtObjectToArray,
   interpolateArray,
   calcQuoteFromYahooData,
   getDataFromFS,
@@ -219,34 +219,11 @@ export async function calcStockDayChange(userId, items) {
   }
   daily_change = ((total_current - total_last) / total_last) * 100;
 
-  // const buyHistory = await getBuyHistory(userId, 'stock');
-  // const sellHistory = await getSellHistory(userId, 'stock');
-  // buyHistory.docs.forEach(doc => {
-  //   total_bought += doc.data().amount * doc.data().price;
-  //   for (let i = 0; i < current_portfolio.length; i++) {
-  //     if (current_portfolio[i].stock_id == doc.data().stock_id) {
-  //       current_portfolio[i].bought += doc.data().amount * doc.data().price;
-  //       current_portfolio[i].bought_amount += doc.data().amount;
-  //     }
-  //   }
-  // });
-  // sellHistory.docs.forEach(doc => {
-  //   total_sell += doc.data().amount * doc.data().price;
-  // });
-  // const current_pl =
-  //   ((total_sell + total_current - total_bought) / total_bought) * 100;
   const current_pl = 12 * Math.random();
 
   current_portfolio.map((item, index) => {
     item.pl = 13 * Math.round();
-    // item.pl =
-    //   ((item.current_price - item.bought / item.bought_amount) /
-    //     item.current_price) *
-    //   100;
   });
-  // const last_history = sellHistory
-  //   ? sellHistory.docs[0].data()
-  //   : buyHistory.docs[0].data();
   if (total_last && current_pl) {
     return Promise.resolve({
       daily_change: daily_change,
@@ -254,7 +231,6 @@ export async function calcStockDayChange(userId, items) {
       profit: current_pl,
       current_portfolio: current_portfolio,
       history: {},
-      // history: sellHistory ? sellHistory.docs[0] : buyHistory.docs[0].data(),
     });
   } else {
     return Promise.reject();
@@ -391,21 +367,8 @@ export async function calcIdeasDayChange(userId, items, category) {
     }
   }
 }
-const ideaImages = {
-  GNFT: require('../../src/assets/images/GNFT.jpeg'),
-  INS: require('../../src/assets/images/INS.jpeg'),
-  LPD: require('../../src/assets/images/LPD.jpeg'),
-  MTV: require('../../src/assets/images/MTV.jpeg'),
-  NEWB: require('../../src/assets/images/NEWB.jpeg'),
-  NFT: require('../../src/assets/images/NFT.jpeg'),
-  ELCI: require('../../src/assets/images/ELCI.jpeg'),
-  GES: require('../../src/assets/images/GES.jpeg'),
-  GRE: require('../../src/assets/images/GRE.jpeg'),
-  KSP: require('../../src/assets/images/KSP.jpeg'),
-  MGZE: require('../../src/assets/images/MGZE.jpeg'),
-  MVL: require('../../src/assets/images/MVL.jpeg'),
-};
-export async function getIdeaPortfolioWithDetail(userId, items) {
+
+export async function getIdeaPortfolioWithDetail(items) {
   let resList = [];
   for (let i = 0; i < items.length; i++) {
     let temp = {};

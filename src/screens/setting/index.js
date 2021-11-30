@@ -1,11 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
   StyleSheet,
   Image,
@@ -36,16 +35,9 @@ import {
 } from 'react-native-responsive-screen';
 //test data
 
-function ProfileHomeScreen(props) {
+const ProfileHomeScreen = props => {
   const userInfo = useSelector(state => state.portfolios.userInfo);
   const theme = useContext(ThemeContext).theme;
-  // const values = [
-  //   {value: 14, color: '#6CE4FE'},
-  //   {value: 20, color: '#58AFFF'},
-  //   {value: 18, color: '#E45A28'},
-  //   {value: 12, color: '#67C431'},
-  //   {value: 36, color: '#959FA4'},
-  // ];
   const values = [
     {value: 0, color: '#6CE4FE'},
     {value: 0, color: '#58AFFF'},
@@ -134,7 +126,7 @@ function ProfileHomeScreen(props) {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 export const WithdrawChoiceScreen = props => {
   const theme = useContext(ThemeContext).theme;

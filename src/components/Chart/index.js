@@ -1,41 +1,17 @@
-import React, {useState, useRef, useContext} from 'react';
-import {
-  Animated,
-  Text,
-  View,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Image,
-  Linking,
-  TextInput,
-} from 'react-native';
+import React, {useContext} from 'react';
+import {Text, View, ScrollView, StyleSheet} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 // import Icon from 'react-native-vector-icons/AntDesign';
-import Icon from 'react-native-vector-icons/Feather';
 import Pie from 'react-native-pie';
-import {Paragraph} from 'react-native-paper';
-import {LineChart} from 'react-native-chart-kit';
 //custom components
-import {MoneyTitle, PanelTitle} from '../../components/SectionTitle';
-import {BlackRoundButton} from '../../components/BubbleButton';
-import {ProfitLabel} from '../../components/ProfitLabel';
-import {SmallLine} from '../../components/SectionTitle';
-import {StockNewsCard, AnalCard, StockCard} from '../../components/Card';
-import {NavigationHeader, TrendViewHeader} from '../../components/Headers';
+import {PanelTitle} from '../../components/SectionTitle';
+import {AnalCard} from '../../components/Card';
 import {CustomProgressBar} from '../../components/Gadgets';
-import {AboutPanel} from '../../components/TagPanel';
-//custom styles
-import {investmentStyles} from '../../styles/investment';
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {newsList, analList, stockList} from '../../store/datalist';
-const {width, height} = Dimensions.get('window');
 
 export const SmallBubbleChart = props => {
   const theme = useContext(ThemeContext).theme;

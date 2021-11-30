@@ -5,7 +5,6 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   ScrollView,
   StyleSheet,
 } from 'react-native';
@@ -17,7 +16,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {PanelTitle} from '../../components/SectionTitle';
 import {BlackRoundButton} from '../../components/BubbleButton';
 import {SmallLine} from '../../components/SectionTitle';
-import {StockNewsCard, AnalCard, StockCard} from '../../components/Card';
+import {StockNewsCard, StockCard} from '../../components/Card';
 import {NavigationHeader} from '../../components/Headers';
 import {AnalysisTag} from '../../components/AnalysisTag';
 import {SmallBubbleChart, AnalystRatings} from '../../components/Chart';
@@ -43,9 +42,7 @@ import {
   getDataFromFS,
   getDetailFromYahoo,
   getReportFromYahoo,
-  getStockNewsFromNasdaq,
 } from '../../utils/common';
-const {width, height} = Dimensions.get('window');
 import {StockPerformanceView} from '../../components/CoinPerformanceView';
 
 const genChartData = count => {
