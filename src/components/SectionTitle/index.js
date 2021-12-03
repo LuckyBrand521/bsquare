@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import {Text, View} from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import {colors} from '../../styles/colors';
+import {QuestionToolTip} from '../../components/ToolTip';
 
 export const SectionTitle = props => {
   return (
@@ -66,16 +67,26 @@ export const SmallLine = props => {
         borderTopWidth: props.topBorder ? 1 : 0,
         width: props.width ? props.width : '100%',
       }}>
-      <Text
-        style={{
-          fontSize: props.titleSize ? props.titleSize : 13,
-          fontWeight: props.bold ? 'bold' : '400',
-          color: props.titleColor
-            ? props.titleColor
-            : theme.colors.text_primary,
-        }}>
-        {props.title}
-      </Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Text
+          style={{
+            fontSize: props.titleSize ? props.titleSize : 13,
+            fontWeight: props.bold ? 'bold' : '400',
+            color: props.titleColor
+              ? props.titleColor
+              : theme.colors.text_primary,
+            paddingRight: 10,
+          }}>
+          {props.title}
+        </Text>
+        {props.hasTooltip && (
+          <QuestionToolTip
+            content={props.tooltipProps.content}
+            position={props.tooltipProps.position}
+            size={props.titleSize ? props.titleSize : 13}
+          />
+        )}
+      </View>
       <Text
         style={{
           fontSize: props.valueSize ? props.valueSize : 13,

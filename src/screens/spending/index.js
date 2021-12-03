@@ -18,6 +18,7 @@ import {
 import {ThemeContext} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 import {FunctionalButton} from '../../components/BubbleButton';
+import {QuestionToolTip} from '../../components/ToolTip';
 import {
   CreditCard,
   AddCardBtn,
@@ -163,6 +164,11 @@ function SpendingHomeScreen(props) {
                 title="APY"
                 value="1.8%"
                 width="45%"
+                hasTooltip
+                tooltipProps={{
+                  position: 'bottom',
+                  content: 'Annual Percentage Yield',
+                }}
               />
               <SmallLine
                 bottomBorder

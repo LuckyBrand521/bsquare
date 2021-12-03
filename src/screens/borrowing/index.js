@@ -23,6 +23,7 @@ import {
 import {ThemeContext} from 'react-native-elements';
 import {BorderedButton} from '../../components/BubbleButton';
 import {AmountInput, DropdownSelect} from '../../components/Inputs';
+import {QuestionToolTip} from '../../components/ToolTip';
 //custom styles
 import {investmentStyles} from '../../styles/investment';
 import {updateUserInfo} from '../../utils/firestoreapi';
@@ -546,11 +547,19 @@ export const BorrowingStep5Screen = props => {
                   item: {...item, interestRate: val.interestRate},
                 });
               }}>
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: theme.colors.text_primary,
-                }}>{`${val.interestRate}% APR`}</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    color: theme.colors.text_primary,
+                  }}>{`${val.interestRate}% APR`}</Text>
+                <QuestionToolTip
+                  content="Annual Percentage Rate"
+                  position={'bottom'}
+                  size={16}
+                  backgroundColor={theme.colors.background_primary}
+                />
+              </View>
               <SmallLine
                 title={'Monthly payment'}
                 value={val.rate}
