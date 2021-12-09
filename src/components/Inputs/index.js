@@ -38,7 +38,7 @@ export const DropdownSelect = props => {
       setOpen={setOpen}
       setValue={setValue}
       setItems={setItems}
-      arrowIconStyle={{opacity: 1, color: theme.colors.text_primary}}
+      // arrowIconStyle={{opacity: 1, color: theme.colors.text_primary}}
       textStyle={{color: theme.colors.text_secondary, fontSize: 22}}
       style={{
         backgroundColor: theme.colors.background_secondary,

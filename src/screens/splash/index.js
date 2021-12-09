@@ -5,7 +5,7 @@ import {Text, View, Image} from 'react-native';
 function SplashScreen({navigation}) {
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('TabNavigation');
+      navigation.navigate('AuthScreen');
     }, 2000);
   }, []);
   return (

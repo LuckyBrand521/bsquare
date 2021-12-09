@@ -74,6 +74,26 @@ import ProfileHomeScreen, {
   ProfileDepositAmountScreen,
   ProfileDepositConfirmScreen,
 } from '../screens/setting';
+
+//Auth Screens
+import AuthScreen from '../screens/authentication';
+import {
+  RegisterOneScreen,
+  RegisterTwoScreen,
+  VerificationCodeScreen,
+  SetPasswordScreen,
+  SetAllScreen,
+  SetFaceIDScreen,
+  UploadIDScreen,
+  UploadAddressScreen,
+  RegisterCompleteScreen,
+} from '../screens/authentication/register';
+import {
+  LoginScreen,
+  LoginVerificationCodeScreen,
+} from '../screens/authentication/login';
+//Funding Screens
+import {FundingMethodSelectScreen} from '../screens/authentication/funding';
 //custom styles
 
 const Tab = createBottomTabNavigator();
@@ -230,6 +250,36 @@ const StackNavigation = props => {
       <Stack.Screen
         name="ProfileDepositConfirmScreen"
         component={ProfileDepositConfirmScreen}
+      />
+      {/* Auth screens */}
+      <Stack.Screen name="AuthScreen" component={AuthScreen} />
+      <Stack.Screen name="RegisterOneScreen" component={RegisterOneScreen} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
+      <Stack.Screen
+        name="LoginVerificationCodeScreen"
+        component={LoginVerificationCodeScreen}
+      />
+      <Stack.Screen name="RegisterTwoScreen" component={RegisterTwoScreen} />
+      <Stack.Screen
+        name="VerificationCodeScreen"
+        component={VerificationCodeScreen}
+      />
+      <Stack.Screen name="SetPasswordScreen" component={SetPasswordScreen} />
+      <Stack.Screen name="SetAllScreen" component={SetAllScreen} />
+      <Stack.Screen name="SetFaceIDScreen" component={SetFaceIDScreen} />
+      <Stack.Screen name="UploadIDScreen" component={UploadIDScreen} />
+      <Stack.Screen
+        name="UploadAddressScreen"
+        component={UploadAddressScreen}
+      />
+      <Stack.Screen
+        name="RegisterCompleteScreen"
+        component={RegisterCompleteScreen}
+      />
+      {/* Funding screens */}
+      <Stack.Screen
+        name="FundingMethodSelectScreen"
+        component={FundingMethodSelectScreen}
       />
     </Stack.Navigator>
   );
