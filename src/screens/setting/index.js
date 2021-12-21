@@ -22,6 +22,7 @@ import {
   ListItemWithGreenArrow,
 } from '../../components/ListItem';
 import {WealthChart} from '../../components/Chart';
+import {SingleAccordionPanel} from '../../components/TagPanel';
 //redux Actions
 import {updateUserBalance} from '../../redux/slices/portfolioSlice';
 //api
@@ -39,11 +40,11 @@ const ProfileHomeScreen = props => {
   const userInfo = useSelector(state => state.portfolios.userInfo);
   const theme = useContext(ThemeContext).theme;
   const values = [
-    {value: 0, color: '#6CE4FE'},
-    {value: 0, color: '#58AFFF'},
-    {value: 0, color: '#E45A28'},
-    {value: 0, color: '#67C431'},
-    {value: 0, color: '#959FA4'},
+    {value: 5, color: '#6CE4FE'},
+    {value: 10, color: '#58AFFF'},
+    {value: 25, color: '#E45A28'},
+    {value: 25, color: '#67C431'},
+    {value: 35, color: '#959FA4'},
   ];
   return (
     <SafeAreaView
@@ -82,9 +83,27 @@ const ProfileHomeScreen = props => {
           />
         </View>
         <View style={styles(theme).listContainer}>
-          <ListItemWithGreenArrow
-            content1="Wealth"
-            content2="Balances, Investments DRIP"
+          <SingleAccordionPanel
+            label="Details"
+            items={[
+              {title: 'Stocks', value: '$1,000', color: theme.colors.green},
+              {
+                title: 'Crypto',
+                value: '$2,000',
+                color: theme.colors.brand_teal,
+              },
+              {title: 'Ideas', value: '$5,000', color: theme.colors.brand_red},
+              {
+                title: 'Real Estates',
+                value: '$6,540',
+                color: theme.colors.brand_blue,
+              },
+              {
+                title: 'Cash',
+                value: '$10,000',
+                color: theme.colors.text_secondary,
+              },
+            ]}
           />
           <ListItemWithGreenArrow
             content1="Deposits, Withdraw"
@@ -95,10 +114,16 @@ const ProfileHomeScreen = props => {
           <ListItemWithGreenArrow
             content1="Statements & History"
             content2="Documents & Account Activity"
+            onPress={() => {
+              props.navigation.navigate('StatementHomeScreen');
+            }}
           />
           <ListItemWithGreenArrow
             content1="Settings"
             content2="Notification, Security, Account"
+            onPress={() => {
+              props.navigation.navigate('AppSettingHomeScreen');
+            }}
           />
           <ListItemWithGreenArrow
             content1="Help"
@@ -107,10 +132,9 @@ const ProfileHomeScreen = props => {
           <ListItemWithGreenArrow
             content1="Reinvestment"
             content2="Recurring Investments, Dividend Reinvestment"
-          />
-          <ListItemWithGreenArrow
-            content1="Wealth"
-            content2="Balances, Investments DRIP"
+            onPress={() => {
+              props.navigation.navigate('ReinvestmentHomeScreen');
+            }}
           />
         </View>
         <View style={styles(theme).btnContainer}>
@@ -153,7 +177,9 @@ export const WithdrawChoiceScreen = props => {
           captionColor={theme.colors.text_primary}
           caption="Transfer"
           marginTop={16}
-          onPress={() => {}}
+          onPress={() => {
+            props.navigation.navigate('ProfileTransferScreen');
+          }}
         />
         <BorderedButton
           borderColor={theme.colors.background_third}
@@ -452,6 +478,8 @@ const styles = theme =>
     chartContainer: {
       marginHorizontal: 16,
       marginVertical: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     listContainer: {
       marginHorizontal: 16,

@@ -290,14 +290,14 @@ export const WealthChart = props => {
       <View
         style={{
           ...styles.gauge,
-          left: props.radius / 2 + 8,
-          top: props.radius / 2 + 20,
+          alignSelf: 'center',
+          top: '35%',
         }}>
         <Text style={{...styles.guageLabel, color: props.labelColor}}>
           {props.label}
         </Text>
         <Text style={{...styles.gaugeText, color: props.amountColor}}>
-          ${Number(props.amount).toFixed(2)}
+          ${Number(props.amount).toLocaleString()}
         </Text>
       </View>
     </View>

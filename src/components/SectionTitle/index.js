@@ -8,7 +8,7 @@ export const SectionTitle = props => {
   return (
     <Text
       style={{
-        marginLeft: 16,
+        marginLeft: props.marginLeft ? props.marginLeft : 16,
         fontFamily: 'HelveticaNeueCyr',
         fontSize: props.fontSize ? props.fontSize : 34,
         fontWeight: 'bold',

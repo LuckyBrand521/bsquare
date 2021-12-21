@@ -83,7 +83,7 @@ export const ListItemWithSwitch = props => {
   const [isOn, setIsOn] = useState(props.isOn);
   return (
     <View
-      style={{...styles(theme).item, marginHorizontal: 0, paddingVertical: 16}}>
+      style={{...styles(theme).item, marginHorizontal: 0, paddingVertical: 13}}>
       <Text style={styles(theme).normalText}>{props.content}</Text>
       <ToggleSwitch
         isOn={isOn}
@@ -200,7 +200,6 @@ const styles = theme =>
       paddingVertical: 10,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.background_third,
-      paddingRight: 5,
     },
     threeColumn: {
       flexDirection: 'row',

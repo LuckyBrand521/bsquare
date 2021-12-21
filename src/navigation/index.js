@@ -74,6 +74,29 @@ import ProfileHomeScreen, {
   ProfileDepositAmountScreen,
   ProfileDepositConfirmScreen,
 } from '../screens/setting';
+import {
+  StatementHomeScreen,
+  StatementTypeScreen,
+  StatementCategoryScreen,
+  StatementHistoryScreen,
+  StatementRecentHistoryScreen,
+} from '../screens/setting/statements';
+import {
+  AppSettingHomeScreen,
+  AppSettingNMScreen,
+  AppSettingPNScreen,
+  AppSettingENScreen,
+  AppSettingDUScreen,
+} from '../screens/setting/setting';
+import {
+  ReinvestmentHomeScreen,
+  ReinvestmentTypeScreen,
+  ReinvestmentSelectCategoryScreen,
+} from '../screens/setting/reinvestment';
+import {
+  ProfileTransferScreen,
+  BankTransferScreen,
+} from '../screens/setting/transfer';
 
 //Auth Screens
 import AuthScreen from '../screens/authentication';
@@ -251,6 +274,51 @@ const StackNavigation = props => {
         name="ProfileDepositConfirmScreen"
         component={ProfileDepositConfirmScreen}
       />
+      <Stack.Screen
+        name="StatementHomeScreen"
+        component={StatementHomeScreen}
+      />
+      <Stack.Screen
+        name="StatementTypeScreen"
+        component={StatementTypeScreen}
+      />
+      <Stack.Screen
+        name="StatementCategoryScreen"
+        component={StatementCategoryScreen}
+      />
+      <Stack.Screen
+        name="StatementHistoryScreen"
+        component={StatementHistoryScreen}
+      />
+      <Stack.Screen
+        name="StatementRecentHistoryScreen"
+        component={StatementRecentHistoryScreen}
+      />
+      <Stack.Screen
+        name="AppSettingHomeScreen"
+        component={AppSettingHomeScreen}
+      />
+      <Stack.Screen name="AppSettingNMScreen" component={AppSettingNMScreen} />
+      <Stack.Screen name="AppSettingPNScreen" component={AppSettingPNScreen} />
+      <Stack.Screen name="AppSettingENScreen" component={AppSettingENScreen} />
+      <Stack.Screen name="AppSettingDUScreen" component={AppSettingDUScreen} />
+      <Stack.Screen
+        name="ReinvestmentHomeScreen"
+        component={ReinvestmentHomeScreen}
+      />
+      <Stack.Screen
+        name="ReinvestmentTypeScreen"
+        component={ReinvestmentTypeScreen}
+      />
+      <Stack.Screen
+        name="ReinvestmentSelectCategoryScreen"
+        component={ReinvestmentSelectCategoryScreen}
+      />
+      <Stack.Screen
+        name="ProfileTransferScreen"
+        component={ProfileTransferScreen}
+      />
+      <Stack.Screen name="BankTransferScreen" component={BankTransferScreen} />
       {/* Auth screens */}
       <Stack.Screen name="AuthScreen" component={AuthScreen} />
       <Stack.Screen name="RegisterOneScreen" component={RegisterOneScreen} />

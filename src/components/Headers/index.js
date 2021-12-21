@@ -22,11 +22,14 @@ export const NavigationHeader = props => {
         </TouchableOpacity>
       </View>
       <Text style={styles(theme).time}>{props.title ? props.title : ''}</Text>
-      <Icon
-        name="bookmark-o"
-        size={20}
-        style={{color: '#67C431', marginLeft: 24}}
-      />
+      {!props.iconHidden && (
+        <Icon
+          name="bookmark-o"
+          size={20}
+          style={{color: '#67C431', marginLeft: 24}}
+        />
+      )}
+      {props.iconHidden && <Text style={{width: 40}} />}
     </View>
   );
 };
