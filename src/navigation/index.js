@@ -96,6 +96,9 @@ import {
 import {
   ProfileTransferScreen,
   BankTransferScreen,
+  CryptoTransferScreen,
+  LocalBankTransferScreen,
+  TransferConfirmScreen,
 } from '../screens/setting/transfer';
 
 //Auth Screens
@@ -319,6 +322,18 @@ const StackNavigation = props => {
         component={ProfileTransferScreen}
       />
       <Stack.Screen name="BankTransferScreen" component={BankTransferScreen} />
+      <Stack.Screen
+        name="CryptoTransferScreen"
+        component={CryptoTransferScreen}
+      />
+      <Stack.Screen
+        name="LocalBankTransferScreen"
+        component={LocalBankTransferScreen}
+      />
+      <Stack.Screen
+        name="TransferConfirmScreen"
+        component={TransferConfirmScreen}
+      />
       {/* Auth screens */}
       <Stack.Screen name="AuthScreen" component={AuthScreen} />
       <Stack.Screen name="RegisterOneScreen" component={RegisterOneScreen} />
