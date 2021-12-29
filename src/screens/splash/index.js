@@ -1,8 +1,9 @@
-import * as React from 'react';
-import {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {Text, View, Image} from 'react-native';
+import {ThemeContext} from 'react-native-elements';
 
 function SplashScreen({navigation}) {
+  const theme = useContext(ThemeContext).theme;
   useEffect(() => {
     setTimeout(() => {
       navigation.navigate('AuthScreen');
@@ -14,7 +15,7 @@ function SplashScreen({navigation}) {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#000',
+        backgroundColor: theme.colors.background_primary,
       }}>
       <Image
         source={require('../../assets/images/logo.png')}

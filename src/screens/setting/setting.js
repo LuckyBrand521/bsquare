@@ -1,11 +1,12 @@
-import React, {useState, useContext} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useState, useContext, useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 import {
   Text,
   View,
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
+  AsyncStorage,
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -19,7 +20,7 @@ import {
 import {NavigationHeader} from '../../components/Headers';
 import {ListItemWithArrow, ListItemWithSwitch} from '../../components/ListItem';
 import {SVGSimpleChart} from '../../components/LineChart';
-import {BorderedButton, ContinueBottomBtn} from '../../components/BubbleButton';
+import {BorderedButton} from '../../components/BubbleButton';
 
 //redux Actions
 import {updateTheme} from '../../redux/slices/portfolioSlice';
@@ -182,6 +183,15 @@ export const AppSettingAppearanceScreen = props => {
   const theme = useContext(ThemeContext).theme;
   const dispatch = useDispatch();
   const [darkThemed, setDarkThemed] = useState(true);
+  useEffect(() => {
+    AsyncStorage.getItem('theme').then(item => {
+      if (item == 'light') {
+        setDarkThemed(false);
+      } else {
+        setDarkThemed(true);
+      }
+    });
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -267,10 +277,14 @@ export const AppSettingAppearanceScreen = props => {
           onToggle={() => {
             if (darkThemed) {
               setDarkThemed(false);
-              dispatch(updateTheme(lightTheme));
+              AsyncStorage.setItem('theme', 'light').then(() => {
+                dispatch(updateTheme(lightTheme));
+              });
             } else {
               setDarkThemed(true);
-              dispatch(updateTheme(darkTheme));
+              AsyncStorage.setItem('theme', 'dark').then(() => {
+                dispatch(updateTheme(darkTheme));
+              });
             }
           }}
         />

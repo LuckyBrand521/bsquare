@@ -6,23 +6,36 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import StackNavigation from './src/navigation';
-import {Provider, useSelector} from 'react-redux';
+import {Provider, useSelector, useDispatch} from 'react-redux';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ThemeProvider} from 'react-native-elements';
-// import {DefaultTheme, DarkTheme} from '@react-navigation/native';
 import {NavigationContainer} from '@react-navigation/native';
 import {store} from './src/redux/store';
-import {LogBox} from 'react-native';
+import {LogBox, AsyncStorage} from 'react-native';
+import {updateTheme} from './src/redux/slices/portfolioSlice';
 import {lightTheme, darkTheme} from './src/utils/constants';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
-const theme = darkTheme;
 
 const ThemedComponent = () => {
   const themed = useSelector(state => state.portfolios.theme);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    AsyncStorage.getItem('theme')
+      .then(item => {
+        if (item == 'light') {
+          dispatch(updateTheme(lightTheme));
+        } else {
+          dispatch(updateTheme(darkTheme));
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
   return (
     <ThemeProvider theme={themed}>
       <StackNavigation />

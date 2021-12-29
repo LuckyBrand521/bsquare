@@ -392,7 +392,7 @@ export const TabNavigation = () => {
           tabBarLabel: 'Home',
 
           // unmountOnBlur: true,
-          tabBarIcon: ({focused, tintColor, color}) => {
+          tabBarIcon: ({focused}) => {
             if (focused) {
               return (
                 <View
