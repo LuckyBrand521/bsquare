@@ -151,7 +151,6 @@ export const globalStyles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
   },
-
   flexDR: {
     flexDirection: 'row',
   },
@@ -176,6 +175,9 @@ export const globalStyles = StyleSheet.create({
   pn: {
     paddingHorizontal: 16,
   },
+  mhs: {
+    marginHorizontal: 8,
+  },
   mhn: {
     marginHorizontal: 16,
   },
@@ -195,3 +197,22 @@ export const globalStyles = StyleSheet.create({
     width: '48%',
   },
 });
+
+export const themedStyles = theme =>
+  StyleSheet.create({
+    verticalBordered: {
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: theme.colors.background_third,
+      paddingVertical: 8,
+    },
+    redText: {
+      color: theme.colors.brand_red,
+    },
+    greenText: {
+      color: theme.colors.brand_green,
+    },
+    normalSizeText: {
+      fontSize: 13,
+    },
+  });

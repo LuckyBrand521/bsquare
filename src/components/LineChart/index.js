@@ -108,12 +108,16 @@ const cvtArraytoChartData = (data, min, max, width) => {
   }
   return {path: path_str, val_arr: res_arr};
 };
-const styles = StyleSheet.create({
-  cursor: {},
-  cursorbody: {
-    backgroundColor: '#000',
-    borderRadius: 20,
-    width: 10,
-    height: 10,
-  },
-});
+export const SVGSimpleChart = props => {
+  const path = cvtArraytoChartData(
+    props.data,
+    20,
+    props.height - 10,
+    props.width,
+  ).path;
+  return (
+    <Svg height={props.height} width={props.width}>
+      <Path d={path} fill="none" stroke={props.color} strokeWidth={2} />
+    </Svg>
+  );
+};

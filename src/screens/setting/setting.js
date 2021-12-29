@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-// import {useSelector, useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {
   Text,
   View,
@@ -9,23 +9,29 @@ import {
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
-//custom components
-import {NavigationHeader} from '../../components/Headers';
-import {ListItemWithArrow, ListItemWithSwitch} from '../../components/ListItem';
-
-//redux Actions
-//api
-//custom styles
-import {investmentStyles} from '../../styles/investment';
-
+import Feather from 'react-native-vector-icons/Feather';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+//custom components
+import {NavigationHeader} from '../../components/Headers';
+import {ListItemWithArrow, ListItemWithSwitch} from '../../components/ListItem';
+import {SVGSimpleChart} from '../../components/LineChart';
+import {BorderedButton, ContinueBottomBtn} from '../../components/BubbleButton';
+
+//redux Actions
+import {updateTheme} from '../../redux/slices/portfolioSlice';
+//api
+//custom styles
+import {investmentStyles} from '../../styles/investment';
+import {globalStyles, themedStyles} from '../../styles/global';
+import {sampleChartData} from '../../store/datalist';
+
+import {lightTheme, darkTheme} from '../../utils/constants';
 export const AppSettingHomeScreen = props => {
-  const theme = useContext(ThemeContext).theme;
+  const {theme} = useContext(ThemeContext);
   return (
     <SafeAreaView
       style={{
@@ -51,7 +57,12 @@ export const AppSettingHomeScreen = props => {
       <Text style={[styles(theme).normalText, styles(theme).borderBottom]}>
         PREFERENCES
       </Text>
-      <ListItemWithArrow content="App Appearance" />
+      <ListItemWithArrow
+        content="App Appearance"
+        onPress={() => {
+          props.navigation.navigate('AppSettingAppearanceScreen');
+        }}
+      />
       <ListItemWithArrow
         content="Data Usage"
         onPress={() => {
@@ -163,6 +174,107 @@ export const AppSettingENScreen = props => {
         <LabelWithQuestion label="MY HOLDINGS" />
         <ListItemWithSwitch content="Shareholder Updates" isOn />
         <ListItemWithSwitch content="Order Status" isOn />
+      </View>
+    </SafeAreaView>
+  );
+};
+export const AppSettingAppearanceScreen = props => {
+  const theme = useContext(ThemeContext).theme;
+  const dispatch = useDispatch();
+  const [darkThemed, setDarkThemed] = useState(true);
+  return (
+    <SafeAreaView
+      style={{
+        ...investmentStyles.container,
+        backgroundColor: theme.colors.background_primary,
+      }}>
+      <NavigationHeader
+        title="App Appearance"
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+        iconHidden={true}
+      />
+      <Text />
+      <View style={[themedStyles(theme).verticalBordered, globalStyles.flexDR]}>
+        <Text
+          style={[
+            themedStyles(theme).greenText,
+            themedStyles(theme).normalSizeText,
+            globalStyles.mhs,
+          ]}>
+          Example Inc. <Feather name="arrow-up-right" />
+        </Text>
+        <Text
+          style={[
+            themedStyles(theme).redText,
+            themedStyles(theme).normalSizeText,
+            globalStyles.mhs,
+          ]}>
+          $619.2 <Feather name="arrow-down-right" />
+        </Text>
+        <Text
+          style={[
+            themedStyles(theme).redText,
+            themedStyles(theme).normalSizeText,
+            globalStyles.mhs,
+            globalStyles.bold,
+          ]}>
+          <AntDesign name="caretdown" /> $2.45 (1.2%)
+        </Text>
+        <Text
+          style={[
+            themedStyles(theme).greenText,
+            themedStyles(theme).normalSizeText,
+            globalStyles.mhs,
+            globalStyles.bold,
+          ]}>
+          <AntDesign name="caretup" /> $2.45 (1.2%)
+        </Text>
+      </View>
+      <Text />
+      <SVGSimpleChart
+        color={theme.colors.green}
+        width={wp('100%')}
+        height={210}
+        data={sampleChartData}
+      />
+      <Text />
+      <View style={[themedStyles(theme).verticalBordered]}>
+        <View style={styles(theme).btnGroup}>
+          <BorderedButton
+            borderColor={theme.colors.red}
+            captionColor={theme.colors.text_primary}
+            backgroundColor={theme.colors.red}
+            caption="Sell"
+            marginTop={16}
+            onPress={() => {}}
+          />
+          <BorderedButton
+            borderColor={theme.colors.green}
+            captionColor={theme.colors.text_primary}
+            backgroundColor={theme.colors.green}
+            caption="Buy"
+            marginTop={16}
+            onPress={() => {}}
+          />
+        </View>
+      </View>
+      <View style={styles(theme).marginHorizontal16}>
+        <ListItemWithSwitch
+          content="Dark theme"
+          isOn={darkThemed}
+          onToggle={() => {
+            if (darkThemed) {
+              setDarkThemed(false);
+              dispatch(updateTheme(lightTheme));
+            } else {
+              setDarkThemed(true);
+              dispatch(updateTheme(darkTheme));
+            }
+          }}
+        />
+        <ListItemWithSwitch content="Shareholder Updates" isOn />
       </View>
     </SafeAreaView>
   );
@@ -294,5 +406,10 @@ const styles = theme =>
     },
     marginHorizontal16: {
       marginHorizontal: 16,
+    },
+    btnGroup: {
+      width: '50%',
+      alignSelf: 'center',
+      marginBottom: 16,
     },
   });

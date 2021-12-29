@@ -11,6 +11,7 @@ import {
   TextInput,
 } from 'react-native';
 import {ThemeContext} from 'react-native-elements';
+import RBSheet from 'react-native-raw-bottom-sheet';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 //custom components

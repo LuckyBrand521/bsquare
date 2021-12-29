@@ -1,6 +1,9 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+import {darkTheme} from '../../utils/constants';
+
 const initialState = {
+  theme: darkTheme,
   userInfo: {},
   cryptoPortfolio: [],
   stockPortfolio: [],
@@ -12,6 +15,9 @@ export const portfolioSlice = createSlice({
   name: 'portfolios',
   initialState: initialState,
   reducers: {
+    updateTheme: (state, action) => {
+      state.theme = action.payload;
+    },
     readUserInfo: state => {
       return state.userInfo;
     },
@@ -54,6 +60,7 @@ export const {
   updateCardInfo,
   updateUserGoals,
   setPurchaseStore,
+  updateTheme,
 } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;

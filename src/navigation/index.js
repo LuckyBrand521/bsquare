@@ -87,6 +87,7 @@ import {
   AppSettingPNScreen,
   AppSettingENScreen,
   AppSettingDUScreen,
+  AppSettingAppearanceScreen,
 } from '../screens/setting/setting';
 import {
   ReinvestmentHomeScreen,
@@ -305,6 +306,10 @@ const StackNavigation = props => {
       <Stack.Screen name="AppSettingPNScreen" component={AppSettingPNScreen} />
       <Stack.Screen name="AppSettingENScreen" component={AppSettingENScreen} />
       <Stack.Screen name="AppSettingDUScreen" component={AppSettingDUScreen} />
+      <Stack.Screen
+        name="AppSettingAppearanceScreen"
+        component={AppSettingAppearanceScreen}
+      />
       <Stack.Screen
         name="ReinvestmentHomeScreen"
         component={ReinvestmentHomeScreen}

@@ -86,12 +86,16 @@ export const ListItemWithSwitch = props => {
       style={{...styles(theme).item, marginHorizontal: 0, paddingVertical: 13}}>
       <Text style={styles(theme).normalText}>{props.content}</Text>
       <ToggleSwitch
-        isOn={isOn}
+        isOn={props.isOn}
         onColor="#5AC53A"
         offColor={theme.colors.text_secondary}
         size="large"
-        onToggle={isOn => {
-          setIsOn(isOn);
+        onToggle={() => {
+          if (props.onToggle) {
+            props.onToggle();
+          } else {
+            setIsOn(isOn);
+          }
         }}
       />
     </View>
